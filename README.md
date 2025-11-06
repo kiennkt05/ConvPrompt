@@ -33,15 +33,22 @@ The descriptors for the datasets that have been used have been stored in the for
 
 
 ## Training
-Use the following command for training:
-
+### ConvPrompt / Legacy Methods
 ```
 export TOKENIZERS_PARALLELISM=false
-python -m main <cifar100_convprompt or imr_convprompt or cub_convprompt> \
-        --num_tasks 10 \
-        --data-path /local_datasets/ \
-        --output_dir ./output 
+python -m main <cifar100_convprompt | imr_convprompt | cub_convprompt> \
+    --num_tasks 10 \
+    --data-path /local_datasets/ \
+    --output_dir ./output
 ```
+
+### RainbowPrompt (Continual Prompt Evolution)
+```
+python main.py --config configs/rainbow_cubs.yaml \
+    --data_path ./data/cubs \
+    --output_dir ./outputs/rainbow_cubs
+```
+Optional overrides such as `--epochs`, `--batch_size`, or `--device` can be appended to the command. The YAML file under `configs/` controls optimizer, scheduler, and RainbowPrompt-specific hyperparameters.
 
 
 ## Acknowledgement

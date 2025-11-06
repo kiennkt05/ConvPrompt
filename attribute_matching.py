@@ -1,10 +1,14 @@
 import json
 import os
-from sentence_transformers import SentenceTransformer, util
-import torch
 import math
 import numpy as np
 import pickle as pkl
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+from sentence_transformers import SentenceTransformer, util
 from transformers import RobertaTokenizer, RobertaModel
 
 def get_dataset_name(args=None):
@@ -152,3 +156,31 @@ def num_new_prompts(class_mask, task_id, args=None):
     
         
     return k
+
+
+class RainbowAttributeMatcher(nn.Module):
+    """Manage learnable task embeddings and matching loss for RainbowPrompt."""
+
+    def __init__(self, num_tasks: int, embed_dim: int, hidden_dim: int | None = None) -> None:
+        super().__init__()
+        self.task_embeddings = nn.Embedding(num_tasks, embed_dim)
+        nn.init.normal_(self.task_embeddings.weight, mean=0.0, std=0.02)
+
+        hidden_dim = hidden_dim or embed_dim
+        self.query_head = nn.Sequential(
+            nn.Linear(embed_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, embed_dim),
+        )
+
+    def get_task_embedding(self, task_id: int, device: torch.device) -> torch.Tensor:
+        idx = torch.tensor([task_id], device=device, dtype=torch.long)
+        return self.task_embeddings(idx).squeeze(0)
+
+    def match_loss(self, features: torch.Tensor, task_embedding: torch.Tensor) -> torch.Tensor:
+        """Compute cosine matching loss between features and task embedding."""
+        projected = self.query_head(features)
+        projected = F.normalize(projected, dim=-1)
+        target = F.normalize(task_embedding.unsqueeze(0), dim=-1)
+        cosine = torch.sum(projected * target, dim=-1)
+        return 1.0 - cosine.mean()

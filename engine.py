@@ -336,3 +336,298 @@ def train_and_evaluate(model: torch.nn.Module,
         if args.output_dir and utils.is_main_process():
             with open(os.path.join(args.output_dir, '{}_stats.txt'.format(datetime.datetime.now().strftime('log_%Y_%m_%d_%H_%M'))), 'a') as f:
                 f.write(json.dumps(log_stats) + '\n')
+
+
+def _class_offset(class_mask, task_id):
+    if class_mask is None:
+        return 0
+    return sum(len(mask) for mask in class_mask[:task_id])
+
+
+def _task_num_classes(class_mask, task_id):
+    if class_mask is None:
+        return 0
+    return len(class_mask[task_id])
+
+
+def build_rainbow_optimizer(args, model, matcher):
+    params = [p for p in model.parameters() if p.requires_grad]
+    params += [p for p in matcher.parameters() if p.requires_grad]
+
+    opt_cfg = args.optimizer
+    opt_name = opt_cfg.get('name', 'adamw').lower()
+    lr = opt_cfg.get('lr', 1e-4)
+    weight_decay = opt_cfg.get('weight_decay', 0.0)
+
+    if opt_name == 'adamw':
+        optimizer = torch.optim.AdamW(params, lr=lr, weight_decay=weight_decay)
+    elif opt_name == 'adam':
+        optimizer = torch.optim.Adam(params, lr=lr, weight_decay=weight_decay)
+    elif opt_name == 'sgd':
+        momentum = opt_cfg.get('momentum', 0.9)
+        optimizer = torch.optim.SGD(params, lr=lr, weight_decay=weight_decay, momentum=momentum)
+    else:
+        raise ValueError(f"Unsupported optimizer: {opt_name}")
+
+    scheduler = None
+    sched_cfg = getattr(args, 'scheduler', None)
+    if sched_cfg:
+        sched_name = sched_cfg.get('name', '').lower()
+        if sched_name == 'cosine':
+            eta_min = sched_cfg.get('min_lr', 0.0)
+            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=eta_min)
+        elif sched_name == 'constant':
+            scheduler = None
+        else:
+            raise ValueError(f"Unsupported scheduler: {sched_name}")
+
+    return optimizer, scheduler
+
+
+def train_one_epoch_rainbow(
+    model: torch.nn.Module,
+    matcher,
+    criterion,
+    data_loader: Iterable,
+    optimizer,
+    device: torch.device,
+    epoch: int,
+    max_epochs: int,
+    task_id: int,
+    class_mask,
+    args,
+):
+    model.train(True)
+    model.rainbow_prompt.set_training(True)
+    model.rainbow_set_epoch(epoch, max_epochs)
+
+    metric_logger = utils.MetricLogger(delimiter="  ")
+    metric_logger.add_meter('Loss', utils.SmoothedValue(window_size=1, fmt='{value:.4f}'))
+    metric_logger.add_meter('CE', utils.SmoothedValue(window_size=1, fmt='{value:.4f}'))
+    metric_logger.add_meter('Match', utils.SmoothedValue(window_size=1, fmt='{value:.4f}'))
+    metric_logger.add_meter('Sparsity', utils.SmoothedValue(window_size=1, fmt='{value:.4f}'))
+    metric_logger.add_meter('Acc', utils.SmoothedValue(window_size=1, fmt='{value:.2f}'))
+
+    header = f'Rainbow Train Task[{task_id + 1}/{args.num_tasks}] Epoch[{epoch + 1}/{max_epochs}]'
+
+    offset = _class_offset(class_mask, task_id)
+    task_classes = _task_num_classes(class_mask, task_id)
+
+    for samples, targets in metric_logger.log_every(data_loader, args.print_freq, header):
+        samples = samples.to(device, non_blocking=True)
+        targets = targets.to(device, non_blocking=True)
+
+        optimizer.zero_grad()
+
+        task_embedding = matcher.get_task_embedding(task_id, device)
+        model.rainbow_set_task_embedding(task_embedding)
+
+        output = model(samples, task_id=task_id, train=True)
+        logits = output['logits']
+        logits_current = logits[:, offset: offset + task_classes]
+
+        adjusted_targets = targets - offset
+        ce_loss = criterion(logits_current, adjusted_targets)
+
+        total_loss = ce_loss
+        sparsity_loss = torch.tensor(0.0, device=device)
+        match_loss = torch.tensor(0.0, device=device)
+
+        aux = output.get('rainbow_aux', {})
+        if args.lambda_sparse > 0 and aux:
+            sparsity_loss = sum(aux.values())
+            total_loss = total_loss + args.lambda_sparse * sparsity_loss
+
+        if args.lambda_match > 0:
+            match_loss = matcher.match_loss(output['pre_logits'], task_embedding)
+            total_loss = total_loss + args.lambda_match * match_loss
+
+        total_loss.backward()
+
+        if getattr(args, 'clip_grad', None):
+            torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip_grad)
+
+        optimizer.step()
+
+        with torch.no_grad():
+            preds = logits_current.argmax(dim=1)
+            acc = (preds == adjusted_targets).float().mean() * 100.0
+
+        metric_logger.update(
+            Loss=total_loss.item(),
+            CE=ce_loss.item(),
+            Match=match_loss.item(),
+            Sparsity=sparsity_loss.item(),
+            Acc=acc.item() if torch.is_tensor(acc) else acc,
+        )
+
+    return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
+
+
+@torch.no_grad()
+def evaluate_rainbow(
+    model: torch.nn.Module,
+    matcher,
+    data_loader: Iterable,
+    device: torch.device,
+    task_id: int,
+    class_mask,
+    args,
+):
+    model.eval()
+    model.rainbow_prompt.set_training(False)
+    model.rainbow_load_task(task_id, device)
+
+    task_embedding = matcher.get_task_embedding(task_id, device)
+    model.rainbow_set_task_embedding(task_embedding)
+
+    offset = _class_offset(class_mask, task_id)
+    task_classes = _task_num_classes(class_mask, task_id)
+
+    metric_logger = utils.MetricLogger(delimiter="  ")
+    metric_logger.add_meter('Loss', utils.SmoothedValue(window_size=1, fmt='{value:.4f}'))
+    metric_logger.add_meter('Acc', utils.SmoothedValue(window_size=1, fmt='{value:.2f}'))
+
+    criterion = torch.nn.CrossEntropyLoss()
+
+    total = 0
+    correct = 0
+
+    header = f'Rainbow Eval Task[{task_id + 1}/{args.num_tasks}]'
+
+    for samples, targets in metric_logger.log_every(data_loader, args.print_freq, header):
+        samples = samples.to(device, non_blocking=True)
+        targets = targets.to(device, non_blocking=True)
+
+        output = model(samples, task_id=task_id, train=False)
+        logits = output['logits']
+        logits_current = logits[:, offset: offset + task_classes]
+        adjusted_targets = targets - offset
+
+        loss = criterion(logits_current, adjusted_targets)
+        preds = logits_current.argmax(dim=1)
+
+        total += targets.size(0)
+        correct += (preds == adjusted_targets).sum().item()
+        acc = (preds == adjusted_targets).float().mean() * 100.0
+
+        metric_logger.update(Loss=loss.item(), Acc=acc.item())
+
+    return {
+        'loss': metric_logger.meters['Loss'].global_avg,
+        'acc1': metric_logger.meters['Acc'].global_avg,
+        'total': total,
+        'correct': correct,
+    }
+
+
+def evaluate_rainbow_till_now(
+    model: torch.nn.Module,
+    matcher,
+    data_loader,
+    device: torch.device,
+    task_id: int,
+    class_mask,
+    acc_matrix,
+    args,
+):
+    task_accuracies = []
+    total_samples = 0
+    total_correct = 0
+
+    for eval_task in range(task_id + 1):
+        stats = evaluate_rainbow(model, matcher, data_loader[eval_task]['val'], device, eval_task, class_mask, args)
+        acc_matrix[eval_task, task_id] = stats['acc1']
+        task_accuracies.append(stats['acc1'])
+        total_samples += stats['total']
+        total_correct += stats['correct']
+
+    avg_accuracy = float(np.mean(task_accuracies)) if task_accuracies else 0.0
+
+    forgetting = 0.0
+    if task_id > 0:
+        previous_max = np.max(acc_matrix[:, :task_id], axis=1)
+        current_acc = acc_matrix[:, task_id]
+        forgetting = float(np.mean((previous_max - current_acc)[:task_id]))
+
+    overall_acc = 100.0 * total_correct / max(total_samples, 1)
+
+    return {
+        'average_accuracy': avg_accuracy,
+        'overall_accuracy': overall_acc,
+        'forgetting': forgetting,
+    }
+
+
+def train_and_evaluate_rainbow(
+    model: torch.nn.Module,
+    matcher,
+    criterion,
+    data_loader,
+    device: torch.device,
+    class_mask,
+    args,
+):
+    acc_matrix = np.zeros((args.num_tasks, args.num_tasks))
+
+    for task_id in range(args.num_tasks):
+        if task_id > 0 and hasattr(model.head, 'update'):
+            model.head.update(len(class_mask[task_id]))
+
+        model.rainbow_start_task(task_id)
+
+        optimizer, scheduler = build_rainbow_optimizer(args, model, matcher)
+
+        for epoch in range(args.epochs):
+            logging.info('Rainbow training task %d epoch %d/%d', task_id + 1, epoch + 1, args.epochs)
+            train_stats = train_one_epoch_rainbow(
+                model=model,
+                matcher=matcher,
+                criterion=criterion,
+                data_loader=data_loader[task_id]['train'],
+                optimizer=optimizer,
+                device=device,
+                epoch=epoch,
+                max_epochs=args.epochs,
+                task_id=task_id,
+                class_mask=class_mask,
+                args=args,
+            )
+
+            if scheduler:
+                scheduler.step()
+
+            logging.info('Task %d Epoch %d stats: %s', task_id + 1, epoch + 1, train_stats)
+
+        model.rainbow_finalize_task(task_id)
+
+        eval_stats = evaluate_rainbow_till_now(
+            model=model,
+            matcher=matcher,
+            data_loader=data_loader,
+            device=device,
+            task_id=task_id,
+            class_mask=class_mask,
+            acc_matrix=acc_matrix,
+            args=args,
+        )
+
+        logging.info(
+            'After task %d: Avg Acc %.4f | Overall Acc %.4f | Forgetting %.4f',
+            task_id + 1,
+            eval_stats['average_accuracy'],
+            eval_stats['overall_accuracy'],
+            eval_stats['forgetting'],
+        )
+
+        if getattr(args, 'output_dir', None) and utils.is_main_process():
+            ckpt_dir = Path(args.output_dir) / 'checkpoints'
+            ckpt_dir.mkdir(parents=True, exist_ok=True)
+            checkpoint = {
+                'model': model.state_dict(),
+                'matcher': matcher.state_dict(),
+                'task_id': task_id,
+            }
+            torch.save(checkpoint, ckpt_dir / f'task_{task_id + 1}.pth')
+
+    return acc_matrix

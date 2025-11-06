@@ -41,7 +41,7 @@ from timm.models.helpers import build_model_with_cfg, resolve_pretrained_cfg, na
 from timm.models.layers import PatchEmbed, Mlp, DropPath, trunc_normal_, lecun_normal_
 from timm.models.registry import register_model
 
-from prompt import EPrompt
+from prompt import EPrompt, RainbowPromptModule
 from attention import PreT_Attention
 
 _logger = logging.getLogger(__name__)
@@ -339,8 +339,8 @@ class VisionTransformer(nn.Module):
             prompt_length=None, embedding_key='cls', prompt_init='uniform', prompt_pool=False, prompt_key=False, pool_size=None,
             num_tasks=5, kernel_size=17, top_k=None, batchwise_prompt=False, prompt_key_init='uniform', head_type='token', use_prompt_mask=False,
             use_g_prompt=False, g_prompt_length=None, g_prompt_layer_idx=None, use_prefix_tune_for_g_prompt=False,
-            use_e_prompt=False, e_prompt_layer_idx=None, use_prefix_tune_for_e_prompt=False, same_key_value=False, 
-            prompts_per_task=5, args=None):
+            use_e_prompt=False, e_prompt_layer_idx=None, use_prefix_tune_for_e_prompt=False, same_key_value=False,
+            prompts_per_task=5, args=None, use_rainbow_prompt=False, rainbow_config: Optional[dict] = None):
         """
         Args:
             img_size (int, tuple): input image size
@@ -396,6 +396,10 @@ class VisionTransformer(nn.Module):
         self.prompt_pool = prompt_pool
         self.head_type = head_type
         self.use_prompt_mask = use_prompt_mask
+        self.use_rainbow_prompt = use_rainbow_prompt
+        if self.use_rainbow_prompt:
+            use_g_prompt = False
+            use_e_prompt = False
 
         self.use_g_prompt = use_g_prompt
         self.g_prompt_layer_idx = g_prompt_layer_idx
@@ -445,8 +449,54 @@ class VisionTransformer(nn.Module):
                     prompt_pool=prompt_pool, prompt_key=prompt_key, pool_size=pool_size, top_k=top_k, batchwise_prompt=batchwise_prompt,
                     prompt_key_init=prompt_key_init, num_layers=num_e_prompt, use_prefix_tune_for_e_prompt=use_prefix_tune_for_e_prompt,
                     num_heads=num_heads, same_key_value=same_key_value, prompts_per_task=prompts_per_task)
+
+        if self.use_rainbow_prompt:
+            if prompt_length is None:
+                raise ValueError("RainbowPrompt requires prompt_length to be specified")
+            rainbow_defaults = {
+                "proj_dim": embed_dim // 8,
+                "align_hidden_dim": embed_dim // 8,
+                "gate_tau_start": 1.0,
+                "gate_tau_end": 0.3,
+                "gate_harden_at": 0.6,
+                "save_dir": "./outputs/rainbow_prompts",
+                "use_task_conditioning": True,
+                "enable_task_level": True,
+                "enable_feature_level": True,
+                "enable_alignment": True,
+                "use_adaptive_gating": True,
+                "lambda_sparse": 0.0,
+                "lambda_match": 0.0,
+            }
+            if rainbow_config:
+                rainbow_defaults.update(rainbow_config)
+
+            self.rainbow_prompt = RainbowPromptModule(
+                embed_dim=embed_dim,
+                prompt_length=prompt_length,
+                num_layers=depth,
+                num_heads=num_heads,
+                proj_dim=rainbow_defaults["proj_dim"],
+                align_hidden_dim=rainbow_defaults["align_hidden_dim"],
+                gate_tau_start=rainbow_defaults["gate_tau_start"],
+                gate_tau_end=rainbow_defaults["gate_tau_end"],
+                gate_harden_at=rainbow_defaults["gate_harden_at"],
+                save_dir=rainbow_defaults["save_dir"],
+                use_task_conditioning=rainbow_defaults["use_task_conditioning"],
+                enable_task_level=rainbow_defaults["enable_task_level"],
+                enable_feature_level=rainbow_defaults["enable_feature_level"],
+                enable_alignment=rainbow_defaults["enable_alignment"],
+                use_adaptive_gating=rainbow_defaults["use_adaptive_gating"],
+            )
+            self.lambda_sparse = rainbow_defaults.get("lambda_sparse", 0.0)
+            self.lambda_match = rainbow_defaults.get("lambda_match", 0.0)
+        else:
+            self.lambda_sparse = 0.0
+            self.lambda_match = 0.0
         
-        if not (use_g_prompt or use_e_prompt):
+        if self.use_rainbow_prompt:
+            attn_layer = PreT_Attention
+        elif not (use_g_prompt or use_e_prompt):
             attn_layer = Attention
         elif not (use_prefix_tune_for_g_prompt or use_prefix_tune_for_e_prompt):
             # Prompt tunning
@@ -534,10 +584,24 @@ class VisionTransformer(nn.Module):
         
         x = self.pos_drop(x + self.pos_embed)
 
-        if self.grad_checkpointing and not torch.jit.is_scripting():
+        if self.use_rainbow_prompt:
+            res = {}
+            self.rainbow_prompt.set_training(train)
+            for i, block in enumerate(self.blocks):
+                prompt_tokens = self.rainbow_prompt(
+                    task_id=task_id,
+                    layer_idx=i,
+                    batch_size=x.shape[0],
+                    device=x.device,
+                )
+                x = block(x, prompt=prompt_tokens)
+            res["rainbow_aux"] = self.rainbow_prompt.auxiliary_losses()
+        elif self.grad_checkpointing and not torch.jit.is_scripting():
             x = checkpoint_seq(self.blocks, x)
+            res = dict()
         else:
             if self.use_g_prompt or self.use_e_prompt:
+                res = {}
                 if self.use_prompt_mask and train:
                     start = task_id * self.e_prompt.top_k
                     end = (task_id + 1) * self.e_prompt.top_k
@@ -633,6 +697,34 @@ class VisionTransformer(nn.Module):
         res = self.forward_features(x, task_id=task_id, cls_features=cls_features, train=train)
         res = self.forward_head(res, device=x.device)
         return res
+
+    def rainbow_start_task(self, task_id: int) -> None:
+        if not self.use_rainbow_prompt:
+            return
+        self.rainbow_prompt.start_task(task_id)
+
+    def rainbow_set_epoch(self, epoch: int, max_epochs: int) -> None:
+        if not self.use_rainbow_prompt:
+            return
+        self.rainbow_prompt.set_epoch(epoch, max_epochs)
+
+    def rainbow_finalize_task(self, task_id: int) -> None:
+        if not self.use_rainbow_prompt:
+            return
+        self.rainbow_prompt.finalize_task(task_id)
+
+    def rainbow_load_task(self, task_id: int, device: torch.device) -> None:
+        if not self.use_rainbow_prompt:
+            return
+        self.rainbow_prompt.set_training(False)
+        self.rainbow_prompt.load_task(task_id, device=device)
+
+    def rainbow_set_task_embedding(self, embedding: Optional[torch.Tensor]) -> None:
+        if not self.use_rainbow_prompt:
+            return
+        if embedding is not None:
+            embedding = embedding.to(next(self.parameters()).device)
+        self.rainbow_prompt.update_task_embedding(embedding)
 
 
 def init_weights_vit_timm(module: nn.Module, name: str = ''):

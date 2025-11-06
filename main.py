@@ -16,6 +16,7 @@ import torch
 import torch.backends.cudnn as cudnn
 from torch import optim
 import logging
+import yaml
 
 from pathlib import Path
 
@@ -27,6 +28,173 @@ from datasets import build_continual_dataloader
 from engine import *
 import models
 import utils
+from attribute_matching import RainbowAttributeMatcher
+
+
+def parse_rainbow_args():
+    parser = argparse.ArgumentParser(description='RainbowPrompt configuration')
+    parser.add_argument('--config', required=True, help='Path to YAML configuration file')
+    parser.add_argument('--device', type=str, default=None)
+    parser.add_argument('--output_dir', type=str, default=None)
+    parser.add_argument('--resume', type=str, default=None)
+    parser.add_argument('--eval', action='store_true')
+    parser.add_argument('--seed', type=int, default=None)
+    parser.add_argument('--num_tasks', type=int, default=None)
+    parser.add_argument('--dataset', type=str, default=None)
+    parser.add_argument('--method', type=str, default=None)
+    parser.add_argument('--model', type=str, default=None)
+    parser.add_argument('--batch_size', type=int, default=None)
+    parser.add_argument('--epochs', type=int, default=None)
+    parser.add_argument('--print_freq', type=int, default=None)
+
+    known_args, unknown = parser.parse_known_args()
+    if unknown:
+        print(f"Warning: Unrecognized arguments ignored: {unknown}")
+
+    with open(known_args.config, 'r') as f:
+        config_dict = yaml.safe_load(f)
+
+    overrides = {k: v for k, v in vars(known_args).items() if k != 'config' and v is not None}
+    config_dict.update(overrides)
+
+    config_dict.setdefault('device', 'cuda')
+    config_dict.setdefault('pin_mem', True)
+    config_dict.setdefault('world_size', 1)
+    config_dict.setdefault('dist_url', 'env://')
+    config_dict.setdefault('method', 'rainbow')
+    config_dict.setdefault('freeze', ['blocks', 'patch_embed', 'cls_token', 'pos_embed'])
+
+    if 'rainbow' not in config_dict:
+        config_dict['rainbow'] = {}
+
+    namespace = argparse.Namespace(**config_dict)
+    namespace.config_path = known_args.config
+    return namespace
+
+
+def main_rainbow(args):
+    utils.init_distributed_mode(args)
+
+    device = torch.device(args.device)
+
+    seed = args.seed
+    if seed is not None:
+        torch.manual_seed(seed)
+        np.random.seed(seed)
+        random.seed(seed)
+
+    cudnn.benchmark = True
+
+    data_loader, class_mask = build_continual_dataloader(args)
+
+    print(f"Creating model: {args.model}")
+    model = create_model(
+        args.model,
+        pretrained=args.pretrained,
+        num_classes=args.nb_classes,
+        drop_rate=args.drop,
+        drop_path_rate=args.drop_path,
+        prompt_length=args.prompt_length,
+        use_rainbow_prompt=True,
+        rainbow_config=args.rainbow,
+        use_g_prompt=False,
+        use_e_prompt=False,
+        prompt_pool=False,
+        args=args,
+    )
+    model.to(device)
+
+    if getattr(args, 'freeze', None):
+        for name, param in model.named_parameters():
+            if any(name.startswith(prefix) for prefix in args.freeze):
+                if 'norm' in name:
+                    continue
+                param.requires_grad = False
+
+    matcher = RainbowAttributeMatcher(
+        num_tasks=args.num_tasks,
+        embed_dim=model.embed_dim,
+        hidden_dim=args.rainbow.get('align_hidden_dim', model.embed_dim),
+    )
+    matcher.to(device)
+
+    args.lambda_sparse = args.rainbow.get('lambda_sparse', 0.0)
+    args.lambda_match = args.rainbow.get('lambda_match', 0.0)
+
+    criterion = torch.nn.CrossEntropyLoss().to(device)
+
+    if args.eval:
+        if not getattr(args, 'resume', None):
+            raise ValueError('--resume checkpoint is required for evaluation mode')
+        checkpoint = torch.load(args.resume, map_location='cpu')
+        model.load_state_dict(checkpoint['model'])
+        if 'matcher' in checkpoint:
+            matcher.load_state_dict(checkpoint['matcher'])
+        model.to(device)
+        matcher.to(device)
+
+        acc_matrix = np.zeros((args.num_tasks, args.num_tasks))
+        trained_task = checkpoint.get('task_id', args.num_tasks - 1)
+        max_task = min(trained_task, args.num_tasks - 1)
+        evaluate_rainbow_till_now(
+            model=model,
+            matcher=matcher,
+            data_loader=data_loader,
+            device=device,
+            task_id=max_task,
+            class_mask=class_mask,
+            acc_matrix=acc_matrix,
+            args=args,
+        )
+        return
+
+    train_and_evaluate_rainbow(
+        model=model,
+        matcher=matcher,
+        criterion=criterion,
+        data_loader=data_loader,
+        device=device,
+        class_mask=class_mask,
+        args=args,
+    )
+
+
+def parse_legacy_args():
+    print("Started main")
+    parser = argparse.ArgumentParser('DualPrompt training and evaluation configs')
+    print("Parser created: ", parser)
+    
+    print("Getting config")
+    config = parser.parse_known_args()[-1][0]
+
+    subparser = parser.add_subparsers(dest='subparser_name')
+
+    if config == 'cifar100_convprompt':
+        from configs.cifar100_convprompt import get_args_parser
+        config_parser = subparser.add_parser('cifar100_convprompt', help='Split-CIFAR100 configs for ConvPrompt')
+    elif config == 'imr_convprompt':
+        from configs.imr_convprompt import get_args_parser
+        config_parser = subparser.add_parser('imr_convprompt', help='Split-ImageNet-R configs for ConvPrompt')
+    elif config == 'cub_convprompt':
+        from configs.cub_convprompt import get_args_parser
+        config_parser = subparser.add_parser('cub_convprompt', help='Split-CUB configs for ConvPrompt')
+    elif config == 'cifar100_slca':
+        from configs.cifar100_slca import get_args_parser
+        config_parser = subparser.add_parser('cifar100_slca', help='Split-CIFAR100 SLCA configs')
+    elif config == 'imr_slca':
+        from configs.imr_slca import get_args_parser
+        config_parser = subparser.add_parser('imr_slca', help='Split-ImageNet-R SLCA configs')
+    elif config == 'cub_slca':
+        from configs.cub_slca import get_args_parser
+        config_parser = subparser.add_parser('cub_slca', help='Split-CUB SLCA configs')
+    else:
+        raise NotImplementedError
+        
+    get_args_parser(config_parser)
+
+    print("Reached here")
+    args = parser.parse_args()
+    return args
 
 import warnings
 warnings.filterwarnings('ignore', 'Argument interpolation should be of type InterpolationMode instead of int')
@@ -34,6 +202,10 @@ warnings.filterwarnings('ignore', 'Argument interpolation should be of type Inte
 
 
 def main(args):
+    if getattr(args, 'method', None) == 'rainbow':
+        main_rainbow(args)
+        return
+
     utils.init_distributed_mode(args)
 
     device = torch.device(args.device)
@@ -164,45 +336,13 @@ def main(args):
     print(f"Total training time: {total_time_str}")
 
 if __name__ == '__main__':
-    print("Started main")
-    parser = argparse.ArgumentParser('DualPrompt training and evaluation configs')
-    print("Parser created: ", parser)
-    
-    print("Getting config")
-    config = parser.parse_known_args()[-1][0]
-
-    subparser = parser.add_subparsers(dest='subparser_name')
-
-    if config == 'cifar100_convprompt':
-        from configs.cifar100_convprompt import get_args_parser
-        config_parser = subparser.add_parser('cifar100_convprompt', help='Split-CIFAR100 configs for ConvPrompt')
-    elif config == 'imr_convprompt':
-        from configs.imr_convprompt import get_args_parser
-        config_parser = subparser.add_parser('imr_convprompt', help='Split-ImageNet-R configs for ConvPrompt')
-    elif config == 'cub_convprompt':
-        from configs.cub_convprompt import get_args_parser
-        config_parser = subparser.add_parser('cub_convprompt', help='Split-CUB configs for ConvPrompt')
-    elif config == 'cifar100_slca':
-        from configs.cifar100_slca import get_args_parser
-        config_parser = subparser.add_parser('cifar100_slca', help='Split-CIFAR100 SLCA configs')
-    elif config == 'imr_slca':
-        from configs.imr_slca import get_args_parser
-        config_parser = subparser.add_parser('imr_slca', help='Split-ImageNet-R SLCA configs')
-    elif config == 'cub_slca':
-        from configs.cub_slca import get_args_parser
-        config_parser = subparser.add_parser('cub_slca', help='Split-CUB SLCA configs')
+    if '--config' in sys.argv:
+        args = parse_rainbow_args()
     else:
-        raise NotImplementedError
-        
-    get_args_parser(config_parser)
+        args = parse_legacy_args()
 
-    print("Reached here")
-    args = parser.parse_args()
-    
-    if args.output_dir:
+    if getattr(args, 'output_dir', None):
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
-    
-    print("Reached here")
+
     main(args)
-    
     sys.exit(0)
