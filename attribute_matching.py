@@ -7,6 +7,7 @@ import pickle as pkl
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from typing import Optional
 
 from sentence_transformers import SentenceTransformer, util
 from transformers import RobertaTokenizer, RobertaModel
@@ -161,7 +162,7 @@ def num_new_prompts(class_mask, task_id, args=None):
 class RainbowAttributeMatcher(nn.Module):
     """Manage learnable task embeddings and matching loss for RainbowPrompt."""
 
-    def __init__(self, num_tasks: int, embed_dim: int, hidden_dim: int | None = None) -> None:
+    def __init__(self, num_tasks: int, embed_dim: int, hidden_dim: Optional[int] = None) -> None:
         super().__init__()
         self.task_embeddings = nn.Embedding(num_tasks, embed_dim)
         nn.init.normal_(self.task_embeddings.weight, mean=0.0, std=0.02)

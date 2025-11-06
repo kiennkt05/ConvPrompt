@@ -1,0 +1,723 @@
+Started main
+Parser created:  ArgumentParser(prog='DualPrompt training and evaluation configs', usage=None, description=None, formatter_class=<class 'argparse.HelpFormatter'>, conflict_handler='error', add_help=True)
+Getting config
+Reached here
+Reached here
+Not using distributed mode
+Train transforms:  Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.05, 1.0), ratio=(0.75, 1.3333), interpolation=bilinear, antialias=warn)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+)
+Test transforms:  Compose(
+    Resize(size=256, interpolation=bicubic, max_size=None, antialias=warn)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+)
+NB CLasses:  200
+Creating model: vit_base_patch16_224_in21k
+Using multihead:  True
+Num Tasks:  10 pool_size:  50 kernel_size:  17 top_k:  1
+Nb classes:  20
+Namespace(subparser_name='cub_convprompt', batch_size=64, epochs=60, model='vit_base_patch16_224_in21k', input_size=224, pretrained=True, drop=0.0, drop_path=0.0, use_transform=False, use_clip_grad=True, SLCA=False, logit_norm=0.1, ca_epochs=5, opt='adam', opt_eps=1e-08, clip_grad=1.0, momentum=0.9, weight_decay=0.0, reinit_optimizer=True, sched='cosine', lr=0.001, lr_orig=0.01, lr_cls=0.01, lr_rps=0.0001, lr_noise=None, lr_noise_pct=0.67, lr_noise_std=1.0, warmup_lr=1e-06, min_lr=1e-05, decay_epochs=30, warmup_epochs=5, cooldown_epochs=10, patience_epochs=10, decay_rate=0.1, unscale_lr=True, color_jitter=None, aa=None, smoothing=0.1, train_interpolation='bicubic', reprob=0.0, remode='pixel', recount=1, data_path='/local_datasets/', dataset='Split-CUB200', shuffle=False, output_dir='./output', device='cuda', seed=1996, eval=False, num_workers=4, pin_mem=True, world_size=1, dist_url='env://', num_tasks=10, train_mask=True, task_inc=False, num_prompts_per_task=5, variable_num_prompts=True, use_g_prompt=False, g_prompt_length=5, g_prompt_layer_idx=[], use_prefix_tune_for_g_prompt=True, use_e_prompt=True, e_prompt_layer_idx=[0, 1, 2, 3, 4, 5, 6], use_prefix_tune_for_e_prompt=True, kernel_size=17, prompt_pool=True, size=10, length=20, top_k=1, initializer='uniform', prompt_key=True, prompt_key_init='uniform', use_prompt_mask=True, mask_first_epoch=False, shared_prompt_pool=False, shared_prompt_key=False, batchwise_prompt=False, embedding_key='cls', predefined_key='', pull_constraint=True, pull_constraint_coeff=1.0, same_key_value=False, global_pool='token', head_type='token', freeze=['blocks', 'patch_embed', 'cls_token', 'pos_embed'], print_freq=10, distributed=False, nb_classes=200)
+number of params: 3353972
+Start training for 60 epochs
+Using adam optimizer
+Reinitialising optimizer
+Old Num K:  0 New Num K:  5
+Task number:  0
+Train: Epoch[ 1/60]  [ 0/10]  eta: 0:00:47  Lr: 0.000250  Loss: 2.9750  Acc@1: 6.2500 (6.2500)  Acc@5: 31.2500 (31.2500)  time: 4.7084  data: 0.7318  max mem: 6661
+Train: Epoch[ 1/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000250  Loss: 2.7089  Acc@1: 12.5000 (13.8333)  Acc@5: 45.3125 (44.5000)  time: 1.9830  data: 0.0734  max mem: 6674
+Train: Epoch[ 1/60] Total time: 0:00:19 (1.9879 s / it)
+Averaged stats: Lr: 0.000250  Loss: 2.7089  Acc@1: 12.5000 (13.8333)  Acc@5: 45.3125 (44.5000)
+Train: Epoch[ 2/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000250  Loss: 2.5463  Acc@1: 26.5625 (26.5625)  Acc@5: 70.3125 (70.3125)  time: 2.7168  data: 0.7375  max mem: 6674
+Train: Epoch[ 2/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000250  Loss: 1.8958  Acc@1: 42.1875 (41.5000)  Acc@5: 82.8125 (82.8333)  time: 1.7235  data: 0.0739  max mem: 6674
+Train: Epoch[ 2/60] Total time: 0:00:17 (1.7293 s / it)
+Averaged stats: Lr: 0.000250  Loss: 1.8958  Acc@1: 42.1875 (41.5000)  Acc@5: 82.8125 (82.8333)
+Train: Epoch[ 3/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000249  Loss: 1.9870  Acc@1: 53.1250 (53.1250)  Acc@5: 93.7500 (93.7500)  time: 2.6915  data: 0.6836  max mem: 6674
+Train: Epoch[ 3/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000249  Loss: 1.5036  Acc@1: 67.1875 (65.6667)  Acc@5: 95.3125 (95.1667)  time: 1.7389  data: 0.0685  max mem: 6674
+Train: Epoch[ 3/60] Total time: 0:00:17 (1.7452 s / it)
+Averaged stats: Lr: 0.000249  Loss: 1.5036  Acc@1: 67.1875 (65.6667)  Acc@5: 95.3125 (95.1667)
+Train: Epoch[ 4/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000248  Loss: 1.6188  Acc@1: 68.7500 (68.7500)  Acc@5: 96.8750 (96.8750)  time: 2.6011  data: 0.5962  max mem: 6674
+Train: Epoch[ 4/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000248  Loss: 1.2933  Acc@1: 75.0000 (75.5000)  Acc@5: 96.8750 (97.5000)  time: 1.7107  data: 0.0597  max mem: 6674
+Train: Epoch[ 4/60] Total time: 0:00:17 (1.7166 s / it)
+Averaged stats: Lr: 0.000248  Loss: 1.2933  Acc@1: 75.0000 (75.5000)  Acc@5: 96.8750 (97.5000)
+Train: Epoch[ 5/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000247  Loss: 1.0855  Acc@1: 89.0625 (89.0625)  Acc@5: 100.0000 (100.0000)  time: 2.6475  data: 0.7014  max mem: 6674
+Train: Epoch[ 5/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000247  Loss: 0.7686  Acc@1: 82.8125 (81.8333)  Acc@5: 96.8750 (97.1667)  time: 1.7190  data: 0.0703  max mem: 6674
+Train: Epoch[ 5/60] Total time: 0:00:17 (1.7250 s / it)
+Averaged stats: Lr: 0.000247  Loss: 0.7686  Acc@1: 82.8125 (81.8333)  Acc@5: 96.8750 (97.1667)
+Train: Epoch[ 6/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000246  Loss: 0.8529  Acc@1: 90.6250 (90.6250)  Acc@5: 98.4375 (98.4375)  time: 2.7070  data: 0.6537  max mem: 6674
+Train: Epoch[ 6/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000246  Loss: 0.7967  Acc@1: 84.3750 (85.5000)  Acc@5: 98.4375 (98.3333)  time: 1.7449  data: 0.0655  max mem: 6674
+Train: Epoch[ 6/60] Total time: 0:00:17 (1.7513 s / it)
+Averaged stats: Lr: 0.000246  Loss: 0.7967  Acc@1: 84.3750 (85.5000)  Acc@5: 98.4375 (98.3333)
+Train: Epoch[ 7/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000244  Loss: 0.8536  Acc@1: 81.2500 (81.2500)  Acc@5: 96.8750 (96.8750)  time: 2.6010  data: 0.6106  max mem: 6674
+Train: Epoch[ 7/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000244  Loss: 0.6072  Acc@1: 85.9375 (87.8333)  Acc@5: 96.8750 (98.0000)  time: 1.7172  data: 0.0612  max mem: 6674
+Train: Epoch[ 7/60] Total time: 0:00:17 (1.7231 s / it)
+Averaged stats: Lr: 0.000244  Loss: 0.6072  Acc@1: 85.9375 (87.8333)  Acc@5: 96.8750 (98.0000)
+Train: Epoch[ 8/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000242  Loss: 0.6685  Acc@1: 85.9375 (85.9375)  Acc@5: 96.8750 (96.8750)  time: 2.6726  data: 0.6614  max mem: 6674
+Train: Epoch[ 8/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000242  Loss: 0.3541  Acc@1: 89.0625 (88.1667)  Acc@5: 96.8750 (97.6667)  time: 1.7229  data: 0.0663  max mem: 6674
+Train: Epoch[ 8/60] Total time: 0:00:17 (1.7288 s / it)
+Averaged stats: Lr: 0.000242  Loss: 0.3541  Acc@1: 89.0625 (88.1667)  Acc@5: 96.8750 (97.6667)
+Train: Epoch[ 9/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000239  Loss: 0.5967  Acc@1: 84.3750 (84.3750)  Acc@5: 95.3125 (95.3125)  time: 2.8583  data: 0.7524  max mem: 6674
+Train: Epoch[ 9/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000239  Loss: 0.6638  Acc@1: 87.5000 (88.8333)  Acc@5: 98.4375 (98.3333)  time: 1.7438  data: 0.0754  max mem: 6674
+Train: Epoch[ 9/60] Total time: 0:00:17 (1.7501 s / it)
+Averaged stats: Lr: 0.000239  Loss: 0.6638  Acc@1: 87.5000 (88.8333)  Acc@5: 98.4375 (98.3333)
+Train: Epoch[10/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000236  Loss: 0.5269  Acc@1: 90.6250 (90.6250)  Acc@5: 98.4375 (98.4375)  time: 2.6854  data: 0.6500  max mem: 6674
+Train: Epoch[10/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000236  Loss: 0.5237  Acc@1: 89.0625 (89.3333)  Acc@5: 98.4375 (98.1667)  time: 1.7242  data: 0.0651  max mem: 6674
+Train: Epoch[10/60] Total time: 0:00:17 (1.7302 s / it)
+Averaged stats: Lr: 0.000236  Loss: 0.5237  Acc@1: 89.0625 (89.3333)  Acc@5: 98.4375 (98.1667)
+Train: Epoch[11/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000233  Loss: 0.6152  Acc@1: 87.5000 (87.5000)  Acc@5: 95.3125 (95.3125)  time: 2.6493  data: 0.7129  max mem: 6674
+Train: Epoch[11/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000233  Loss: 0.3515  Acc@1: 87.5000 (90.0000)  Acc@5: 98.4375 (98.6667)  time: 1.7390  data: 0.0714  max mem: 6674
+Train: Epoch[11/60] Total time: 0:00:17 (1.7451 s / it)
+Averaged stats: Lr: 0.000233  Loss: 0.3515  Acc@1: 87.5000 (90.0000)  Acc@5: 98.4375 (98.6667)
+Train: Epoch[12/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000230  Loss: 0.3136  Acc@1: 95.3125 (95.3125)  Acc@5: 98.4375 (98.4375)  time: 2.6184  data: 0.6252  max mem: 6674
+Train: Epoch[12/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000230  Loss: 0.4573  Acc@1: 91.6667 (91.8333)  Acc@5: 100.0000 (99.0000)  time: 1.7177  data: 0.0627  max mem: 6674
+Train: Epoch[12/60] Total time: 0:00:17 (1.7243 s / it)
+Averaged stats: Lr: 0.000230  Loss: 0.4573  Acc@1: 91.6667 (91.8333)  Acc@5: 100.0000 (99.0000)
+Train: Epoch[13/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000226  Loss: 0.5222  Acc@1: 85.9375 (85.9375)  Acc@5: 95.3125 (95.3125)  time: 2.5956  data: 0.6370  max mem: 6674
+Train: Epoch[13/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000226  Loss: 0.6980  Acc@1: 87.5000 (89.5000)  Acc@5: 98.4375 (98.1667)  time: 1.7147  data: 0.0638  max mem: 6674
+Train: Epoch[13/60] Total time: 0:00:17 (1.7209 s / it)
+Averaged stats: Lr: 0.000226  Loss: 0.6980  Acc@1: 87.5000 (89.5000)  Acc@5: 98.4375 (98.1667)
+Train: Epoch[14/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000222  Loss: 0.3880  Acc@1: 89.0625 (89.0625)  Acc@5: 98.4375 (98.4375)  time: 2.6345  data: 0.6481  max mem: 6674
+Train: Epoch[14/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000222  Loss: 0.4435  Acc@1: 92.1875 (92.6667)  Acc@5: 98.4375 (98.8333)  time: 1.7384  data: 0.0649  max mem: 6674
+Train: Epoch[14/60] Total time: 0:00:17 (1.7447 s / it)
+Averaged stats: Lr: 0.000222  Loss: 0.4435  Acc@1: 92.1875 (92.6667)  Acc@5: 98.4375 (98.8333)
+Train: Epoch[15/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000218  Loss: 0.3019  Acc@1: 93.7500 (93.7500)  Acc@5: 100.0000 (100.0000)  time: 2.7211  data: 0.7894  max mem: 6674
+Train: Epoch[15/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000218  Loss: 0.3411  Acc@1: 93.7500 (92.6667)  Acc@5: 98.4375 (98.6667)  time: 1.7300  data: 0.0791  max mem: 6674
+Train: Epoch[15/60] Total time: 0:00:17 (1.7360 s / it)
+Averaged stats: Lr: 0.000218  Loss: 0.3411  Acc@1: 93.7500 (92.6667)  Acc@5: 98.4375 (98.6667)
+Train: Epoch[16/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000213  Loss: 0.3794  Acc@1: 90.6250 (90.6250)  Acc@5: 98.4375 (98.4375)  time: 2.6090  data: 0.6178  max mem: 6674
+Train: Epoch[16/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000213  Loss: 0.1389  Acc@1: 95.3125 (94.3333)  Acc@5: 98.4375 (98.6667)  time: 1.7211  data: 0.0619  max mem: 6674
+Train: Epoch[16/60] Total time: 0:00:17 (1.7271 s / it)
+Averaged stats: Lr: 0.000213  Loss: 0.1389  Acc@1: 95.3125 (94.3333)  Acc@5: 98.4375 (98.6667)
+Train: Epoch[17/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000209  Loss: 0.1743  Acc@1: 96.8750 (96.8750)  Acc@5: 100.0000 (100.0000)  time: 2.6856  data: 0.6839  max mem: 6674
+Train: Epoch[17/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000209  Loss: 0.3560  Acc@1: 92.1875 (92.3333)  Acc@5: 98.4375 (98.0000)  time: 1.7416  data: 0.0685  max mem: 6674
+Train: Epoch[17/60] Total time: 0:00:17 (1.7478 s / it)
+Averaged stats: Lr: 0.000209  Loss: 0.3560  Acc@1: 92.1875 (92.3333)  Acc@5: 98.4375 (98.0000)
+Train: Epoch[18/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000204  Loss: 0.2742  Acc@1: 95.3125 (95.3125)  Acc@5: 100.0000 (100.0000)  time: 2.6122  data: 0.6635  max mem: 6674
+Train: Epoch[18/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000204  Loss: 0.3199  Acc@1: 92.1875 (93.1667)  Acc@5: 98.4375 (99.0000)  time: 1.7176  data: 0.0665  max mem: 6674
+Train: Epoch[18/60] Total time: 0:00:17 (1.7233 s / it)
+Averaged stats: Lr: 0.000204  Loss: 0.3199  Acc@1: 92.1875 (93.1667)  Acc@5: 98.4375 (99.0000)
+Train: Epoch[19/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000198  Loss: 0.3186  Acc@1: 93.7500 (93.7500)  Acc@5: 98.4375 (98.4375)  time: 2.6573  data: 0.7078  max mem: 6674
+Train: Epoch[19/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000198  Loss: 0.1231  Acc@1: 93.7500 (93.8333)  Acc@5: 98.4375 (99.0000)  time: 1.7232  data: 0.0709  max mem: 6674
+Train: Epoch[19/60] Total time: 0:00:17 (1.7292 s / it)
+Averaged stats: Lr: 0.000198  Loss: 0.1231  Acc@1: 93.7500 (93.8333)  Acc@5: 98.4375 (99.0000)
+Train: Epoch[20/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000193  Loss: 0.2412  Acc@1: 92.1875 (92.1875)  Acc@5: 100.0000 (100.0000)  time: 2.6881  data: 0.6926  max mem: 6674
+Train: Epoch[20/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000193  Loss: 0.4692  Acc@1: 93.7500 (94.1667)  Acc@5: 98.4375 (99.1667)  time: 1.7464  data: 0.0694  max mem: 6674
+Train: Epoch[20/60] Total time: 0:00:17 (1.7523 s / it)
+Averaged stats: Lr: 0.000193  Loss: 0.4692  Acc@1: 93.7500 (94.1667)  Acc@5: 98.4375 (99.1667)
+Train: Epoch[21/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000188  Loss: 0.3121  Acc@1: 92.1875 (92.1875)  Acc@5: 98.4375 (98.4375)  time: 2.6523  data: 0.7087  max mem: 6674
+Train: Epoch[21/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000188  Loss: 0.1336  Acc@1: 93.7500 (93.8333)  Acc@5: 100.0000 (99.1667)  time: 1.7229  data: 0.0710  max mem: 6674
+Train: Epoch[21/60] Total time: 0:00:17 (1.7289 s / it)
+Averaged stats: Lr: 0.000188  Loss: 0.1336  Acc@1: 93.7500 (93.8333)  Acc@5: 100.0000 (99.1667)
+Train: Epoch[22/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000182  Loss: 0.2524  Acc@1: 93.7500 (93.7500)  Acc@5: 98.4375 (98.4375)  time: 2.5837  data: 0.6278  max mem: 6674
+Train: Epoch[22/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000182  Loss: 0.1297  Acc@1: 93.7500 (94.5000)  Acc@5: 100.0000 (99.3333)  time: 1.7325  data: 0.0629  max mem: 6674
+Train: Epoch[22/60] Total time: 0:00:17 (1.7388 s / it)
+Averaged stats: Lr: 0.000182  Loss: 0.1297  Acc@1: 93.7500 (94.5000)  Acc@5: 100.0000 (99.3333)
+Train: Epoch[23/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000176  Loss: 0.1904  Acc@1: 98.4375 (98.4375)  Acc@5: 98.4375 (98.4375)  time: 2.6673  data: 0.7570  max mem: 6674
+Train: Epoch[23/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000176  Loss: 0.1237  Acc@1: 93.7500 (93.5000)  Acc@5: 100.0000 (98.6667)  time: 1.7278  data: 0.0758  max mem: 6674
+Train: Epoch[23/60] Total time: 0:00:17 (1.7338 s / it)
+Averaged stats: Lr: 0.000176  Loss: 0.1237  Acc@1: 93.7500 (93.5000)  Acc@5: 100.0000 (98.6667)
+Train: Epoch[24/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000170  Loss: 0.2447  Acc@1: 90.6250 (90.6250)  Acc@5: 100.0000 (100.0000)  time: 2.5954  data: 0.6830  max mem: 6674
+Train: Epoch[24/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000170  Loss: 0.4277  Acc@1: 90.6250 (93.0000)  Acc@5: 100.0000 (99.0000)  time: 1.7178  data: 0.0684  max mem: 6674
+Train: Epoch[24/60] Total time: 0:00:17 (1.7238 s / it)
+Averaged stats: Lr: 0.000170  Loss: 0.4277  Acc@1: 90.6250 (93.0000)  Acc@5: 100.0000 (99.0000)
+Train: Epoch[25/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000164  Loss: 0.3223  Acc@1: 90.6250 (90.6250)  Acc@5: 98.4375 (98.4375)  time: 2.7149  data: 0.6967  max mem: 6674
+Train: Epoch[25/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000164  Loss: 0.1822  Acc@1: 95.3125 (94.5000)  Acc@5: 98.4375 (98.6667)  time: 1.7461  data: 0.0698  max mem: 6674
+Train: Epoch[25/60] Total time: 0:00:17 (1.7530 s / it)
+Averaged stats: Lr: 0.000164  Loss: 0.1822  Acc@1: 95.3125 (94.5000)  Acc@5: 98.4375 (98.6667)
+Train: Epoch[26/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000157  Loss: 0.1638  Acc@1: 98.4375 (98.4375)  Acc@5: 100.0000 (100.0000)  time: 2.6333  data: 0.6318  max mem: 6674
+Train: Epoch[26/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000157  Loss: 0.3837  Acc@1: 95.3125 (95.8333)  Acc@5: 100.0000 (99.3333)  time: 1.7203  data: 0.0633  max mem: 6674
+Train: Epoch[26/60] Total time: 0:00:17 (1.7263 s / it)
+Averaged stats: Lr: 0.000157  Loss: 0.3837  Acc@1: 95.3125 (95.8333)  Acc@5: 100.0000 (99.3333)
+Train: Epoch[27/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000151  Loss: 0.1824  Acc@1: 96.8750 (96.8750)  Acc@5: 100.0000 (100.0000)  time: 2.6821  data: 0.6562  max mem: 6674
+Train: Epoch[27/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000151  Loss: 0.1847  Acc@1: 93.7500 (93.5000)  Acc@5: 98.4375 (98.5000)  time: 1.7337  data: 0.0657  max mem: 6674
+Train: Epoch[27/60] Total time: 0:00:17 (1.7394 s / it)
+Averaged stats: Lr: 0.000151  Loss: 0.1847  Acc@1: 93.7500 (93.5000)  Acc@5: 98.4375 (98.5000)
+Train: Epoch[28/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000145  Loss: 0.2933  Acc@1: 92.1875 (92.1875)  Acc@5: 100.0000 (100.0000)  time: 2.5689  data: 0.6387  max mem: 6674
+Train: Epoch[28/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000145  Loss: 0.1440  Acc@1: 93.7500 (94.6667)  Acc@5: 98.4375 (98.5000)  time: 1.7311  data: 0.0640  max mem: 6674
+Train: Epoch[28/60] Total time: 0:00:17 (1.7374 s / it)
+Averaged stats: Lr: 0.000145  Loss: 0.1440  Acc@1: 93.7500 (94.6667)  Acc@5: 98.4375 (98.5000)
+Train: Epoch[29/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000138  Loss: 0.2702  Acc@1: 93.7500 (93.7500)  Acc@5: 98.4375 (98.4375)  time: 2.6743  data: 0.7174  max mem: 6674
+Train: Epoch[29/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000138  Loss: 0.1369  Acc@1: 95.3125 (95.0000)  Acc@5: 98.4375 (99.1667)  time: 1.7286  data: 0.0718  max mem: 6674
+Train: Epoch[29/60] Total time: 0:00:17 (1.7345 s / it)
+Averaged stats: Lr: 0.000138  Loss: 0.1369  Acc@1: 95.3125 (95.0000)  Acc@5: 98.4375 (99.1667)
+Train: Epoch[30/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000132  Loss: 0.2011  Acc@1: 93.7500 (93.7500)  Acc@5: 98.4375 (98.4375)  time: 2.6242  data: 0.6374  max mem: 6674
+Train: Epoch[30/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000132  Loss: 0.0274  Acc@1: 93.7500 (92.8333)  Acc@5: 98.4375 (98.8333)  time: 1.7195  data: 0.0639  max mem: 6674
+Train: Epoch[30/60] Total time: 0:00:17 (1.7255 s / it)
+Averaged stats: Lr: 0.000132  Loss: 0.0274  Acc@1: 93.7500 (92.8333)  Acc@5: 98.4375 (98.8333)
+Train: Epoch[31/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000125  Loss: 0.1697  Acc@1: 96.8750 (96.8750)  Acc@5: 100.0000 (100.0000)  time: 2.6987  data: 0.7859  max mem: 6674
+Train: Epoch[31/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000125  Loss: 0.1341  Acc@1: 95.3125 (94.8333)  Acc@5: 100.0000 (99.5000)  time: 1.7462  data: 0.0787  max mem: 6674
+Train: Epoch[31/60] Total time: 0:00:17 (1.7526 s / it)
+Averaged stats: Lr: 0.000125  Loss: 0.1341  Acc@1: 95.3125 (94.8333)  Acc@5: 100.0000 (99.5000)
+Train: Epoch[32/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000118  Loss: 0.1265  Acc@1: 98.4375 (98.4375)  Acc@5: 98.4375 (98.4375)  time: 2.6248  data: 0.6488  max mem: 6674
+Train: Epoch[32/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000118  Loss: 0.2854  Acc@1: 95.3125 (95.1667)  Acc@5: 98.4375 (99.1667)  time: 1.7187  data: 0.0650  max mem: 6674
+Train: Epoch[32/60] Total time: 0:00:17 (1.7246 s / it)
+Averaged stats: Lr: 0.000118  Loss: 0.2854  Acc@1: 95.3125 (95.1667)  Acc@5: 98.4375 (99.1667)
+Train: Epoch[33/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000112  Loss: 0.2174  Acc@1: 95.3125 (95.3125)  Acc@5: 98.4375 (98.4375)  time: 2.6314  data: 0.6443  max mem: 6674
+Train: Epoch[33/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000112  Loss: 0.2669  Acc@1: 95.3125 (95.0000)  Acc@5: 98.4375 (98.6667)  time: 1.7183  data: 0.0646  max mem: 6674
+Train: Epoch[33/60] Total time: 0:00:17 (1.7241 s / it)
+Averaged stats: Lr: 0.000112  Loss: 0.2669  Acc@1: 95.3125 (95.0000)  Acc@5: 98.4375 (98.6667)
+Train: Epoch[34/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000105  Loss: 0.3069  Acc@1: 89.0625 (89.0625)  Acc@5: 98.4375 (98.4375)  time: 2.6570  data: 0.7498  max mem: 6674
+Train: Epoch[34/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000105  Loss: 0.3491  Acc@1: 95.3125 (94.5000)  Acc@5: 98.4375 (99.1667)  time: 1.7391  data: 0.0751  max mem: 6674
+Train: Epoch[34/60] Total time: 0:00:17 (1.7452 s / it)
+Averaged stats: Lr: 0.000105  Loss: 0.3491  Acc@1: 95.3125 (94.5000)  Acc@5: 98.4375 (99.1667)
+Train: Epoch[35/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000099  Loss: 0.0677  Acc@1: 100.0000 (100.0000)  Acc@5: 100.0000 (100.0000)  time: 2.6308  data: 0.6801  max mem: 6674
+Train: Epoch[35/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000099  Loss: 0.1157  Acc@1: 96.8750 (96.8333)  Acc@5: 100.0000 (99.6667)  time: 1.7237  data: 0.0681  max mem: 6674
+Train: Epoch[35/60] Total time: 0:00:17 (1.7298 s / it)
+Averaged stats: Lr: 0.000099  Loss: 0.1157  Acc@1: 96.8750 (96.8333)  Acc@5: 100.0000 (99.6667)
+Train: Epoch[36/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000093  Loss: 0.2130  Acc@1: 93.7500 (93.7500)  Acc@5: 98.4375 (98.4375)  time: 2.5940  data: 0.6348  max mem: 6674
+Train: Epoch[36/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000093  Loss: 0.0630  Acc@1: 93.7500 (94.6667)  Acc@5: 98.4375 (98.6667)  time: 1.7369  data: 0.0636  max mem: 6674
+Train: Epoch[36/60] Total time: 0:00:17 (1.7432 s / it)
+Averaged stats: Lr: 0.000093  Loss: 0.0630  Acc@1: 93.7500 (94.6667)  Acc@5: 98.4375 (98.6667)
+Train: Epoch[37/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000086  Loss: 0.2545  Acc@1: 93.7500 (93.7500)  Acc@5: 100.0000 (100.0000)  time: 2.7042  data: 0.6887  max mem: 6674
+Train: Epoch[37/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000086  Loss: 0.3565  Acc@1: 95.3125 (95.5000)  Acc@5: 100.0000 (99.6667)  time: 1.7286  data: 0.0690  max mem: 6674
+Train: Epoch[37/60] Total time: 0:00:17 (1.7346 s / it)
+Averaged stats: Lr: 0.000086  Loss: 0.3565  Acc@1: 95.3125 (95.5000)  Acc@5: 100.0000 (99.6667)
+Train: Epoch[38/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000080  Loss: 0.2018  Acc@1: 95.3125 (95.3125)  Acc@5: 100.0000 (100.0000)  time: 2.6772  data: 0.7297  max mem: 6674
+Train: Epoch[38/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000080  Loss: 0.2975  Acc@1: 95.3125 (95.0000)  Acc@5: 100.0000 (99.5000)  time: 1.7262  data: 0.0731  max mem: 6674
+Train: Epoch[38/60] Total time: 0:00:17 (1.7322 s / it)
+Averaged stats: Lr: 0.000080  Loss: 0.2975  Acc@1: 95.3125 (95.0000)  Acc@5: 100.0000 (99.5000)
+Train: Epoch[39/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000074  Loss: 0.2275  Acc@1: 96.8750 (96.8750)  Acc@5: 96.8750 (96.8750)  time: 2.6692  data: 0.7038  max mem: 6674
+Train: Epoch[39/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000074  Loss: 0.2853  Acc@1: 93.7500 (94.3333)  Acc@5: 98.4375 (98.6667)  time: 1.7398  data: 0.0705  max mem: 6674
+Train: Epoch[39/60] Total time: 0:00:17 (1.7460 s / it)
+Averaged stats: Lr: 0.000074  Loss: 0.2853  Acc@1: 93.7500 (94.3333)  Acc@5: 98.4375 (98.6667)
+Train: Epoch[40/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000068  Loss: 0.1257  Acc@1: 96.8750 (96.8750)  Acc@5: 100.0000 (100.0000)  time: 2.6114  data: 0.6354  max mem: 6674
+Train: Epoch[40/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000068  Loss: 0.2001  Acc@1: 95.3125 (94.6667)  Acc@5: 100.0000 (99.5000)  time: 1.7215  data: 0.0637  max mem: 6674
+Train: Epoch[40/60] Total time: 0:00:17 (1.7274 s / it)
+Averaged stats: Lr: 0.000068  Loss: 0.2001  Acc@1: 95.3125 (94.6667)  Acc@5: 100.0000 (99.5000)
+Train: Epoch[41/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000063  Loss: 0.2102  Acc@1: 95.3125 (95.3125)  Acc@5: 100.0000 (100.0000)  time: 2.7135  data: 0.6963  max mem: 6674
+Train: Epoch[41/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000063  Loss: 0.1635  Acc@1: 96.8750 (96.3333)  Acc@5: 100.0000 (99.6667)  time: 1.7292  data: 0.0698  max mem: 6674
+Train: Epoch[41/60] Total time: 0:00:17 (1.7351 s / it)
+Averaged stats: Lr: 0.000063  Loss: 0.1635  Acc@1: 96.8750 (96.3333)  Acc@5: 100.0000 (99.6667)
+Train: Epoch[42/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000057  Loss: 0.1878  Acc@1: 95.3125 (95.3125)  Acc@5: 98.4375 (98.4375)  time: 2.5864  data: 0.7433  max mem: 6674
+Train: Epoch[42/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000057  Loss: 0.1717  Acc@1: 95.3125 (96.0000)  Acc@5: 98.4375 (99.1667)  time: 1.7349  data: 0.0745  max mem: 6674
+Train: Epoch[42/60] Total time: 0:00:17 (1.7420 s / it)
+Averaged stats: Lr: 0.000057  Loss: 0.1717  Acc@1: 95.3125 (96.0000)  Acc@5: 98.4375 (99.1667)
+Train: Epoch[43/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000052  Loss: 0.2452  Acc@1: 95.3125 (95.3125)  Acc@5: 100.0000 (100.0000)  time: 2.6743  data: 0.7384  max mem: 6674
+Train: Epoch[43/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000052  Loss: 0.1670  Acc@1: 95.3125 (96.0000)  Acc@5: 100.0000 (99.6667)  time: 1.7225  data: 0.0740  max mem: 6674
+Train: Epoch[43/60] Total time: 0:00:17 (1.7286 s / it)
+Averaged stats: Lr: 0.000052  Loss: 0.1670  Acc@1: 95.3125 (96.0000)  Acc@5: 100.0000 (99.6667)
+Train: Epoch[44/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000046  Loss: 0.1507  Acc@1: 95.3125 (95.3125)  Acc@5: 100.0000 (100.0000)  time: 2.6280  data: 0.6220  max mem: 6674
+Train: Epoch[44/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000046  Loss: 0.0781  Acc@1: 95.3125 (95.5000)  Acc@5: 100.0000 (100.0000)  time: 1.7230  data: 0.0623  max mem: 6674
+Train: Epoch[44/60] Total time: 0:00:17 (1.7291 s / it)
+Averaged stats: Lr: 0.000046  Loss: 0.0781  Acc@1: 95.3125 (95.5000)  Acc@5: 100.0000 (100.0000)
+Train: Epoch[45/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000041  Loss: 0.1823  Acc@1: 95.3125 (95.3125)  Acc@5: 100.0000 (100.0000)  time: 2.7134  data: 0.6818  max mem: 6674
+Train: Epoch[45/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000041  Loss: 0.3431  Acc@1: 93.7500 (94.8333)  Acc@5: 100.0000 (99.1667)  time: 1.7458  data: 0.0683  max mem: 6674
+Train: Epoch[45/60] Total time: 0:00:17 (1.7522 s / it)
+Averaged stats: Lr: 0.000041  Loss: 0.3431  Acc@1: 93.7500 (94.8333)  Acc@5: 100.0000 (99.1667)
+Train: Epoch[46/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000037  Loss: 0.1873  Acc@1: 96.8750 (96.8750)  Acc@5: 98.4375 (98.4375)  time: 2.5703  data: 0.6077  max mem: 6674
+Train: Epoch[46/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000037  Loss: 0.1075  Acc@1: 96.8750 (96.5000)  Acc@5: 100.0000 (99.3333)  time: 1.7178  data: 0.0609  max mem: 6674
+Train: Epoch[46/60] Total time: 0:00:17 (1.7240 s / it)
+Averaged stats: Lr: 0.000037  Loss: 0.1075  Acc@1: 96.8750 (96.5000)  Acc@5: 100.0000 (99.3333)
+Train: Epoch[47/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000032  Loss: 0.1671  Acc@1: 95.3125 (95.3125)  Acc@5: 100.0000 (100.0000)  time: 2.6140  data: 0.6525  max mem: 6674
+Train: Epoch[47/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000032  Loss: 0.0246  Acc@1: 93.7500 (94.3333)  Acc@5: 100.0000 (99.3333)  time: 1.7211  data: 0.0654  max mem: 6674
+Train: Epoch[47/60] Total time: 0:00:17 (1.7270 s / it)
+Averaged stats: Lr: 0.000032  Loss: 0.0246  Acc@1: 93.7500 (94.3333)  Acc@5: 100.0000 (99.3333)
+Train: Epoch[48/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000028  Loss: 0.1426  Acc@1: 96.8750 (96.8750)  Acc@5: 100.0000 (100.0000)  time: 2.7044  data: 0.7855  max mem: 6674
+Train: Epoch[48/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000028  Loss: 0.1062  Acc@1: 95.3125 (95.5000)  Acc@5: 100.0000 (99.6667)  time: 1.7442  data: 0.0787  max mem: 6674
+Train: Epoch[48/60] Total time: 0:00:17 (1.7504 s / it)
+Averaged stats: Lr: 0.000028  Loss: 0.1062  Acc@1: 95.3125 (95.5000)  Acc@5: 100.0000 (99.6667)
+Train: Epoch[49/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000024  Loss: 0.2461  Acc@1: 95.3125 (95.3125)  Acc@5: 100.0000 (100.0000)  time: 2.6827  data: 0.6812  max mem: 6674
+Train: Epoch[49/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000024  Loss: 0.3388  Acc@1: 93.7500 (94.5000)  Acc@5: 100.0000 (99.5000)  time: 1.7266  data: 0.0682  max mem: 6674
+Train: Epoch[49/60] Total time: 0:00:17 (1.7326 s / it)
+Averaged stats: Lr: 0.000024  Loss: 0.3388  Acc@1: 93.7500 (94.5000)  Acc@5: 100.0000 (99.5000)
+Train: Epoch[50/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000020  Loss: 0.1556  Acc@1: 95.3125 (95.3125)  Acc@5: 98.4375 (98.4375)  time: 2.6769  data: 0.6664  max mem: 6674
+Train: Epoch[50/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000020  Loss: 0.0905  Acc@1: 95.3125 (96.0000)  Acc@5: 98.4375 (99.1667)  time: 1.7456  data: 0.0668  max mem: 6674
+Train: Epoch[50/60] Total time: 0:00:17 (1.7520 s / it)
+Averaged stats: Lr: 0.000020  Loss: 0.0905  Acc@1: 95.3125 (96.0000)  Acc@5: 98.4375 (99.1667)
+Train: Epoch[51/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000017  Loss: 0.2720  Acc@1: 90.6250 (90.6250)  Acc@5: 100.0000 (100.0000)  time: 2.7134  data: 0.7156  max mem: 6674
+Train: Epoch[51/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000017  Loss: 0.1459  Acc@1: 95.8333 (94.8333)  Acc@5: 98.4375 (98.8333)  time: 1.7299  data: 0.0717  max mem: 6674
+Train: Epoch[51/60] Total time: 0:00:17 (1.7358 s / it)
+Averaged stats: Lr: 0.000017  Loss: 0.1459  Acc@1: 95.8333 (94.8333)  Acc@5: 98.4375 (98.8333)
+Train: Epoch[52/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000014  Loss: 0.2399  Acc@1: 95.3125 (95.3125)  Acc@5: 98.4375 (98.4375)  time: 2.6772  data: 0.7110  max mem: 6674
+Train: Epoch[52/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000014  Loss: 0.0370  Acc@1: 95.3125 (95.5000)  Acc@5: 100.0000 (99.3333)  time: 1.7233  data: 0.0712  max mem: 6674
+Train: Epoch[52/60] Total time: 0:00:17 (1.7291 s / it)
+Averaged stats: Lr: 0.000014  Loss: 0.0370  Acc@1: 95.3125 (95.5000)  Acc@5: 100.0000 (99.3333)
+Train: Epoch[53/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000011  Loss: 0.1210  Acc@1: 98.4375 (98.4375)  Acc@5: 100.0000 (100.0000)  time: 2.6124  data: 0.6190  max mem: 6674
+Train: Epoch[53/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000011  Loss: 0.0717  Acc@1: 96.8750 (97.0000)  Acc@5: 100.0000 (99.3333)  time: 1.7349  data: 0.0620  max mem: 6674
+Train: Epoch[53/60] Total time: 0:00:17 (1.7412 s / it)
+Averaged stats: Lr: 0.000011  Loss: 0.0717  Acc@1: 96.8750 (97.0000)  Acc@5: 100.0000 (99.3333)
+Train: Epoch[54/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000008  Loss: 0.2626  Acc@1: 93.7500 (93.7500)  Acc@5: 98.4375 (98.4375)  time: 2.6276  data: 0.6394  max mem: 6674
+Train: Epoch[54/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000008  Loss: 0.2606  Acc@1: 93.7500 (94.3333)  Acc@5: 100.0000 (99.1667)  time: 1.7206  data: 0.0641  max mem: 6674
+Train: Epoch[54/60] Total time: 0:00:17 (1.7265 s / it)
+Averaged stats: Lr: 0.000008  Loss: 0.2606  Acc@1: 93.7500 (94.3333)  Acc@5: 100.0000 (99.1667)
+Train: Epoch[55/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000006  Loss: 0.1517  Acc@1: 93.7500 (93.7500)  Acc@5: 100.0000 (100.0000)  time: 2.6157  data: 0.6806  max mem: 6674
+Train: Epoch[55/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000006  Loss: 0.2217  Acc@1: 93.7500 (94.3333)  Acc@5: 100.0000 (99.5000)  time: 1.7263  data: 0.0682  max mem: 6674
+Train: Epoch[55/60] Total time: 0:00:17 (1.7321 s / it)
+Averaged stats: Lr: 0.000006  Loss: 0.2217  Acc@1: 93.7500 (94.3333)  Acc@5: 100.0000 (99.5000)
+Train: Epoch[56/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000004  Loss: 0.1321  Acc@1: 96.8750 (96.8750)  Acc@5: 100.0000 (100.0000)  time: 2.6535  data: 0.7005  max mem: 6674
+Train: Epoch[56/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000004  Loss: 0.2239  Acc@1: 95.3125 (94.5000)  Acc@5: 98.4375 (98.8333)  time: 1.7398  data: 0.0702  max mem: 6674
+Train: Epoch[56/60] Total time: 0:00:17 (1.7458 s / it)
+Averaged stats: Lr: 0.000004  Loss: 0.2239  Acc@1: 95.3125 (94.5000)  Acc@5: 98.4375 (98.8333)
+Train: Epoch[57/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000003  Loss: 0.2514  Acc@1: 95.3125 (95.3125)  Acc@5: 98.4375 (98.4375)  time: 2.6310  data: 0.7109  max mem: 6674
+Train: Epoch[57/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000003  Loss: 0.4824  Acc@1: 95.3125 (95.5000)  Acc@5: 100.0000 (99.3333)  time: 1.7182  data: 0.0712  max mem: 6674
+Train: Epoch[57/60] Total time: 0:00:17 (1.7242 s / it)
+Averaged stats: Lr: 0.000003  Loss: 0.4824  Acc@1: 95.3125 (95.5000)  Acc@5: 100.0000 (99.3333)
+Train: Epoch[58/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000002  Loss: 0.1270  Acc@1: 98.4375 (98.4375)  Acc@5: 98.4375 (98.4375)  time: 2.5893  data: 0.6368  max mem: 6674
+Train: Epoch[58/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000002  Loss: 0.2875  Acc@1: 93.7500 (94.8333)  Acc@5: 100.0000 (99.5000)  time: 1.7213  data: 0.0638  max mem: 6674
+Train: Epoch[58/60] Total time: 0:00:17 (1.7274 s / it)
+Averaged stats: Lr: 0.000002  Loss: 0.2875  Acc@1: 93.7500 (94.8333)  Acc@5: 100.0000 (99.5000)
+Train: Epoch[59/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000001  Loss: 0.2234  Acc@1: 96.8750 (96.8750)  Acc@5: 100.0000 (100.0000)  time: 2.5703  data: 0.6503  max mem: 6674
+Train: Epoch[59/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000001  Loss: 0.6294  Acc@1: 95.3125 (95.5000)  Acc@5: 100.0000 (99.5000)  time: 1.7293  data: 0.0651  max mem: 6674
+Train: Epoch[59/60] Total time: 0:00:17 (1.7356 s / it)
+Averaged stats: Lr: 0.000001  Loss: 0.6294  Acc@1: 95.3125 (95.5000)  Acc@5: 100.0000 (99.5000)
+Train: Epoch[60/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000000  Loss: 0.2337  Acc@1: 96.8750 (96.8750)  Acc@5: 100.0000 (100.0000)  time: 2.6612  data: 0.6274  max mem: 6674
+Train: Epoch[60/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000000  Loss: 0.2849  Acc@1: 96.8750 (96.6667)  Acc@5: 100.0000 (99.6667)  time: 1.7242  data: 0.0629  max mem: 6674
+Train: Epoch[60/60] Total time: 0:00:17 (1.7299 s / it)
+Averaged stats: Lr: 0.000000  Loss: 0.2849  Acc@1: 96.8750 (96.6667)  Acc@5: 100.0000 (99.6667)
+Test: [Task 1]  [0/9]  eta: 0:00:13  Loss: 0.2193 (0.2193)  Acc@1: 92.1875 (92.1875)  Acc@5: 100.0000 (100.0000)  time: 1.4449  data: 0.8148  max mem: 6674
+Test: [Task 1]  [8/9]  eta: 0:00:00  Loss: 0.0714 (0.1170)  Acc@1: 98.4375 (96.1165)  Acc@5: 100.0000 (100.0000)  time: 0.6087  data: 0.0907  max mem: 6674
+Test: [Task 1] Total time: 0:00:05 (0.6152 s / it)
+* Acc@1 96.117 Acc@5 100.000 loss 0.117
+Batchwise eval time for task 1 = 0.6152950922648112
+[Average accuracy till task1]	Acc@1: 96.1165	Acc@5: 100.0000	Loss: 0.1170
+Eval time for task 1 = 5.570279598236084
+Using adam optimizer
+Reinitialising optimizer
+/kaggle/working/venv/lib/python3.9/site-packages/huggingface_hub/file_download.py:942: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/kaggle/working/venv/lib/python3.9/site-packages/torch/_utils.py:776: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  return self.fget.__get__(instance, owner)()
+Similarity:  tensor(0.9186)  Task:  1
+Old Num K:  5 New Num K:  6
+Task number:  1
+Train: Epoch[ 1/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000250  Loss: 3.0878  Acc@1: 0.0000 (0.0000)  Acc@5: 3.1250 (3.1250)  time: 2.7212  data: 0.7119  max mem: 6729
+Train: Epoch[ 1/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000250  Loss: 3.1474  Acc@1: 0.0000 (0.3333)  Acc@5: 7.8125 (10.6667)  time: 1.6489  data: 0.0713  max mem: 6739
+Train: Epoch[ 1/60] Total time: 0:00:16 (1.6562 s / it)
+Averaged stats: Lr: 0.000250  Loss: 3.1474  Acc@1: 0.0000 (0.3333)  Acc@5: 7.8125 (10.6667)
+Train: Epoch[ 2/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000250  Loss: 2.7747  Acc@1: 0.0000 (0.0000)  Acc@5: 31.2500 (31.2500)  time: 2.6119  data: 0.7693  max mem: 6740
+Train: Epoch[ 2/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000250  Loss: 2.2504  Acc@1: 3.1250 (4.8333)  Acc@5: 46.8750 (45.6667)  time: 1.6431  data: 0.0771  max mem: 6740
+Train: Epoch[ 2/60] Total time: 0:00:16 (1.6506 s / it)
+Averaged stats: Lr: 0.000250  Loss: 2.2504  Acc@1: 3.1250 (4.8333)  Acc@5: 46.8750 (45.6667)
+Train: Epoch[ 3/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000249  Loss: 2.1986  Acc@1: 20.3125 (20.3125)  Acc@5: 70.3125 (70.3125)  time: 2.5911  data: 0.7385  max mem: 6740
+Train: Epoch[ 3/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000249  Loss: 1.9167  Acc@1: 18.7500 (19.5000)  Acc@5: 70.3125 (71.3333)  time: 1.6376  data: 0.0740  max mem: 6740
+Train: Epoch[ 3/60] Total time: 0:00:16 (1.6450 s / it)
+Averaged stats: Lr: 0.000249  Loss: 1.9167  Acc@1: 18.7500 (19.5000)  Acc@5: 70.3125 (71.3333)
+Train: Epoch[ 4/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000248  Loss: 1.8037  Acc@1: 21.8750 (21.8750)  Acc@5: 79.6875 (79.6875)  time: 2.6170  data: 0.7265  max mem: 6740
+Train: Epoch[ 4/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000248  Loss: 1.4009  Acc@1: 25.0000 (28.0000)  Acc@5: 79.6875 (80.1667)  time: 1.6439  data: 0.0728  max mem: 6740
+Train: Epoch[ 4/60] Total time: 0:00:16 (1.6513 s / it)
+Averaged stats: Lr: 0.000248  Loss: 1.4009  Acc@1: 25.0000 (28.0000)  Acc@5: 79.6875 (80.1667)
+Train: Epoch[ 5/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000247  Loss: 1.5294  Acc@1: 31.2500 (31.2500)  Acc@5: 85.9375 (85.9375)  time: 2.5943  data: 0.7538  max mem: 6740
+Train: Epoch[ 5/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000247  Loss: 1.4324  Acc@1: 29.6875 (32.8333)  Acc@5: 87.5000 (87.1667)  time: 1.6407  data: 0.0755  max mem: 6740
+Train: Epoch[ 5/60] Total time: 0:00:16 (1.6483 s / it)
+Averaged stats: Lr: 0.000247  Loss: 1.4324  Acc@1: 29.6875 (32.8333)  Acc@5: 87.5000 (87.1667)
+Train: Epoch[ 6/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000246  Loss: 1.3744  Acc@1: 28.1250 (28.1250)  Acc@5: 85.9375 (85.9375)  time: 2.6239  data: 0.7901  max mem: 6740
+Train: Epoch[ 6/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000246  Loss: 1.3276  Acc@1: 37.5000 (39.0000)  Acc@5: 89.0625 (89.1667)  time: 1.6413  data: 0.0791  max mem: 6740
+Train: Epoch[ 6/60] Total time: 0:00:16 (1.6487 s / it)
+Averaged stats: Lr: 0.000246  Loss: 1.3276  Acc@1: 37.5000 (39.0000)  Acc@5: 89.0625 (89.1667)
+Train: Epoch[ 7/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000244  Loss: 1.3558  Acc@1: 37.5000 (37.5000)  Acc@5: 76.5625 (76.5625)  time: 2.5640  data: 0.6696  max mem: 6740
+Train: Epoch[ 7/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000244  Loss: 1.1284  Acc@1: 46.8750 (46.0000)  Acc@5: 90.6250 (89.0000)  time: 1.6401  data: 0.0671  max mem: 6740
+Train: Epoch[ 7/60] Total time: 0:00:16 (1.6475 s / it)
+Averaged stats: Lr: 0.000244  Loss: 1.1284  Acc@1: 46.8750 (46.0000)  Acc@5: 90.6250 (89.0000)
+Train: Epoch[ 8/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000242  Loss: 1.0430  Acc@1: 51.5625 (51.5625)  Acc@5: 92.1875 (92.1875)  time: 2.6469  data: 0.8275  max mem: 6740
+Train: Epoch[ 8/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000242  Loss: 1.1707  Acc@1: 51.5625 (52.5000)  Acc@5: 92.1875 (92.6667)  time: 1.6486  data: 0.0829  max mem: 6740
+Train: Epoch[ 8/60] Total time: 0:00:16 (1.6558 s / it)
+Averaged stats: Lr: 0.000242  Loss: 1.1707  Acc@1: 51.5625 (52.5000)  Acc@5: 92.1875 (92.6667)
+Train: Epoch[ 9/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000239  Loss: 0.9151  Acc@1: 50.0000 (50.0000)  Acc@5: 95.3125 (95.3125)  time: 2.8916  data: 0.8415  max mem: 6740
+Train: Epoch[ 9/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000239  Loss: 1.0077  Acc@1: 54.6875 (56.3333)  Acc@5: 93.7500 (92.5000)  time: 1.6688  data: 0.0843  max mem: 6740
+Train: Epoch[ 9/60] Total time: 0:00:16 (1.6765 s / it)
+Averaged stats: Lr: 0.000239  Loss: 1.0077  Acc@1: 54.6875 (56.3333)  Acc@5: 93.7500 (92.5000)
+Train: Epoch[10/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000236  Loss: 0.8931  Acc@1: 59.3750 (59.3750)  Acc@5: 95.3125 (95.3125)  time: 2.5883  data: 0.6848  max mem: 6740
+Train: Epoch[10/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000236  Loss: 0.8381  Acc@1: 59.3750 (60.8333)  Acc@5: 93.7500 (93.6667)  time: 1.6415  data: 0.0686  max mem: 6740
+Train: Epoch[10/60] Total time: 0:00:16 (1.6488 s / it)
+Averaged stats: Lr: 0.000236  Loss: 0.8381  Acc@1: 59.3750 (60.8333)  Acc@5: 93.7500 (93.6667)
+Train: Epoch[11/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000233  Loss: 0.9357  Acc@1: 54.6875 (54.6875)  Acc@5: 96.8750 (96.8750)  time: 2.6240  data: 0.7181  max mem: 6740
+Train: Epoch[11/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000233  Loss: 1.1301  Acc@1: 59.3750 (61.8333)  Acc@5: 93.7500 (94.0000)  time: 1.6456  data: 0.0719  max mem: 6740
+Train: Epoch[11/60] Total time: 0:00:16 (1.6530 s / it)
+Averaged stats: Lr: 0.000233  Loss: 1.1301  Acc@1: 59.3750 (61.8333)  Acc@5: 93.7500 (94.0000)
+Train: Epoch[12/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000230  Loss: 0.8068  Acc@1: 56.2500 (56.2500)  Acc@5: 93.7500 (93.7500)  time: 2.6423  data: 0.7524  max mem: 6740
+Train: Epoch[12/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000230  Loss: 0.9121  Acc@1: 64.0625 (63.0000)  Acc@5: 93.7500 (95.0000)  time: 1.6453  data: 0.0754  max mem: 6740
+Train: Epoch[12/60] Total time: 0:00:16 (1.6526 s / it)
+Averaged stats: Lr: 0.000230  Loss: 0.9121  Acc@1: 64.0625 (63.0000)  Acc@5: 93.7500 (95.0000)
+Train: Epoch[13/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000226  Loss: 0.8321  Acc@1: 59.3750 (59.3750)  Acc@5: 95.3125 (95.3125)  time: 2.6351  data: 0.8096  max mem: 6740
+Train: Epoch[13/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000226  Loss: 0.8647  Acc@1: 64.0625 (64.6667)  Acc@5: 95.3125 (96.0000)  time: 1.6457  data: 0.0811  max mem: 6740
+Train: Epoch[13/60] Total time: 0:00:16 (1.6531 s / it)
+Averaged stats: Lr: 0.000226  Loss: 0.8647  Acc@1: 64.0625 (64.6667)  Acc@5: 95.3125 (96.0000)
+Train: Epoch[14/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000222  Loss: 0.7227  Acc@1: 71.8750 (71.8750)  Acc@5: 96.8750 (96.8750)  time: 2.6023  data: 0.7676  max mem: 6740
+Train: Epoch[14/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000222  Loss: 0.8472  Acc@1: 70.3125 (69.3333)  Acc@5: 93.7500 (94.6667)  time: 1.6417  data: 0.0769  max mem: 6740
+Train: Epoch[14/60] Total time: 0:00:16 (1.6489 s / it)
+Averaged stats: Lr: 0.000222  Loss: 0.8472  Acc@1: 70.3125 (69.3333)  Acc@5: 93.7500 (94.6667)
+Train: Epoch[15/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000218  Loss: 0.9477  Acc@1: 60.9375 (60.9375)  Acc@5: 89.0625 (89.0625)  time: 2.6668  data: 0.8004  max mem: 6740
+Train: Epoch[15/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000218  Loss: 0.4870  Acc@1: 65.6250 (69.0000)  Acc@5: 95.3125 (95.1667)  time: 1.6480  data: 0.0802  max mem: 6740
+Train: Epoch[15/60] Total time: 0:00:16 (1.6556 s / it)
+Averaged stats: Lr: 0.000218  Loss: 0.4870  Acc@1: 65.6250 (69.0000)  Acc@5: 95.3125 (95.1667)
+Train: Epoch[16/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000213  Loss: 0.6622  Acc@1: 79.6875 (79.6875)  Acc@5: 96.8750 (96.8750)  time: 2.7251  data: 0.8414  max mem: 6740
+Train: Epoch[16/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000213  Loss: 0.7270  Acc@1: 71.8750 (71.3333)  Acc@5: 96.8750 (95.8333)  time: 1.6543  data: 0.0843  max mem: 6740
+Train: Epoch[16/60] Total time: 0:00:16 (1.6616 s / it)
+Averaged stats: Lr: 0.000213  Loss: 0.7270  Acc@1: 71.8750 (71.3333)  Acc@5: 96.8750 (95.8333)
+Train: Epoch[17/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000209  Loss: 0.6634  Acc@1: 71.8750 (71.8750)  Acc@5: 96.8750 (96.8750)  time: 2.6431  data: 0.7306  max mem: 6740
+Train: Epoch[17/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000209  Loss: 0.7926  Acc@1: 71.8750 (74.3333)  Acc@5: 95.8333 (95.0000)  time: 1.6502  data: 0.0732  max mem: 6740
+Train: Epoch[17/60] Total time: 0:00:16 (1.6576 s / it)
+Averaged stats: Lr: 0.000209  Loss: 0.7926  Acc@1: 71.8750 (74.3333)  Acc@5: 95.8333 (95.0000)
+Train: Epoch[18/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000204  Loss: 0.7538  Acc@1: 75.0000 (75.0000)  Acc@5: 95.3125 (95.3125)  time: 2.5607  data: 0.6918  max mem: 6740
+Train: Epoch[18/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000204  Loss: 0.6961  Acc@1: 73.4375 (73.1667)  Acc@5: 95.3125 (95.6667)  time: 1.6388  data: 0.0693  max mem: 6740
+Train: Epoch[18/60] Total time: 0:00:16 (1.6461 s / it)
+Averaged stats: Lr: 0.000204  Loss: 0.6961  Acc@1: 73.4375 (73.1667)  Acc@5: 95.3125 (95.6667)
+Train: Epoch[19/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000198  Loss: 0.5502  Acc@1: 76.5625 (76.5625)  Acc@5: 100.0000 (100.0000)  time: 2.7507  data: 0.8827  max mem: 6740
+Train: Epoch[19/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000198  Loss: 0.6158  Acc@1: 76.5625 (75.3333)  Acc@5: 96.8750 (97.3333)  time: 1.6594  data: 0.0884  max mem: 6740
+Train: Epoch[19/60] Total time: 0:00:16 (1.6668 s / it)
+Averaged stats: Lr: 0.000198  Loss: 0.6158  Acc@1: 76.5625 (75.3333)  Acc@5: 96.8750 (97.3333)
+Train: Epoch[20/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000193  Loss: 0.6682  Acc@1: 78.1250 (78.1250)  Acc@5: 95.3125 (95.3125)  time: 2.6222  data: 0.6806  max mem: 6740
+Train: Epoch[20/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000193  Loss: 0.7786  Acc@1: 76.5625 (74.8333)  Acc@5: 95.8333 (96.5000)  time: 1.6657  data: 0.0682  max mem: 6740
+Train: Epoch[20/60] Total time: 0:00:16 (1.6738 s / it)
+Averaged stats: Lr: 0.000193  Loss: 0.7786  Acc@1: 76.5625 (74.8333)  Acc@5: 95.8333 (96.5000)
+Train: Epoch[21/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000188  Loss: 0.5926  Acc@1: 84.3750 (84.3750)  Acc@5: 98.4375 (98.4375)  time: 2.6171  data: 0.7013  max mem: 6740
+Train: Epoch[21/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000188  Loss: 0.8084  Acc@1: 71.8750 (73.8333)  Acc@5: 95.3125 (96.3333)  time: 1.6425  data: 0.0703  max mem: 6740
+Train: Epoch[21/60] Total time: 0:00:16 (1.6500 s / it)
+Averaged stats: Lr: 0.000188  Loss: 0.8084  Acc@1: 71.8750 (73.8333)  Acc@5: 95.3125 (96.3333)
+Train: Epoch[22/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000182  Loss: 0.5931  Acc@1: 78.1250 (78.1250)  Acc@5: 98.4375 (98.4375)  time: 2.5847  data: 0.6982  max mem: 6740
+Train: Epoch[22/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000182  Loss: 0.4940  Acc@1: 78.1250 (78.1667)  Acc@5: 96.8750 (96.6667)  time: 1.6435  data: 0.0700  max mem: 6740
+Train: Epoch[22/60] Total time: 0:00:16 (1.6510 s / it)
+Averaged stats: Lr: 0.000182  Loss: 0.4940  Acc@1: 78.1250 (78.1667)  Acc@5: 96.8750 (96.6667)
+Train: Epoch[23/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000176  Loss: 0.6163  Acc@1: 82.8125 (82.8125)  Acc@5: 95.3125 (95.3125)  time: 2.6552  data: 0.7860  max mem: 6740
+Train: Epoch[23/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000176  Loss: 0.6949  Acc@1: 76.5625 (78.0000)  Acc@5: 96.8750 (97.1667)  time: 1.6492  data: 0.0787  max mem: 6740
+Train: Epoch[23/60] Total time: 0:00:16 (1.6567 s / it)
+Averaged stats: Lr: 0.000176  Loss: 0.6949  Acc@1: 76.5625 (78.0000)  Acc@5: 96.8750 (97.1667)
+Train: Epoch[24/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000170  Loss: 0.5541  Acc@1: 79.6875 (79.6875)  Acc@5: 96.8750 (96.8750)  time: 2.7203  data: 0.8077  max mem: 6740
+Train: Epoch[24/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000170  Loss: 0.4566  Acc@1: 79.6875 (77.3333)  Acc@5: 96.8750 (96.3333)  time: 1.6554  data: 0.0809  max mem: 6740
+Train: Epoch[24/60] Total time: 0:00:16 (1.6627 s / it)
+Averaged stats: Lr: 0.000170  Loss: 0.4566  Acc@1: 79.6875 (77.3333)  Acc@5: 96.8750 (96.3333)
+Train: Epoch[25/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000164  Loss: 0.5524  Acc@1: 76.5625 (76.5625)  Acc@5: 98.4375 (98.4375)  time: 2.6259  data: 0.7896  max mem: 6740
+Train: Epoch[25/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000164  Loss: 0.6130  Acc@1: 75.0000 (75.3333)  Acc@5: 95.8333 (96.6667)  time: 1.6435  data: 0.0791  max mem: 6740
+Train: Epoch[25/60] Total time: 0:00:16 (1.6512 s / it)
+Averaged stats: Lr: 0.000164  Loss: 0.6130  Acc@1: 75.0000 (75.3333)  Acc@5: 95.8333 (96.6667)
+Train: Epoch[26/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000157  Loss: 0.6214  Acc@1: 73.4375 (73.4375)  Acc@5: 98.4375 (98.4375)  time: 2.5861  data: 0.6680  max mem: 6740
+Train: Epoch[26/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000157  Loss: 0.4835  Acc@1: 76.5625 (76.1667)  Acc@5: 95.8333 (96.5000)  time: 1.6404  data: 0.0669  max mem: 6740
+Train: Epoch[26/60] Total time: 0:00:16 (1.6480 s / it)
+Averaged stats: Lr: 0.000157  Loss: 0.4835  Acc@1: 76.5625 (76.1667)  Acc@5: 95.8333 (96.5000)
+Train: Epoch[27/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000151  Loss: 0.5319  Acc@1: 76.5625 (76.5625)  Acc@5: 98.4375 (98.4375)  time: 2.6026  data: 0.7116  max mem: 6740
+Train: Epoch[27/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000151  Loss: 0.5863  Acc@1: 78.1250 (78.3333)  Acc@5: 96.8750 (97.1667)  time: 1.6455  data: 0.0713  max mem: 6740
+Train: Epoch[27/60] Total time: 0:00:16 (1.6531 s / it)
+Averaged stats: Lr: 0.000151  Loss: 0.5863  Acc@1: 78.1250 (78.3333)  Acc@5: 96.8750 (97.1667)
+Train: Epoch[28/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000145  Loss: 0.3959  Acc@1: 85.9375 (85.9375)  Acc@5: 98.4375 (98.4375)  time: 2.5966  data: 0.7673  max mem: 6740
+Train: Epoch[28/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000145  Loss: 0.6552  Acc@1: 76.5625 (78.3333)  Acc@5: 96.8750 (96.6667)  time: 1.6420  data: 0.0768  max mem: 6740
+Train: Epoch[28/60] Total time: 0:00:16 (1.6495 s / it)
+Averaged stats: Lr: 0.000145  Loss: 0.6552  Acc@1: 76.5625 (78.3333)  Acc@5: 96.8750 (96.6667)
+Train: Epoch[29/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000138  Loss: 0.5152  Acc@1: 71.8750 (71.8750)  Acc@5: 98.4375 (98.4375)  time: 2.6076  data: 0.7297  max mem: 6740
+Train: Epoch[29/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000138  Loss: 0.4776  Acc@1: 78.1250 (78.5000)  Acc@5: 96.8750 (96.6667)  time: 1.6406  data: 0.0731  max mem: 6740
+Train: Epoch[29/60] Total time: 0:00:16 (1.6480 s / it)
+Averaged stats: Lr: 0.000138  Loss: 0.4776  Acc@1: 78.1250 (78.5000)  Acc@5: 96.8750 (96.6667)
+Train: Epoch[30/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000132  Loss: 0.5500  Acc@1: 79.6875 (79.6875)  Acc@5: 96.8750 (96.8750)  time: 2.6809  data: 0.7981  max mem: 6740
+Train: Epoch[30/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000132  Loss: 0.4050  Acc@1: 79.6875 (80.8333)  Acc@5: 96.8750 (96.8333)  time: 1.6484  data: 0.0799  max mem: 6740
+Train: Epoch[30/60] Total time: 0:00:16 (1.6558 s / it)
+Averaged stats: Lr: 0.000132  Loss: 0.4050  Acc@1: 79.6875 (80.8333)  Acc@5: 96.8750 (96.8333)
+Train: Epoch[31/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000125  Loss: 0.5159  Acc@1: 78.1250 (78.1250)  Acc@5: 96.8750 (96.8750)  time: 2.6230  data: 0.8392  max mem: 6740
+Train: Epoch[31/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000125  Loss: 0.3927  Acc@1: 81.2500 (81.8333)  Acc@5: 96.8750 (97.1667)  time: 1.6445  data: 0.0840  max mem: 6740
+Train: Epoch[31/60] Total time: 0:00:16 (1.6518 s / it)
+Averaged stats: Lr: 0.000125  Loss: 0.3927  Acc@1: 81.2500 (81.8333)  Acc@5: 96.8750 (97.1667)
+Train: Epoch[32/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000118  Loss: 0.5525  Acc@1: 79.6875 (79.6875)  Acc@5: 96.8750 (96.8750)  time: 2.6056  data: 0.7567  max mem: 6740
+Train: Epoch[32/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000118  Loss: 0.3470  Acc@1: 81.2500 (80.6667)  Acc@5: 96.8750 (97.0000)  time: 1.6617  data: 0.0758  max mem: 6740
+Train: Epoch[32/60] Total time: 0:00:16 (1.6696 s / it)
+Averaged stats: Lr: 0.000118  Loss: 0.3470  Acc@1: 81.2500 (80.6667)  Acc@5: 96.8750 (97.0000)
+Train: Epoch[33/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000112  Loss: 0.4249  Acc@1: 87.5000 (87.5000)  Acc@5: 98.4375 (98.4375)  time: 2.6477  data: 0.8310  max mem: 6740
+Train: Epoch[33/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000112  Loss: 0.3353  Acc@1: 84.3750 (85.1667)  Acc@5: 100.0000 (98.3333)  time: 1.6465  data: 0.0832  max mem: 6740
+Train: Epoch[33/60] Total time: 0:00:16 (1.6539 s / it)
+Averaged stats: Lr: 0.000112  Loss: 0.3353  Acc@1: 84.3750 (85.1667)  Acc@5: 100.0000 (98.3333)
+Train: Epoch[34/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000105  Loss: 0.5812  Acc@1: 76.5625 (76.5625)  Acc@5: 96.8750 (96.8750)  time: 2.6473  data: 0.7239  max mem: 6740
+Train: Epoch[34/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000105  Loss: 0.4759  Acc@1: 79.6875 (80.6667)  Acc@5: 96.8750 (97.3333)  time: 1.6455  data: 0.0725  max mem: 6740
+Train: Epoch[34/60] Total time: 0:00:16 (1.6532 s / it)
+Averaged stats: Lr: 0.000105  Loss: 0.4759  Acc@1: 79.6875 (80.6667)  Acc@5: 96.8750 (97.3333)
+Train: Epoch[35/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000099  Loss: 0.5697  Acc@1: 76.5625 (76.5625)  Acc@5: 93.7500 (93.7500)  time: 2.6534  data: 0.7838  max mem: 6740
+Train: Epoch[35/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000099  Loss: 0.4990  Acc@1: 76.5625 (79.1667)  Acc@5: 96.8750 (97.0000)  time: 1.6467  data: 0.0785  max mem: 6740
+Train: Epoch[35/60] Total time: 0:00:16 (1.6542 s / it)
+Averaged stats: Lr: 0.000099  Loss: 0.4990  Acc@1: 76.5625 (79.1667)  Acc@5: 96.8750 (97.0000)
+Train: Epoch[36/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000093  Loss: 0.3576  Acc@1: 84.3750 (84.3750)  Acc@5: 100.0000 (100.0000)  time: 2.6468  data: 0.8483  max mem: 6740
+Train: Epoch[36/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000093  Loss: 0.4013  Acc@1: 82.8125 (82.3333)  Acc@5: 98.4375 (98.3333)  time: 1.6467  data: 0.0849  max mem: 6740
+Train: Epoch[36/60] Total time: 0:00:16 (1.6543 s / it)
+Averaged stats: Lr: 0.000093  Loss: 0.4013  Acc@1: 82.8125 (82.3333)  Acc@5: 98.4375 (98.3333)
+Train: Epoch[37/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000086  Loss: 0.4939  Acc@1: 79.6875 (79.6875)  Acc@5: 96.8750 (96.8750)  time: 2.7522  data: 0.8533  max mem: 6740
+Train: Epoch[37/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000086  Loss: 0.3022  Acc@1: 83.3333 (83.1667)  Acc@5: 98.4375 (97.6667)  time: 1.6596  data: 0.0854  max mem: 6740
+Train: Epoch[37/60] Total time: 0:00:16 (1.6670 s / it)
+Averaged stats: Lr: 0.000086  Loss: 0.3022  Acc@1: 83.3333 (83.1667)  Acc@5: 98.4375 (97.6667)
+Train: Epoch[38/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000080  Loss: 0.4795  Acc@1: 75.0000 (75.0000)  Acc@5: 96.8750 (96.8750)  time: 2.6942  data: 0.7888  max mem: 6740
+Train: Epoch[38/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000080  Loss: 0.7650  Acc@1: 79.6875 (81.5000)  Acc@5: 98.4375 (97.8333)  time: 1.6509  data: 0.0790  max mem: 6740
+Train: Epoch[38/60] Total time: 0:00:16 (1.6584 s / it)
+Averaged stats: Lr: 0.000080  Loss: 0.7650  Acc@1: 79.6875 (81.5000)  Acc@5: 98.4375 (97.8333)
+Train: Epoch[39/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000074  Loss: 0.3974  Acc@1: 85.9375 (85.9375)  Acc@5: 96.8750 (96.8750)  time: 2.6544  data: 0.8161  max mem: 6740
+Train: Epoch[39/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000074  Loss: 0.4017  Acc@1: 81.2500 (81.3333)  Acc@5: 96.8750 (96.8333)  time: 1.6453  data: 0.0817  max mem: 6740
+Train: Epoch[39/60] Total time: 0:00:16 (1.6528 s / it)
+Averaged stats: Lr: 0.000074  Loss: 0.4017  Acc@1: 81.2500 (81.3333)  Acc@5: 96.8750 (96.8333)
+Train: Epoch[40/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000068  Loss: 0.4757  Acc@1: 79.6875 (79.6875)  Acc@5: 95.3125 (95.3125)  time: 2.6699  data: 0.7576  max mem: 6740
+Train: Epoch[40/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000068  Loss: 0.4059  Acc@1: 79.6875 (81.8333)  Acc@5: 96.8750 (97.5000)  time: 1.6511  data: 0.0759  max mem: 6740
+Train: Epoch[40/60] Total time: 0:00:16 (1.6586 s / it)
+Averaged stats: Lr: 0.000068  Loss: 0.4059  Acc@1: 79.6875 (81.8333)  Acc@5: 96.8750 (97.5000)
+Train: Epoch[41/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000063  Loss: 0.3541  Acc@1: 87.5000 (87.5000)  Acc@5: 100.0000 (100.0000)  time: 2.6381  data: 0.6926  max mem: 6740
+Train: Epoch[41/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000063  Loss: 0.4251  Acc@1: 82.8125 (83.1667)  Acc@5: 96.8750 (97.0000)  time: 1.6492  data: 0.0694  max mem: 6740
+Train: Epoch[41/60] Total time: 0:00:16 (1.6565 s / it)
+Averaged stats: Lr: 0.000063  Loss: 0.4251  Acc@1: 82.8125 (83.1667)  Acc@5: 96.8750 (97.0000)
+Train: Epoch[42/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000057  Loss: 0.5832  Acc@1: 78.1250 (78.1250)  Acc@5: 92.1875 (92.1875)  time: 2.6577  data: 0.7499  max mem: 6740
+Train: Epoch[42/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000057  Loss: 0.3348  Acc@1: 82.8125 (82.8333)  Acc@5: 98.4375 (97.1667)  time: 1.6482  data: 0.0751  max mem: 6740
+Train: Epoch[42/60] Total time: 0:00:16 (1.6557 s / it)
+Averaged stats: Lr: 0.000057  Loss: 0.3348  Acc@1: 82.8125 (82.8333)  Acc@5: 98.4375 (97.1667)
+Train: Epoch[43/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000052  Loss: 0.5066  Acc@1: 79.6875 (79.6875)  Acc@5: 95.3125 (95.3125)  time: 2.7067  data: 0.7965  max mem: 6740
+Train: Epoch[43/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000052  Loss: 0.4860  Acc@1: 79.6875 (81.3333)  Acc@5: 95.3125 (96.8333)  time: 1.6717  data: 0.0798  max mem: 6740
+Train: Epoch[43/60] Total time: 0:00:16 (1.6795 s / it)
+Averaged stats: Lr: 0.000052  Loss: 0.4860  Acc@1: 79.6875 (81.3333)  Acc@5: 95.3125 (96.8333)
+Train: Epoch[44/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000046  Loss: 0.2600  Acc@1: 93.7500 (93.7500)  Acc@5: 100.0000 (100.0000)  time: 2.6564  data: 0.6849  max mem: 6740
+Train: Epoch[44/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000046  Loss: 0.4749  Acc@1: 82.8125 (84.1667)  Acc@5: 98.4375 (98.3333)  time: 1.6484  data: 0.0686  max mem: 6740
+Train: Epoch[44/60] Total time: 0:00:16 (1.6561 s / it)
+Averaged stats: Lr: 0.000046  Loss: 0.4749  Acc@1: 82.8125 (84.1667)  Acc@5: 98.4375 (98.3333)
+Train: Epoch[45/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000041  Loss: 0.4754  Acc@1: 82.8125 (82.8125)  Acc@5: 95.3125 (95.3125)  time: 2.6709  data: 0.8576  max mem: 6740
+Train: Epoch[45/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000041  Loss: 0.4757  Acc@1: 82.8125 (82.5000)  Acc@5: 95.8333 (96.6667)  time: 1.6487  data: 0.0859  max mem: 6740
+Train: Epoch[45/60] Total time: 0:00:16 (1.6562 s / it)
+Averaged stats: Lr: 0.000041  Loss: 0.4757  Acc@1: 82.8125 (82.5000)  Acc@5: 95.8333 (96.6667)
+Train: Epoch[46/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000037  Loss: 0.3104  Acc@1: 82.8125 (82.8125)  Acc@5: 100.0000 (100.0000)  time: 2.6717  data: 0.7812  max mem: 6740
+Train: Epoch[46/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000037  Loss: 0.5582  Acc@1: 82.8125 (83.5000)  Acc@5: 98.4375 (98.0000)  time: 1.6488  data: 0.0783  max mem: 6740
+Train: Epoch[46/60] Total time: 0:00:16 (1.6562 s / it)
+Averaged stats: Lr: 0.000037  Loss: 0.5582  Acc@1: 82.8125 (83.5000)  Acc@5: 98.4375 (98.0000)
+Train: Epoch[47/60]  [ 0/10]  eta: 0:00:25  Lr: 0.000032  Loss: 0.3947  Acc@1: 82.8125 (82.8125)  Acc@5: 95.3125 (95.3125)  time: 2.5904  data: 0.6996  max mem: 6740
+Train: Epoch[47/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000032  Loss: 0.3246  Acc@1: 82.8125 (83.5000)  Acc@5: 95.8333 (96.5000)  time: 1.6426  data: 0.0701  max mem: 6740
+Train: Epoch[47/60] Total time: 0:00:16 (1.6499 s / it)
+Averaged stats: Lr: 0.000032  Loss: 0.3246  Acc@1: 82.8125 (83.5000)  Acc@5: 95.8333 (96.5000)
+Train: Epoch[48/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000028  Loss: 0.4769  Acc@1: 82.8125 (82.8125)  Acc@5: 95.3125 (95.3125)  time: 2.6696  data: 0.8434  max mem: 6740
+Train: Epoch[48/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000028  Loss: 0.4160  Acc@1: 84.3750 (84.8333)  Acc@5: 98.4375 (98.3333)  time: 1.6509  data: 0.0845  max mem: 6740
+Train: Epoch[48/60] Total time: 0:00:16 (1.6583 s / it)
+Averaged stats: Lr: 0.000028  Loss: 0.4160  Acc@1: 84.3750 (84.8333)  Acc@5: 98.4375 (98.3333)
+Train: Epoch[49/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000024  Loss: 0.3750  Acc@1: 84.3750 (84.3750)  Acc@5: 96.8750 (96.8750)  time: 2.6318  data: 0.7367  max mem: 6740
+Train: Epoch[49/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000024  Loss: 0.2677  Acc@1: 82.8125 (82.3333)  Acc@5: 98.4375 (97.6667)  time: 1.6437  data: 0.0738  max mem: 6740
+Train: Epoch[49/60] Total time: 0:00:16 (1.6512 s / it)
+Averaged stats: Lr: 0.000024  Loss: 0.2677  Acc@1: 82.8125 (82.3333)  Acc@5: 98.4375 (97.6667)
+Train: Epoch[50/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000020  Loss: 0.4866  Acc@1: 78.1250 (78.1250)  Acc@5: 96.8750 (96.8750)  time: 2.6799  data: 0.7639  max mem: 6740
+Train: Epoch[50/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000020  Loss: 0.4048  Acc@1: 84.3750 (83.5000)  Acc@5: 96.8750 (97.3333)  time: 1.6508  data: 0.0765  max mem: 6740
+Train: Epoch[50/60] Total time: 0:00:16 (1.6584 s / it)
+Averaged stats: Lr: 0.000020  Loss: 0.4048  Acc@1: 84.3750 (83.5000)  Acc@5: 96.8750 (97.3333)
+Train: Epoch[51/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000017  Loss: 0.3994  Acc@1: 82.8125 (82.8125)  Acc@5: 96.8750 (96.8750)  time: 2.6490  data: 0.7673  max mem: 6740
+Train: Epoch[51/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000017  Loss: 0.4780  Acc@1: 82.8125 (83.8333)  Acc@5: 96.8750 (98.0000)  time: 1.6466  data: 0.0769  max mem: 6740
+Train: Epoch[51/60] Total time: 0:00:16 (1.6540 s / it)
+Averaged stats: Lr: 0.000017  Loss: 0.4780  Acc@1: 82.8125 (83.8333)  Acc@5: 96.8750 (98.0000)
+Train: Epoch[52/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000014  Loss: 0.3819  Acc@1: 82.8125 (82.8125)  Acc@5: 95.3125 (95.3125)  time: 2.6244  data: 0.6949  max mem: 6740
+Train: Epoch[52/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000014  Loss: 0.3285  Acc@1: 82.8125 (82.8333)  Acc@5: 96.8750 (96.8333)  time: 1.6436  data: 0.0696  max mem: 6740
+Train: Epoch[52/60] Total time: 0:00:16 (1.6511 s / it)
+Averaged stats: Lr: 0.000014  Loss: 0.3285  Acc@1: 82.8125 (82.8333)  Acc@5: 96.8750 (96.8333)
+Train: Epoch[53/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000011  Loss: 0.3988  Acc@1: 76.5625 (76.5625)  Acc@5: 98.4375 (98.4375)  time: 2.6785  data: 0.7058  max mem: 6740
+Train: Epoch[53/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000011  Loss: 0.2809  Acc@1: 82.8125 (83.0000)  Acc@5: 98.4375 (97.3333)  time: 1.6509  data: 0.0707  max mem: 6740
+Train: Epoch[53/60] Total time: 0:00:16 (1.6583 s / it)
+Averaged stats: Lr: 0.000011  Loss: 0.2809  Acc@1: 82.8125 (83.0000)  Acc@5: 98.4375 (97.3333)
+Train: Epoch[54/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000008  Loss: 0.4229  Acc@1: 82.8125 (82.8125)  Acc@5: 96.8750 (96.8750)  time: 2.6413  data: 0.7461  max mem: 6740
+Train: Epoch[54/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000008  Loss: 0.2527  Acc@1: 82.8125 (83.3333)  Acc@5: 96.8750 (97.3333)  time: 1.6677  data: 0.0747  max mem: 6740
+Train: Epoch[54/60] Total time: 0:00:16 (1.6754 s / it)
+Averaged stats: Lr: 0.000008  Loss: 0.2527  Acc@1: 82.8125 (83.3333)  Acc@5: 96.8750 (97.3333)
+Train: Epoch[55/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000006  Loss: 0.2936  Acc@1: 84.3750 (84.3750)  Acc@5: 100.0000 (100.0000)  time: 2.8066  data: 0.8523  max mem: 6740
+Train: Epoch[55/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000006  Loss: 0.4165  Acc@1: 84.3750 (84.8333)  Acc@5: 96.8750 (97.3333)  time: 1.6641  data: 0.0853  max mem: 6740
+Train: Epoch[55/60] Total time: 0:00:16 (1.6719 s / it)
+Averaged stats: Lr: 0.000006  Loss: 0.4165  Acc@1: 84.3750 (84.8333)  Acc@5: 96.8750 (97.3333)
+Train: Epoch[56/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000004  Loss: 0.4427  Acc@1: 82.8125 (82.8125)  Acc@5: 96.8750 (96.8750)  time: 2.6208  data: 0.6721  max mem: 6740
+Train: Epoch[56/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000004  Loss: 0.2774  Acc@1: 81.2500 (81.5000)  Acc@5: 96.8750 (96.8333)  time: 1.6490  data: 0.0673  max mem: 6740
+Train: Epoch[56/60] Total time: 0:00:16 (1.6565 s / it)
+Averaged stats: Lr: 0.000004  Loss: 0.2774  Acc@1: 81.2500 (81.5000)  Acc@5: 96.8750 (96.8333)
+Train: Epoch[57/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000003  Loss: 0.3114  Acc@1: 85.9375 (85.9375)  Acc@5: 96.8750 (96.8750)  time: 2.6322  data: 0.7256  max mem: 6740
+Train: Epoch[57/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000003  Loss: 0.3740  Acc@1: 82.8125 (82.6667)  Acc@5: 96.8750 (97.3333)  time: 1.6482  data: 0.0727  max mem: 6740
+Train: Epoch[57/60] Total time: 0:00:16 (1.6555 s / it)
+Averaged stats: Lr: 0.000003  Loss: 0.3740  Acc@1: 82.8125 (82.6667)  Acc@5: 96.8750 (97.3333)
+Train: Epoch[58/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000002  Loss: 0.3369  Acc@1: 84.3750 (84.3750)  Acc@5: 98.4375 (98.4375)  time: 2.6559  data: 0.8063  max mem: 6740
+Train: Epoch[58/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000002  Loss: 0.5939  Acc@1: 83.3333 (83.5000)  Acc@5: 96.8750 (97.8333)  time: 1.6486  data: 0.0807  max mem: 6740
+Train: Epoch[58/60] Total time: 0:00:16 (1.6561 s / it)
+Averaged stats: Lr: 0.000002  Loss: 0.5939  Acc@1: 83.3333 (83.5000)  Acc@5: 96.8750 (97.8333)
+Train: Epoch[59/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000001  Loss: 0.4733  Acc@1: 81.2500 (81.2500)  Acc@5: 93.7500 (93.7500)  time: 2.6580  data: 0.7053  max mem: 6740
+Train: Epoch[59/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000001  Loss: 0.3498  Acc@1: 83.3333 (85.0000)  Acc@5: 98.4375 (98.1667)  time: 1.6501  data: 0.0707  max mem: 6740
+Train: Epoch[59/60] Total time: 0:00:16 (1.6577 s / it)
+Averaged stats: Lr: 0.000001  Loss: 0.3498  Acc@1: 83.3333 (85.0000)  Acc@5: 98.4375 (98.1667)
+Train: Epoch[60/60]  [ 0/10]  eta: 0:00:26  Lr: 0.000000  Loss: 0.5032  Acc@1: 81.2500 (81.2500)  Acc@5: 96.8750 (96.8750)  time: 2.6464  data: 0.6999  max mem: 6740
+Train: Epoch[60/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000000  Loss: 1.0427  Acc@1: 79.6875 (81.0000)  Acc@5: 96.8750 (97.1667)  time: 1.6509  data: 0.0701  max mem: 6740
+Train: Epoch[60/60] Total time: 0:00:16 (1.6584 s / it)
+Averaged stats: Lr: 0.000000  Loss: 1.0427  Acc@1: 79.6875 (81.0000)  Acc@5: 96.8750 (97.1667)
+Test: [Task 1]  [0/9]  eta: 0:00:13  Loss: 0.2590 (0.2590)  Acc@1: 92.1875 (92.1875)  Acc@5: 100.0000 (100.0000)  time: 1.5417  data: 0.8928  max mem: 6740
+Test: [Task 1]  [8/9]  eta: 0:00:00  Loss: 0.1161 (0.1584)  Acc@1: 98.4375 (96.1165)  Acc@5: 100.0000 (99.6117)  time: 0.6088  data: 0.0994  max mem: 6740
+Test: [Task 1] Total time: 0:00:05 (0.6173 s / it)
+* Acc@1 96.117 Acc@5 99.612 loss 0.158
+Batchwise eval time for task 1 = 0.6173388957977295
+Test: [Task 2]  [0/9]  eta: 0:00:14  Loss: 0.2073 (0.2073)  Acc@1: 93.7500 (93.7500)  Acc@5: 100.0000 (100.0000)  time: 1.5967  data: 0.9579  max mem: 6740
+Test: [Task 2]  [8/9]  eta: 0:00:00  Loss: 0.5284 (0.5245)  Acc@1: 81.2500 (82.9565)  Acc@5: 100.0000 (99.4783)  time: 0.7193  data: 0.1066  max mem: 6740
+Test: [Task 2] Total time: 0:00:06 (0.7284 s / it)
+* Acc@1 82.957 Acc@5 99.478 loss 0.524
+Batchwise eval time for task 2 = 0.7284654776255289
+[Average accuracy till task2]	Acc@1: 89.1743	Acc@5: 99.5450	Loss: 0.3414	Forgetting: 0.0000	Backward: 0.0000
+Eval time for task 2 = 12.177758693695068
+Using adam optimizer
+Reinitialising optimizer
+/kaggle/working/venv/lib/python3.9/site-packages/huggingface_hub/file_download.py:942: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Similarity:  tensor(0.9233)  Task:  2
+Old Num K:  6 New Num K:  7
+Task number:  2
+Train: Epoch[ 1/60]  [ 0/10]  eta: 0:00:29  Lr: 0.000250  Loss: 3.1563  Acc@1: 0.0000 (0.0000)  Acc@5: 1.5625 (1.5625)  time: 2.9002  data: 0.8119  max mem: 6778
+Train: Epoch[ 1/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000250  Loss: 3.2173  Acc@1: 0.0000 (0.1667)  Acc@5: 1.5625 (2.6667)  time: 1.7795  data: 0.0813  max mem: 6790
+Train: Epoch[ 1/60] Total time: 0:00:17 (1.7871 s / it)
+Averaged stats: Lr: 0.000250  Loss: 3.2173  Acc@1: 0.0000 (0.1667)  Acc@5: 1.5625 (2.6667)
+Train: Epoch[ 2/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000250  Loss: 3.0871  Acc@1: 0.0000 (0.0000)  Acc@5: 10.9375 (10.9375)  time: 2.7454  data: 0.7806  max mem: 6790
+Train: Epoch[ 2/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000250  Loss: 2.0648  Acc@1: 0.0000 (0.5000)  Acc@5: 15.6250 (18.8333)  time: 1.7647  data: 0.0782  max mem: 6790
+Train: Epoch[ 2/60] Total time: 0:00:17 (1.7724 s / it)
+Averaged stats: Lr: 0.000250  Loss: 2.0648  Acc@1: 0.0000 (0.5000)  Acc@5: 15.6250 (18.8333)
+Train: Epoch[ 3/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000249  Loss: 2.1781  Acc@1: 4.6875 (4.6875)  Acc@5: 28.1250 (28.1250)  time: 2.7723  data: 0.7100  max mem: 6790
+Train: Epoch[ 3/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000249  Loss: 1.7676  Acc@1: 6.2500 (8.0000)  Acc@5: 43.7500 (48.8333)  time: 1.7818  data: 0.0711  max mem: 6790
+Train: Epoch[ 3/60] Total time: 0:00:17 (1.7897 s / it)
+Averaged stats: Lr: 0.000249  Loss: 1.7676  Acc@1: 6.2500 (8.0000)  Acc@5: 43.7500 (48.8333)
+Train: Epoch[ 4/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000248  Loss: 1.7047  Acc@1: 14.0625 (14.0625)  Acc@5: 59.3750 (59.3750)  time: 2.8695  data: 0.7606  max mem: 6790
+Train: Epoch[ 4/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000248  Loss: 1.2625  Acc@1: 18.7500 (19.6667)  Acc@5: 78.1250 (73.5000)  time: 1.7729  data: 0.0762  max mem: 6790
+Train: Epoch[ 4/60] Total time: 0:00:17 (1.7806 s / it)
+Averaged stats: Lr: 0.000248  Loss: 1.2625  Acc@1: 18.7500 (19.6667)  Acc@5: 78.1250 (73.5000)
+Train: Epoch[ 5/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000247  Loss: 1.4253  Acc@1: 29.6875 (29.6875)  Acc@5: 75.0000 (75.0000)  time: 2.7981  data: 0.7353  max mem: 6790
+Train: Epoch[ 5/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000247  Loss: 0.8944  Acc@1: 31.2500 (34.0000)  Acc@5: 82.8125 (83.6667)  time: 1.7693  data: 0.0737  max mem: 6790
+Train: Epoch[ 5/60] Total time: 0:00:17 (1.7769 s / it)
+Averaged stats: Lr: 0.000247  Loss: 0.8944  Acc@1: 31.2500 (34.0000)  Acc@5: 82.8125 (83.6667)
+Train: Epoch[ 6/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000246  Loss: 1.0681  Acc@1: 29.6875 (29.6875)  Acc@5: 85.9375 (85.9375)  time: 2.7589  data: 0.6990  max mem: 6790
+Train: Epoch[ 6/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000246  Loss: 1.0024  Acc@1: 43.7500 (44.1667)  Acc@5: 89.0625 (88.3333)  time: 1.7643  data: 0.0700  max mem: 6790
+Train: Epoch[ 6/60] Total time: 0:00:17 (1.7719 s / it)
+Averaged stats: Lr: 0.000246  Loss: 1.0024  Acc@1: 43.7500 (44.1667)  Acc@5: 89.0625 (88.3333)
+Train: Epoch[ 7/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000244  Loss: 1.0123  Acc@1: 54.6875 (54.6875)  Acc@5: 85.9375 (85.9375)  time: 2.8128  data: 0.8153  max mem: 6790
+Train: Epoch[ 7/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000244  Loss: 0.9757  Acc@1: 56.2500 (57.3333)  Acc@5: 92.1875 (92.3333)  time: 1.7694  data: 0.0816  max mem: 6790
+Train: Epoch[ 7/60] Total time: 0:00:17 (1.7767 s / it)
+Averaged stats: Lr: 0.000244  Loss: 0.9757  Acc@1: 56.2500 (57.3333)  Acc@5: 92.1875 (92.3333)
+Train: Epoch[ 8/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000242  Loss: 0.7476  Acc@1: 54.6875 (54.6875)  Acc@5: 92.1875 (92.1875)  time: 2.7590  data: 0.7015  max mem: 6790
+Train: Epoch[ 8/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000242  Loss: 0.7451  Acc@1: 60.9375 (60.5000)  Acc@5: 92.1875 (92.1667)  time: 1.7615  data: 0.0703  max mem: 6790
+Train: Epoch[ 8/60] Total time: 0:00:17 (1.7690 s / it)
+Averaged stats: Lr: 0.000242  Loss: 0.7451  Acc@1: 60.9375 (60.5000)  Acc@5: 92.1875 (92.1667)
+Train: Epoch[ 9/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000239  Loss: 0.6919  Acc@1: 57.8125 (57.8125)  Acc@5: 96.8750 (96.8750)  time: 2.8251  data: 0.7711  max mem: 6790
+Train: Epoch[ 9/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000239  Loss: 1.0411  Acc@1: 62.5000 (65.5000)  Acc@5: 96.8750 (95.5000)  time: 1.7725  data: 0.0772  max mem: 6790
+Train: Epoch[ 9/60] Total time: 0:00:17 (1.7801 s / it)
+Averaged stats: Lr: 0.000239  Loss: 1.0411  Acc@1: 62.5000 (65.5000)  Acc@5: 96.8750 (95.5000)
+Train: Epoch[10/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000236  Loss: 0.6731  Acc@1: 73.4375 (73.4375)  Acc@5: 93.7500 (93.7500)  time: 2.7455  data: 0.7601  max mem: 6790
+Train: Epoch[10/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000236  Loss: 0.6168  Acc@1: 66.6667 (67.3333)  Acc@5: 92.1875 (92.8333)  time: 1.7645  data: 0.0761  max mem: 6790
+Train: Epoch[10/60] Total time: 0:00:17 (1.7722 s / it)
+Averaged stats: Lr: 0.000236  Loss: 0.6168  Acc@1: 66.6667 (67.3333)  Acc@5: 92.1875 (92.8333)
+Train: Epoch[11/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000233  Loss: 0.6953  Acc@1: 68.7500 (68.7500)  Acc@5: 93.7500 (93.7500)  time: 2.7971  data: 0.8175  max mem: 6790
+Train: Epoch[11/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000233  Loss: 0.7594  Acc@1: 68.7500 (69.1667)  Acc@5: 93.7500 (93.8333)  time: 1.7674  data: 0.0819  max mem: 6790
+Train: Epoch[11/60] Total time: 0:00:17 (1.7750 s / it)
+Averaged stats: Lr: 0.000233  Loss: 0.7594  Acc@1: 68.7500 (69.1667)  Acc@5: 93.7500 (93.8333)
+Train: Epoch[12/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000230  Loss: 0.6189  Acc@1: 71.8750 (71.8750)  Acc@5: 96.8750 (96.8750)  time: 2.8282  data: 0.7742  max mem: 6790
+Train: Epoch[12/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000230  Loss: 0.7165  Acc@1: 70.3125 (72.1667)  Acc@5: 93.7500 (94.5000)  time: 1.7907  data: 0.0775  max mem: 6790
+Train: Epoch[12/60] Total time: 0:00:17 (1.7984 s / it)
+Averaged stats: Lr: 0.000230  Loss: 0.7165  Acc@1: 70.3125 (72.1667)  Acc@5: 93.7500 (94.5000)
+Train: Epoch[13/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000226  Loss: 0.6394  Acc@1: 75.0000 (75.0000)  Acc@5: 92.1875 (92.1875)  time: 2.8087  data: 0.8760  max mem: 6790
+Train: Epoch[13/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000226  Loss: 0.4390  Acc@1: 73.4375 (72.8333)  Acc@5: 95.3125 (94.8333)  time: 1.7676  data: 0.0877  max mem: 6790
+Train: Epoch[13/60] Total time: 0:00:17 (1.7751 s / it)
+Averaged stats: Lr: 0.000226  Loss: 0.4390  Acc@1: 73.4375 (72.8333)  Acc@5: 95.3125 (94.8333)
+Train: Epoch[14/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000222  Loss: 0.4547  Acc@1: 79.6875 (79.6875)  Acc@5: 100.0000 (100.0000)  time: 2.8275  data: 0.7991  max mem: 6790
+Train: Epoch[14/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000222  Loss: 0.3488  Acc@1: 75.0000 (75.3333)  Acc@5: 93.7500 (94.3333)  time: 1.7700  data: 0.0800  max mem: 6790
+Train: Epoch[14/60] Total time: 0:00:17 (1.7776 s / it)
+Averaged stats: Lr: 0.000222  Loss: 0.3488  Acc@1: 75.0000 (75.3333)  Acc@5: 93.7500 (94.3333)
+Train: Epoch[15/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000218  Loss: 0.4136  Acc@1: 89.0625 (89.0625)  Acc@5: 98.4375 (98.4375)  time: 2.8434  data: 0.8619  max mem: 6790
+Train: Epoch[15/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000218  Loss: 0.7011  Acc@1: 76.5625 (77.1667)  Acc@5: 95.3125 (95.3333)  time: 1.7709  data: 0.0863  max mem: 6790
+Train: Epoch[15/60] Total time: 0:00:17 (1.7786 s / it)
+Averaged stats: Lr: 0.000218  Loss: 0.7011  Acc@1: 76.5625 (77.1667)  Acc@5: 95.3125 (95.3333)
+Train: Epoch[16/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000213  Loss: 0.4996  Acc@1: 73.4375 (73.4375)  Acc@5: 95.3125 (95.3125)  time: 2.8122  data: 0.7744  max mem: 6790
+Train: Epoch[16/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000213  Loss: 0.3529  Acc@1: 75.0000 (75.8333)  Acc@5: 95.3125 (95.6667)  time: 1.7712  data: 0.0776  max mem: 6790
+Train: Epoch[16/60] Total time: 0:00:17 (1.7788 s / it)
+Averaged stats: Lr: 0.000213  Loss: 0.3529  Acc@1: 75.0000 (75.8333)  Acc@5: 95.3125 (95.6667)
+Train: Epoch[17/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000209  Loss: 0.5306  Acc@1: 71.8750 (71.8750)  Acc@5: 93.7500 (93.7500)  time: 2.8035  data: 0.8008  max mem: 6790
+Train: Epoch[17/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000209  Loss: 0.4195  Acc@1: 81.2500 (79.6667)  Acc@5: 96.8750 (97.0000)  time: 1.7676  data: 0.0802  max mem: 6790
+Train: Epoch[17/60] Total time: 0:00:17 (1.7760 s / it)
+Averaged stats: Lr: 0.000209  Loss: 0.4195  Acc@1: 81.2500 (79.6667)  Acc@5: 96.8750 (97.0000)
+Train: Epoch[18/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000204  Loss: 0.4678  Acc@1: 82.8125 (82.8125)  Acc@5: 95.3125 (95.3125)  time: 2.8507  data: 0.8790  max mem: 6790
+Train: Epoch[18/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000204  Loss: 0.6747  Acc@1: 79.6875 (78.0000)  Acc@5: 95.3125 (94.8333)  time: 1.7731  data: 0.0880  max mem: 6790
+Train: Epoch[18/60] Total time: 0:00:17 (1.7808 s / it)
+Averaged stats: Lr: 0.000204  Loss: 0.6747  Acc@1: 79.6875 (78.0000)  Acc@5: 95.3125 (94.8333)
+Train: Epoch[19/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000198  Loss: 0.5398  Acc@1: 78.1250 (78.1250)  Acc@5: 92.1875 (92.1875)  time: 2.7985  data: 0.8102  max mem: 6790
+Train: Epoch[19/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000198  Loss: 0.4774  Acc@1: 78.1250 (80.6667)  Acc@5: 95.8333 (95.3333)  time: 1.7692  data: 0.0811  max mem: 6790
+Train: Epoch[19/60] Total time: 0:00:17 (1.7768 s / it)
+Averaged stats: Lr: 0.000198  Loss: 0.4774  Acc@1: 78.1250 (80.6667)  Acc@5: 95.8333 (95.3333)
+Train: Epoch[20/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000193  Loss: 0.4683  Acc@1: 89.0625 (89.0625)  Acc@5: 96.8750 (96.8750)  time: 2.8480  data: 0.7406  max mem: 6790
+Train: Epoch[20/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000193  Loss: 0.3010  Acc@1: 81.2500 (81.1667)  Acc@5: 96.8750 (95.6667)  time: 1.7929  data: 0.0742  max mem: 6790
+Train: Epoch[20/60] Total time: 0:00:18 (1.8010 s / it)
+Averaged stats: Lr: 0.000193  Loss: 0.3010  Acc@1: 81.2500 (81.1667)  Acc@5: 96.8750 (95.6667)
+Train: Epoch[21/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000188  Loss: 0.4657  Acc@1: 89.0625 (89.0625)  Acc@5: 93.7500 (93.7500)  time: 2.7749  data: 0.7119  max mem: 6790
+Train: Epoch[21/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000188  Loss: 0.3717  Acc@1: 82.8125 (84.1667)  Acc@5: 96.8750 (96.3333)  time: 1.7652  data: 0.0713  max mem: 6790
+Train: Epoch[21/60] Total time: 0:00:17 (1.7729 s / it)
+Averaged stats: Lr: 0.000188  Loss: 0.3717  Acc@1: 82.8125 (84.1667)  Acc@5: 96.8750 (96.3333)
+Train: Epoch[22/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000182  Loss: 0.3916  Acc@1: 84.3750 (84.3750)  Acc@5: 96.8750 (96.8750)  time: 2.7632  data: 0.7814  max mem: 6790
+Train: Epoch[22/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000182  Loss: 0.4369  Acc@1: 83.3333 (83.3333)  Acc@5: 96.8750 (96.8333)  time: 1.7666  data: 0.0783  max mem: 6790
+Train: Epoch[22/60] Total time: 0:00:17 (1.7749 s / it)
+Averaged stats: Lr: 0.000182  Loss: 0.4369  Acc@1: 83.3333 (83.3333)  Acc@5: 96.8750 (96.8333)
+Train: Epoch[23/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000176  Loss: 0.4963  Acc@1: 81.2500 (81.2500)  Acc@5: 95.3125 (95.3125)  time: 2.8669  data: 0.8617  max mem: 6790
+Train: Epoch[23/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000176  Loss: 0.3004  Acc@1: 81.2500 (82.3333)  Acc@5: 95.3125 (96.5000)  time: 1.7770  data: 0.0863  max mem: 6790
+Train: Epoch[23/60] Total time: 0:00:17 (1.7846 s / it)
+Averaged stats: Lr: 0.000176  Loss: 0.3004  Acc@1: 81.2500 (82.3333)  Acc@5: 95.3125 (96.5000)
+Train: Epoch[24/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000170  Loss: 0.3696  Acc@1: 82.8125 (82.8125)  Acc@5: 98.4375 (98.4375)  time: 2.8631  data: 0.8581  max mem: 6790
+Train: Epoch[24/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000170  Loss: 0.3768  Acc@1: 83.3333 (84.0000)  Acc@5: 95.3125 (96.1667)  time: 1.7784  data: 0.0859  max mem: 6790
+Train: Epoch[24/60] Total time: 0:00:17 (1.7859 s / it)
+Averaged stats: Lr: 0.000170  Loss: 0.3768  Acc@1: 83.3333 (84.0000)  Acc@5: 95.3125 (96.1667)
+Train: Epoch[25/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000164  Loss: 0.3729  Acc@1: 87.5000 (87.5000)  Acc@5: 98.4375 (98.4375)  time: 2.8428  data: 0.7510  max mem: 6790
+Train: Epoch[25/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000164  Loss: 0.4500  Acc@1: 85.9375 (84.5000)  Acc@5: 98.4375 (97.0000)  time: 1.7697  data: 0.0752  max mem: 6790
+Train: Epoch[25/60] Total time: 0:00:17 (1.7771 s / it)
+Averaged stats: Lr: 0.000164  Loss: 0.4500  Acc@1: 85.9375 (84.5000)  Acc@5: 98.4375 (97.0000)
+Train: Epoch[26/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000157  Loss: 0.3921  Acc@1: 87.5000 (87.5000)  Acc@5: 95.3125 (95.3125)  time: 2.8379  data: 0.8364  max mem: 6790
+Train: Epoch[26/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000157  Loss: 0.2267  Acc@1: 82.8125 (82.1667)  Acc@5: 93.7500 (94.8333)  time: 1.7718  data: 0.0838  max mem: 6790
+Train: Epoch[26/60] Total time: 0:00:17 (1.7794 s / it)
+Averaged stats: Lr: 0.000157  Loss: 0.2267  Acc@1: 82.8125 (82.1667)  Acc@5: 93.7500 (94.8333)
+Train: Epoch[27/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000151  Loss: 0.3162  Acc@1: 85.9375 (85.9375)  Acc@5: 100.0000 (100.0000)  time: 2.8079  data: 0.8349  max mem: 6790
+Train: Epoch[27/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000151  Loss: 0.5812  Acc@1: 81.2500 (83.6667)  Acc@5: 96.8750 (95.6667)  time: 1.7714  data: 0.0836  max mem: 6790
+Train: Epoch[27/60] Total time: 0:00:17 (1.7789 s / it)
+Averaged stats: Lr: 0.000151  Loss: 0.5812  Acc@1: 81.2500 (83.6667)  Acc@5: 96.8750 (95.6667)
+Train: Epoch[28/60]  [ 0/10]  eta: 0:00:29  Lr: 0.000145  Loss: 0.3272  Acc@1: 87.5000 (87.5000)  Acc@5: 100.0000 (100.0000)  time: 2.9320  data: 0.8706  max mem: 6790
+Train: Epoch[28/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000145  Loss: 0.4963  Acc@1: 87.5000 (86.8333)  Acc@5: 95.3125 (96.3333)  time: 1.8001  data: 0.0872  max mem: 6790
+Train: Epoch[28/60] Total time: 0:00:18 (1.8082 s / it)
+Averaged stats: Lr: 0.000145  Loss: 0.4963  Acc@1: 87.5000 (86.8333)  Acc@5: 95.3125 (96.3333)
+Train: Epoch[29/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000138  Loss: 0.2731  Acc@1: 89.0625 (89.0625)  Acc@5: 98.4375 (98.4375)  time: 2.8219  data: 0.7355  max mem: 6790
+Train: Epoch[29/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000138  Loss: 0.5176  Acc@1: 84.3750 (84.3333)  Acc@5: 95.3125 (95.6667)  time: 1.7711  data: 0.0737  max mem: 6790
+Train: Epoch[29/60] Total time: 0:00:17 (1.7787 s / it)
+Averaged stats: Lr: 0.000138  Loss: 0.5176  Acc@1: 84.3750 (84.3333)  Acc@5: 95.3125 (95.6667)
+Train: Epoch[30/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000132  Loss: 0.3498  Acc@1: 87.5000 (87.5000)  Acc@5: 100.0000 (100.0000)  time: 2.8044  data: 0.7938  max mem: 6790
+Train: Epoch[30/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000132  Loss: 0.2183  Acc@1: 85.9375 (86.5000)  Acc@5: 96.8750 (97.0000)  time: 1.7700  data: 0.0795  max mem: 6790
+Train: Epoch[30/60] Total time: 0:00:17 (1.7775 s / it)
+Averaged stats: Lr: 0.000132  Loss: 0.2183  Acc@1: 85.9375 (86.5000)  Acc@5: 96.8750 (97.0000)
+Train: Epoch[31/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000125  Loss: 0.2702  Acc@1: 89.0625 (89.0625)  Acc@5: 100.0000 (100.0000)  time: 2.8525  data: 0.8384  max mem: 6790
+Train: Epoch[31/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000125  Loss: 0.3728  Acc@1: 89.0625 (87.5000)  Acc@5: 96.8750 (97.5000)  time: 1.7738  data: 0.0840  max mem: 6790
+Train: Epoch[31/60] Total time: 0:00:17 (1.7814 s / it)
+Averaged stats: Lr: 0.000125  Loss: 0.3728  Acc@1: 89.0625 (87.5000)  Acc@5: 96.8750 (97.5000)
+Train: Epoch[32/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000118  Loss: 0.5649  Acc@1: 75.0000 (75.0000)  Acc@5: 87.5000 (87.5000)  time: 2.8044  data: 0.6940  max mem: 6790
+Train: Epoch[32/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000118  Loss: 0.2041  Acc@1: 85.9375 (85.8333)  Acc@5: 96.8750 (96.3333)  time: 1.7714  data: 0.0695  max mem: 6790
+Train: Epoch[32/60] Total time: 0:00:17 (1.7789 s / it)
+Averaged stats: Lr: 0.000118  Loss: 0.2041  Acc@1: 85.9375 (85.8333)  Acc@5: 96.8750 (96.3333)
+Train: Epoch[33/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000112  Loss: 0.3023  Acc@1: 90.6250 (90.6250)  Acc@5: 96.8750 (96.8750)  time: 2.8686  data: 0.8358  max mem: 6790
+Train: Epoch[33/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000112  Loss: 0.4105  Acc@1: 84.3750 (84.6667)  Acc@5: 95.3125 (95.6667)  time: 1.7762  data: 0.0837  max mem: 6790
+Train: Epoch[33/60] Total time: 0:00:17 (1.7836 s / it)
+Averaged stats: Lr: 0.000112  Loss: 0.4105  Acc@1: 84.3750 (84.6667)  Acc@5: 95.3125 (95.6667)
+Train: Epoch[34/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000105  Loss: 0.3000  Acc@1: 82.8125 (82.8125)  Acc@5: 96.8750 (96.8750)  time: 2.7718  data: 0.7290  max mem: 6790
+Train: Epoch[34/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000105  Loss: 0.4891  Acc@1: 87.5000 (87.6667)  Acc@5: 96.8750 (96.8333)  time: 1.7663  data: 0.0730  max mem: 6790
+Train: Epoch[34/60] Total time: 0:00:17 (1.7738 s / it)
+Averaged stats: Lr: 0.000105  Loss: 0.4891  Acc@1: 87.5000 (87.6667)  Acc@5: 96.8750 (96.8333)
+Train: Epoch[35/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000099  Loss: 0.4318  Acc@1: 87.5000 (87.5000)  Acc@5: 92.1875 (92.1875)  time: 2.8148  data: 0.7398  max mem: 6790
+Train: Epoch[35/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000099  Loss: 0.1955  Acc@1: 85.9375 (86.3333)  Acc@5: 95.3125 (95.5000)  time: 1.7734  data: 0.0741  max mem: 6790
+Train: Epoch[35/60] Total time: 0:00:17 (1.7809 s / it)
+Averaged stats: Lr: 0.000099  Loss: 0.1955  Acc@1: 85.9375 (86.3333)  Acc@5: 95.3125 (95.5000)
+Train: Epoch[36/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000093  Loss: 0.2478  Acc@1: 89.0625 (89.0625)  Acc@5: 98.4375 (98.4375)  time: 2.7556  data: 0.7347  max mem: 6790
+Train: Epoch[36/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000093  Loss: 0.4151  Acc@1: 87.5000 (88.6667)  Acc@5: 96.8750 (96.5000)  time: 1.7658  data: 0.0736  max mem: 6790
+Train: Epoch[36/60] Total time: 0:00:17 (1.7732 s / it)
+Averaged stats: Lr: 0.000093  Loss: 0.4151  Acc@1: 87.5000 (88.6667)  Acc@5: 96.8750 (96.5000)
+Train: Epoch[37/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000086  Loss: 0.3215  Acc@1: 85.9375 (85.9375)  Acc@5: 98.4375 (98.4375)  time: 2.8247  data: 0.8148  max mem: 6790
+Train: Epoch[37/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000086  Loss: 0.6958  Acc@1: 89.0625 (89.1667)  Acc@5: 96.8750 (96.1667)  time: 1.7926  data: 0.0816  max mem: 6790
+Train: Epoch[37/60] Total time: 0:00:18 (1.8006 s / it)
+Averaged stats: Lr: 0.000086  Loss: 0.6958  Acc@1: 89.0625 (89.1667)  Acc@5: 96.8750 (96.1667)
+Train: Epoch[38/60]  [ 0/10]  eta: 0:00:29  Lr: 0.000080  Loss: 0.1946  Acc@1: 96.8750 (96.8750)  Acc@5: 98.4375 (98.4375)  time: 2.9327  data: 0.8996  max mem: 6790
+Train: Epoch[38/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000080  Loss: 0.2001  Acc@1: 89.0625 (89.1667)  Acc@5: 98.4375 (97.6667)  time: 1.7872  data: 0.0901  max mem: 6790
+Train: Epoch[38/60] Total time: 0:00:17 (1.7947 s / it)
+Averaged stats: Lr: 0.000080  Loss: 0.2001  Acc@1: 89.0625 (89.1667)  Acc@5: 98.4375 (97.6667)
+Train: Epoch[39/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000074  Loss: 0.2614  Acc@1: 89.0625 (89.0625)  Acc@5: 96.8750 (96.8750)  time: 2.7778  data: 0.8080  max mem: 6790
+Train: Epoch[39/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000074  Loss: 0.3574  Acc@1: 87.5000 (87.6667)  Acc@5: 96.8750 (96.3333)  time: 1.7661  data: 0.0809  max mem: 6790
+Train: Epoch[39/60] Total time: 0:00:17 (1.7738 s / it)
+Averaged stats: Lr: 0.000074  Loss: 0.3574  Acc@1: 87.5000 (87.6667)  Acc@5: 96.8750 (96.3333)
+Train: Epoch[40/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000068  Loss: 0.2501  Acc@1: 90.6250 (90.6250)  Acc@5: 98.4375 (98.4375)  time: 2.7532  data: 0.6721  max mem: 6790
+Train: Epoch[40/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000068  Loss: 0.4936  Acc@1: 87.5000 (87.8333)  Acc@5: 96.8750 (97.0000)  time: 1.7651  data: 0.0673  max mem: 6790
+Train: Epoch[40/60] Total time: 0:00:17 (1.7734 s / it)
+Averaged stats: Lr: 0.000068  Loss: 0.4936  Acc@1: 87.5000 (87.8333)  Acc@5: 96.8750 (97.0000)
+Train: Epoch[41/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000063  Loss: 0.2375  Acc@1: 89.0625 (89.0625)  Acc@5: 98.4375 (98.4375)  time: 2.7535  data: 0.7873  max mem: 6790
+Train: Epoch[41/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000063  Loss: 0.3603  Acc@1: 89.0625 (88.8333)  Acc@5: 98.4375 (97.8333)  time: 1.7678  data: 0.0789  max mem: 6790
+Train: Epoch[41/60] Total time: 0:00:17 (1.7754 s / it)
+Averaged stats: Lr: 0.000063  Loss: 0.3603  Acc@1: 89.0625 (88.8333)  Acc@5: 98.4375 (97.8333)
+Train: Epoch[42/60]  [ 0/10]  eta: 0:00:27  Lr: 0.000057  Loss: 0.3182  Acc@1: 84.3750 (84.3750)  Acc@5: 96.8750 (96.8750)  time: 2.7568  data: 0.6985  max mem: 6790
+Train: Epoch[42/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000057  Loss: 0.3150  Acc@1: 85.9375 (87.1667)  Acc@5: 96.8750 (96.8333)  time: 1.7650  data: 0.0700  max mem: 6790
+Train: Epoch[42/60] Total time: 0:00:17 (1.7728 s / it)
+Averaged stats: Lr: 0.000057  Loss: 0.3150  Acc@1: 85.9375 (87.1667)  Acc@5: 96.8750 (96.8333)
+Train: Epoch[43/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000052  Loss: 0.2811  Acc@1: 89.0625 (89.0625)  Acc@5: 98.4375 (98.4375)  time: 2.8580  data: 0.7029  max mem: 6790
+Train: Epoch[43/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000052  Loss: 0.2557  Acc@1: 89.0625 (89.3333)  Acc@5: 96.8750 (97.5000)  time: 1.7723  data: 0.0704  max mem: 6790
+Train: Epoch[43/60] Total time: 0:00:17 (1.7798 s / it)
+Averaged stats: Lr: 0.000052  Loss: 0.2557  Acc@1: 89.0625 (89.3333)  Acc@5: 96.8750 (97.5000)
+Train: Epoch[44/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000046  Loss: 0.2918  Acc@1: 84.3750 (84.3750)  Acc@5: 95.3125 (95.3125)  time: 2.8094  data: 0.7136  max mem: 6790
+Train: Epoch[44/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000046  Loss: 0.2317  Acc@1: 91.6667 (90.0000)  Acc@5: 96.8750 (97.1667)  time: 1.7725  data: 0.0715  max mem: 6790
+Train: Epoch[44/60] Total time: 0:00:17 (1.7801 s / it)
+Averaged stats: Lr: 0.000046  Loss: 0.2317  Acc@1: 91.6667 (90.0000)  Acc@5: 96.8750 (97.1667)
+Train: Epoch[45/60]  [ 0/10]  eta: 0:00:28  Lr: 0.000041  Loss: 0.2031  Acc@1: 92.1875 (92.1875)  Acc@5: 100.0000 (100.0000)  time: 2.8016  data: 0.7689  max mem: 6790
+Train: Epoch[45/60]  [ 9/10]  eta: 0:00:01  Lr: 0.000041  Loss: 0.1939  Acc@1: 89.0625 (89.1667)  Acc@5: 96.8750 (97.6667)  time: 1.7686  data: 0.0770  max mem: 6790
+Train: Epoch[45/60] Total time: 0:00:17 (1.7762 s / it)
+Averaged stats: Lr: 0.000041  Loss: 0.1939  Acc@1: 89.0625 (89.1667)  Acc@5: 96.8750 (97.6667)

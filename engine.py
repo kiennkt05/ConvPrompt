@@ -552,11 +552,27 @@ def evaluate_rainbow_till_now(
 
     overall_acc = 100.0 * total_correct / max(total_samples, 1)
 
-    return {
+    result = {
         'average_accuracy': avg_accuracy,
         'overall_accuracy': overall_acc,
         'forgetting': forgetting,
     }
+
+    logging.info(
+        "[Rainbow avg till task %d]\tAcc@1: %.4f\tOverall: %.4f\tForgetting: %.4f",
+        task_id + 1,
+        avg_accuracy,
+        overall_acc,
+        forgetting,
+    )
+
+    print(
+        "[Rainbow avg till task{}]\tAcc@1: {:.4f}\tOverall: {:.4f}\tForgetting: {:.4f}".format(
+            task_id + 1, avg_accuracy, overall_acc, forgetting
+        )
+    )
+
+    return result
 
 
 def train_and_evaluate_rainbow(

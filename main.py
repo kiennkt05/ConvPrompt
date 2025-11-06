@@ -46,6 +46,7 @@ def parse_rainbow_args():
     parser.add_argument('--batch_size', type=int, default=None)
     parser.add_argument('--epochs', type=int, default=None)
     parser.add_argument('--print_freq', type=int, default=None)
+    parser.add_argument('--data_path', '--data-path', dest='data_path', type=str, default=None)
 
     known_args, unknown = parser.parse_known_args()
     if unknown:
@@ -67,6 +68,36 @@ def parse_rainbow_args():
     if 'rainbow' not in config_dict:
         config_dict['rainbow'] = {}
 
+    fallback_defaults = {
+        'use_transform': False,
+        'use_clip_grad': True,
+        'SLCA': False,
+        'shuffle': False,
+        'prompt_pool': False,
+        'prompt_key': False,
+        'prompt_key_init': 'uniform',
+        'top_k': 1,
+        'kernel_size': 17,
+        'num_prompts_per_task': 5,
+        'variable_num_prompts': True,
+        'use_prompt_mask': True,
+        'mask_first_epoch': False,
+        'batchwise_prompt': False,
+        'embedding_key': 'cls',
+        'same_key_value': False,
+        'use_g_prompt': False,
+        'use_e_prompt': False,
+        'use_prefix_tune_for_g_prompt': True,
+        'use_prefix_tune_for_e_prompt': True,
+        'g_prompt_length': 5,
+        'g_prompt_layer_idx': [],
+    }
+    for key, value in fallback_defaults.items():
+        config_dict.setdefault(key, value)
+
+    if isinstance(config_dict.get('g_prompt_layer_idx'), tuple):
+        config_dict['g_prompt_layer_idx'] = list(config_dict['g_prompt_layer_idx'])
+
     namespace = argparse.Namespace(**config_dict)
     namespace.config_path = known_args.config
     return namespace
@@ -86,12 +117,16 @@ def main_rainbow(args):
     cudnn.benchmark = True
 
     data_loader, class_mask = build_continual_dataloader(args)
+    if class_mask:
+        args.nb_classes = sum(len(mask) for mask in class_mask)
+        args.num_tasks = len(class_mask)
 
     print(f"Creating model: {args.model}")
     model = create_model(
         args.model,
         pretrained=args.pretrained,
         num_classes=args.nb_classes,
+        num_tasks=args.num_tasks,
         drop_rate=args.drop,
         drop_path_rate=args.drop_path,
         prompt_length=args.prompt_length,
