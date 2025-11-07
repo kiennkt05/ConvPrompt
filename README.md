@@ -44,11 +44,22 @@ python -m main <cifar100_convprompt | imr_convprompt | cub_convprompt> \
 
 ### RainbowPrompt (Continual Prompt Evolution)
 ```
+# Split CUB-200
 python main.py --config configs/rainbow_cubs.yaml \
     --data_path ./data/cubs \
     --output_dir ./outputs/rainbow_cubs
+
+# Split CIFAR-100
+python main.py --config configs/rainbow_cifar100.yaml \
+    --data_path ./data/cifar100 \
+    --output_dir ./outputs/rainbow_cifar100
+
+# Split ImageNet-R
+python main.py --config configs/rainbow_imagenet_r.yaml \
+    --data_path ./data/imagenet_r \
+    --output_dir ./outputs/rainbow_imagenet_r
 ```
-Optional overrides such as `--epochs`, `--batch_size`, or `--device` can be appended to the command. The YAML file under `configs/` controls optimizer, scheduler, and RainbowPrompt-specific hyperparameters.
+Optional overrides such as `--epochs`, `--batch_size`, or `--device` can be appended to each command. The YAML file under `configs/` controls optimizer, scheduler, and RainbowPrompt-specific hyperparameters.
 
 
 ## Acknowledgement

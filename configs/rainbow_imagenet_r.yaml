@@ -1,0 +1,56 @@
+method: rainbow
+dataset: Split-Imagenet-R
+data_path: ./data/imagenet_r
+output_dir: ./outputs/rainbow_imagenet_r
+
+# training setup
+batch_size: 48
+epochs: 60
+num_workers: 4
+seed: 1996
+
+# continual learning
+num_tasks: 10
+task_inc: false
+train_mask: true
+
+# model backbone
+model: vit_base_patch16_224_in21k
+pretrained: true
+drop: 0.0
+drop_path: 0.0
+input_size: 224
+freeze:
+  - blocks
+  - patch_embed
+  - cls_token
+  - pos_embed
+
+optimizer:
+  name: adamw
+  lr: 1.0e-4
+  weight_decay: 0.0
+scheduler:
+  name: cosine
+  min_lr: 0.0
+
+# prompt hyperparameters
+prompt_length: 20
+rainbow:
+  proj_dim: 96
+  align_hidden_dim: 56
+  gate_tau_start: 1.0
+  gate_tau_end: 0.3
+  gate_harden_at: 0.6
+  lambda_sparse: 0.01
+  lambda_match: 0.01
+  save_dir: ./outputs/rainbow_imagenet_r/prompts
+  use_task_conditioning: true
+  enable_task_level: true
+  enable_feature_level: true
+  enable_alignment: true
+  use_adaptive_gating: true
+
+# logging
+print_freq: 10
+

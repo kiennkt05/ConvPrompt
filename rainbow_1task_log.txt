@@ -1,0 +1,745 @@
+Not using distributed mode
+Train transforms:  Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.05, 1.0), ratio=(0.75, 1.3333), interpolation=bilinear, antialias=warn)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+)
+Test transforms:  Compose(
+    Resize(size=256, interpolation=bicubic, max_size=None, antialias=warn)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+)
+Downloading from https://data.deepai.org/CUB200(2011).zip
+Downloading https://data.deepai.org/CUB200(2011).zip to /local_datasets/CUB200(2011).zip
+100%|██████████████████████| 1187408162/1187408162 [03:45<00:00, 5258119.35it/s]
+Creating model: vit_base_patch16_224_in21k
+Using multihead:  True
+Nb classes:  200
+Rainbow Train Task[1/1] Epoch[1/60]  [ 0/94]  eta: 0:05:18  Loss: 5.3856  CE: 5.4584  Match: 1.0308  Sparsity: -8.3178  Acc: 0.00  time: 3.3888  data: 0.9379  max mem: 6464
+Rainbow Train Task[1/1] Epoch[1/60]  [10/94]  eta: 0:01:26  Loss: 5.2590  CE: 5.3331  Match: 0.9187  Sparsity: -8.3286  Acc: 0.00  time: 1.0311  data: 0.0856  max mem: 6510
+Rainbow Train Task[1/1] Epoch[1/60]  [20/94]  eta: 0:01:08  Loss: 5.2342  CE: 5.3095  Match: 0.8076  Sparsity: -8.3388  Acc: 0.00  time: 0.7958  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[1/60]  [30/94]  eta: 0:00:56  Loss: 5.0413  CE: 5.1178  Match: 0.7031  Sparsity: -8.3486  Acc: 6.25  time: 0.7962  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[1/60]  [40/94]  eta: 0:00:46  Loss: 4.9570  CE: 5.0344  Match: 0.6164  Sparsity: -8.3584  Acc: 9.38  time: 0.7963  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[1/60]  [50/94]  eta: 0:00:37  Loss: 4.9009  CE: 4.9791  Match: 0.5448  Sparsity: -8.3676  Acc: 1.56  time: 0.7969  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[1/60]  [60/94]  eta: 0:00:28  Loss: 4.5214  CE: 4.6006  Match: 0.4502  Sparsity: -8.3757  Acc: 15.62  time: 0.7977  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[1/60]  [70/94]  eta: 0:00:20  Loss: 4.3984  CE: 4.4785  Match: 0.3778  Sparsity: -8.3838  Acc: 23.44  time: 0.7991  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[1/60]  [80/94]  eta: 0:00:11  Loss: 4.4844  CE: 4.5653  Match: 0.3027  Sparsity: -8.3919  Acc: 18.75  time: 0.8007  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[1/60]  [90/94]  eta: 0:00:03  Loss: 4.1768  CE: 4.2582  Match: 0.2549  Sparsity: -8.3988  Acc: 21.88  time: 0.8010  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[1/60]  [93/94]  eta: 0:00:00  Loss: 4.1563  CE: 4.2380  Match: 0.2364  Sparsity: -8.4007  Acc: 30.95  time: 0.8080  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[1/60] Total time: 0:01:17 (0.8277 s / it)
+Rainbow Train Task[1/1] Epoch[2/60]  [ 0/94]  eta: 0:02:35  Loss: 3.8761  CE: 3.9578  Match: 0.2340  Sparsity: -8.4013  Acc: 45.31  time: 1.6503  data: 0.8302  max mem: 6510
+Rainbow Train Task[1/1] Epoch[2/60]  [10/94]  eta: 0:01:13  Loss: 3.9820  CE: 4.0641  Match: 0.1977  Sparsity: -8.4081  Acc: 35.94  time: 0.8795  data: 0.0758  max mem: 6510
+Rainbow Train Task[1/1] Epoch[2/60]  [20/94]  eta: 0:01:02  Loss: 3.7491  CE: 3.8318  Match: 0.1503  Sparsity: -8.4138  Acc: 35.94  time: 0.8034  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[2/60]  [30/94]  eta: 0:00:53  Loss: 3.7138  CE: 3.7967  Match: 0.1326  Sparsity: -8.4201  Acc: 37.50  time: 0.8038  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[2/60]  [40/94]  eta: 0:00:44  Loss: 3.3647  CE: 3.4479  Match: 0.1041  Sparsity: -8.4263  Acc: 46.88  time: 0.8046  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[2/60]  [50/94]  eta: 0:00:36  Loss: 3.3536  CE: 3.4368  Match: 0.1173  Sparsity: -8.4306  Acc: 37.50  time: 0.8061  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[2/60]  [60/94]  eta: 0:00:27  Loss: 3.2081  CE: 3.2916  Match: 0.0918  Sparsity: -8.4361  Acc: 45.31  time: 0.8058  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[2/60]  [70/94]  eta: 0:00:19  Loss: 3.0945  CE: 3.1783  Match: 0.0644  Sparsity: -8.4425  Acc: 51.56  time: 0.8058  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[2/60]  [80/94]  eta: 0:00:11  Loss: 3.0599  CE: 3.1436  Match: 0.0796  Sparsity: -8.4482  Acc: 43.75  time: 0.8059  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[2/60]  [90/94]  eta: 0:00:03  Loss: 3.0368  CE: 3.1208  Match: 0.0540  Sparsity: -8.4531  Acc: 43.75  time: 0.8058  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[2/60]  [93/94]  eta: 0:00:00  Loss: 2.9068  CE: 2.9907  Match: 0.0582  Sparsity: -8.4541  Acc: 54.76  time: 0.7922  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[2/60] Total time: 0:01:16 (0.8119 s / it)
+Rainbow Train Task[1/1] Epoch[3/60]  [ 0/94]  eta: 0:02:24  Loss: 2.7684  CE: 2.8523  Match: 0.0622  Sparsity: -8.4545  Acc: 56.25  time: 1.5320  data: 0.6974  max mem: 6510
+Rainbow Train Task[1/1] Epoch[3/60]  [10/94]  eta: 0:01:13  Loss: 2.6638  CE: 2.7479  Match: 0.0442  Sparsity: -8.4583  Acc: 51.56  time: 0.8707  data: 0.0637  max mem: 6510
+Rainbow Train Task[1/1] Epoch[3/60]  [20/94]  eta: 0:01:02  Loss: 2.4321  CE: 2.5162  Match: 0.0459  Sparsity: -8.4591  Acc: 62.50  time: 0.8045  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[3/60]  [30/94]  eta: 0:00:53  Loss: 2.4416  CE: 2.5258  Match: 0.0453  Sparsity: -8.4632  Acc: 59.38  time: 0.8053  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[3/60]  [40/94]  eta: 0:00:44  Loss: 2.3634  CE: 2.4476  Match: 0.0406  Sparsity: -8.4670  Acc: 54.69  time: 0.8061  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[3/60]  [50/94]  eta: 0:00:36  Loss: 2.1182  CE: 2.2018  Match: 0.1094  Sparsity: -8.4684  Acc: 57.81  time: 0.8059  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[3/60]  [60/94]  eta: 0:00:27  Loss: 2.3952  CE: 2.4797  Match: 0.0253  Sparsity: -8.4705  Acc: 51.56  time: 0.8058  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[3/60]  [70/94]  eta: 0:00:19  Loss: 2.1931  CE: 2.2776  Match: 0.0259  Sparsity: -8.4736  Acc: 62.50  time: 0.8056  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[3/60]  [80/94]  eta: 0:00:11  Loss: 1.9085  CE: 1.9930  Match: 0.0269  Sparsity: -8.4802  Acc: 62.50  time: 0.8053  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[3/60]  [90/94]  eta: 0:00:03  Loss: 2.4318  CE: 2.5164  Match: 0.0161  Sparsity: -8.4845  Acc: 53.12  time: 0.8054  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[3/60]  [93/94]  eta: 0:00:00  Loss: 1.9378  CE: 2.0220  Match: 0.0621  Sparsity: -8.4855  Acc: 59.52  time: 0.7917  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[3/60] Total time: 0:01:16 (0.8110 s / it)
+Rainbow Train Task[1/1] Epoch[4/60]  [ 0/94]  eta: 0:02:20  Loss: 1.6578  CE: 1.7424  Match: 0.0185  Sparsity: -8.4857  Acc: 65.62  time: 1.4980  data: 0.6761  max mem: 6510
+Rainbow Train Task[1/1] Epoch[4/60]  [10/94]  eta: 0:01:12  Loss: 2.0037  CE: 2.0884  Match: 0.0218  Sparsity: -8.4880  Acc: 59.38  time: 0.8680  data: 0.0618  max mem: 6510
+Rainbow Train Task[1/1] Epoch[4/60]  [20/94]  eta: 0:01:02  Loss: 1.9368  CE: 2.0216  Match: 0.0126  Sparsity: -8.4921  Acc: 56.25  time: 0.8055  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[4/60]  [30/94]  eta: 0:00:52  Loss: 1.9589  CE: 2.0436  Match: 0.0263  Sparsity: -8.4961  Acc: 59.38  time: 0.8055  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[4/60]  [40/94]  eta: 0:00:44  Loss: 1.7355  CE: 1.8204  Match: 0.0169  Sparsity: -8.4995  Acc: 64.06  time: 0.8050  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[4/60]  [50/94]  eta: 0:00:36  Loss: 1.7111  CE: 1.7956  Match: 0.0490  Sparsity: -8.5029  Acc: 73.44  time: 0.8053  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[4/60]  [60/94]  eta: 0:00:27  Loss: 1.5447  CE: 1.6297  Match: 0.0128  Sparsity: -8.5074  Acc: 64.06  time: 0.8057  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[4/60]  [70/94]  eta: 0:00:19  Loss: 1.9275  CE: 2.0123  Match: 0.0364  Sparsity: -8.5128  Acc: 62.50  time: 0.8058  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[4/60]  [80/94]  eta: 0:00:11  Loss: 1.7891  CE: 1.8742  Match: 0.0112  Sparsity: -8.5164  Acc: 57.81  time: 0.8058  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[4/60]  [90/94]  eta: 0:00:03  Loss: 1.6425  CE: 1.7276  Match: 0.0089  Sparsity: -8.5190  Acc: 71.88  time: 0.8052  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[4/60]  [93/94]  eta: 0:00:00  Loss: 1.4074  CE: 1.4924  Match: 0.0133  Sparsity: -8.5205  Acc: 78.57  time: 0.7914  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[4/60] Total time: 0:01:16 (0.8106 s / it)
+Rainbow Train Task[1/1] Epoch[5/60]  [ 0/94]  eta: 0:02:18  Loss: 1.6045  CE: 1.6895  Match: 0.0244  Sparsity: -8.5211  Acc: 71.88  time: 1.4685  data: 0.6396  max mem: 6510
+Rainbow Train Task[1/1] Epoch[5/60]  [10/94]  eta: 0:01:12  Loss: 1.5336  CE: 1.6185  Match: 0.0310  Sparsity: -8.5266  Acc: 68.75  time: 0.8660  data: 0.0584  max mem: 6510
+Rainbow Train Task[1/1] Epoch[5/60]  [20/94]  eta: 0:01:01  Loss: 1.5256  CE: 1.6107  Match: 0.0241  Sparsity: -8.5320  Acc: 67.19  time: 0.8054  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[5/60]  [30/94]  eta: 0:00:52  Loss: 1.1623  CE: 1.2474  Match: 0.0276  Sparsity: -8.5353  Acc: 71.88  time: 0.8053  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[5/60]  [40/94]  eta: 0:00:44  Loss: 1.2647  CE: 1.3499  Match: 0.0166  Sparsity: -8.5393  Acc: 73.44  time: 0.8051  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[5/60]  [50/94]  eta: 0:00:35  Loss: 1.2574  CE: 1.3428  Match: 0.0115  Sparsity: -8.5445  Acc: 75.00  time: 0.8048  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[5/60]  [60/94]  eta: 0:00:27  Loss: 1.2051  CE: 1.2905  Match: 0.0108  Sparsity: -8.5495  Acc: 79.69  time: 0.8052  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[5/60]  [70/94]  eta: 0:00:19  Loss: 1.2235  CE: 1.3089  Match: 0.0123  Sparsity: -8.5539  Acc: 82.81  time: 0.8054  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[5/60]  [80/94]  eta: 0:00:11  Loss: 1.3382  CE: 1.4235  Match: 0.0303  Sparsity: -8.5581  Acc: 76.56  time: 0.8050  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[5/60]  [90/94]  eta: 0:00:03  Loss: 1.4437  CE: 1.5293  Match: 0.0086  Sparsity: -8.5617  Acc: 65.62  time: 0.8052  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[5/60]  [93/94]  eta: 0:00:00  Loss: 1.3766  CE: 1.4621  Match: 0.0121  Sparsity: -8.5624  Acc: 78.57  time: 0.7917  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[5/60] Total time: 0:01:16 (0.8101 s / it)
+Rainbow Train Task[1/1] Epoch[6/60]  [ 0/94]  eta: 0:02:30  Loss: 1.1381  CE: 1.2237  Match: 0.0097  Sparsity: -8.5627  Acc: 76.56  time: 1.6049  data: 0.7828  max mem: 6510
+Rainbow Train Task[1/1] Epoch[6/60]  [10/94]  eta: 0:01:13  Loss: 0.9689  CE: 1.0545  Match: 0.0097  Sparsity: -8.5674  Acc: 89.06  time: 0.8775  data: 0.0715  max mem: 6510
+Rainbow Train Task[1/1] Epoch[6/60]  [20/94]  eta: 0:01:02  Loss: 1.3558  CE: 1.4414  Match: 0.0119  Sparsity: -8.5729  Acc: 76.56  time: 0.8051  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[6/60]  [30/94]  eta: 0:00:53  Loss: 1.3675  CE: 1.4530  Match: 0.0307  Sparsity: -8.5774  Acc: 73.44  time: 0.8056  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[6/60]  [40/94]  eta: 0:00:44  Loss: 1.2864  CE: 1.3722  Match: 0.0085  Sparsity: -8.5835  Acc: 71.88  time: 0.8059  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[6/60]  [50/94]  eta: 0:00:36  Loss: 1.2256  CE: 1.3114  Match: 0.0093  Sparsity: -8.5910  Acc: 71.88  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[6/60]  [60/94]  eta: 0:00:27  Loss: 1.3731  CE: 1.4590  Match: 0.0073  Sparsity: -8.5985  Acc: 65.62  time: 0.8060  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[6/60]  [70/94]  eta: 0:00:19  Loss: 1.1727  CE: 1.2587  Match: 0.0069  Sparsity: -8.6034  Acc: 81.25  time: 0.8053  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[6/60]  [80/94]  eta: 0:00:11  Loss: 1.1077  CE: 1.1937  Match: 0.0059  Sparsity: -8.6085  Acc: 82.81  time: 0.8052  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[6/60]  [90/94]  eta: 0:00:03  Loss: 1.3472  CE: 1.4329  Match: 0.0525  Sparsity: -8.6138  Acc: 70.31  time: 0.8054  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[6/60]  [93/94]  eta: 0:00:00  Loss: 0.9986  CE: 1.0847  Match: 0.0060  Sparsity: -8.6158  Acc: 80.95  time: 0.7917  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[6/60] Total time: 0:01:16 (0.8118 s / it)
+Rainbow Train Task[1/1] Epoch[7/60]  [ 0/94]  eta: 0:02:22  Loss: 1.0463  CE: 1.1324  Match: 0.0064  Sparsity: -8.6165  Acc: 81.25  time: 1.5151  data: 0.6870  max mem: 6510
+Rainbow Train Task[1/1] Epoch[7/60]  [10/94]  eta: 0:01:13  Loss: 0.9543  CE: 1.0405  Match: 0.0068  Sparsity: -8.6228  Acc: 87.50  time: 0.8702  data: 0.0628  max mem: 6510
+Rainbow Train Task[1/1] Epoch[7/60]  [20/94]  eta: 0:01:02  Loss: 1.4240  CE: 1.5102  Match: 0.0096  Sparsity: -8.6284  Acc: 71.88  time: 0.8058  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[7/60]  [30/94]  eta: 0:00:53  Loss: 1.1008  CE: 1.1871  Match: 0.0079  Sparsity: -8.6345  Acc: 76.56  time: 0.8059  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[7/60]  [40/94]  eta: 0:00:44  Loss: 1.2289  CE: 1.3152  Match: 0.0151  Sparsity: -8.6399  Acc: 75.00  time: 0.8060  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[7/60]  [50/94]  eta: 0:00:36  Loss: 1.2122  CE: 1.2984  Match: 0.0189  Sparsity: -8.6461  Acc: 76.56  time: 0.8060  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[7/60]  [60/94]  eta: 0:00:27  Loss: 1.1671  CE: 1.2536  Match: 0.0087  Sparsity: -8.6529  Acc: 73.44  time: 0.8059  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[7/60]  [70/94]  eta: 0:00:19  Loss: 1.0658  CE: 1.1523  Match: 0.0053  Sparsity: -8.6594  Acc: 79.69  time: 0.8057  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[7/60]  [80/94]  eta: 0:00:11  Loss: 1.2963  CE: 1.3828  Match: 0.0142  Sparsity: -8.6660  Acc: 73.44  time: 0.8055  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[7/60]  [90/94]  eta: 0:00:03  Loss: 0.9720  CE: 1.0585  Match: 0.0143  Sparsity: -8.6728  Acc: 81.25  time: 0.8056  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[7/60]  [93/94]  eta: 0:00:00  Loss: 0.9017  CE: 0.9884  Match: 0.0074  Sparsity: -8.6746  Acc: 83.33  time: 0.7917  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[7/60] Total time: 0:01:16 (0.8111 s / it)
+Rainbow Train Task[1/1] Epoch[8/60]  [ 0/94]  eta: 0:02:19  Loss: 0.9180  CE: 1.0047  Match: 0.0049  Sparsity: -8.6752  Acc: 84.38  time: 1.4866  data: 0.6552  max mem: 6510
+Rainbow Train Task[1/1] Epoch[8/60]  [10/94]  eta: 0:01:12  Loss: 0.7969  CE: 0.8836  Match: 0.0087  Sparsity: -8.6798  Acc: 87.50  time: 0.8665  data: 0.0599  max mem: 6510
+Rainbow Train Task[1/1] Epoch[8/60]  [20/94]  eta: 0:01:01  Loss: 0.9839  CE: 1.0706  Match: 0.0092  Sparsity: -8.6856  Acc: 73.44  time: 0.8052  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[8/60]  [30/94]  eta: 0:00:52  Loss: 0.7449  CE: 0.8317  Match: 0.0114  Sparsity: -8.6931  Acc: 82.81  time: 0.8062  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[8/60]  [40/94]  eta: 0:00:44  Loss: 1.1081  CE: 1.1950  Match: 0.0159  Sparsity: -8.6994  Acc: 82.81  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[8/60]  [50/94]  eta: 0:00:36  Loss: 0.7662  CE: 0.8532  Match: 0.0127  Sparsity: -8.7069  Acc: 78.12  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[8/60]  [60/94]  eta: 0:00:27  Loss: 1.1203  CE: 1.2074  Match: 0.0088  Sparsity: -8.7148  Acc: 78.12  time: 0.8060  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[8/60]  [70/94]  eta: 0:00:19  Loss: 0.9475  CE: 1.0346  Match: 0.0049  Sparsity: -8.7228  Acc: 75.00  time: 0.8059  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[8/60]  [80/94]  eta: 0:00:11  Loss: 0.6363  CE: 0.7235  Match: 0.0074  Sparsity: -8.7294  Acc: 89.06  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[8/60]  [90/94]  eta: 0:00:03  Loss: 1.1191  CE: 1.2064  Match: 0.0097  Sparsity: -8.7359  Acc: 73.44  time: 0.8058  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[8/60]  [93/94]  eta: 0:00:00  Loss: 1.1182  CE: 1.2055  Match: 0.0044  Sparsity: -8.7377  Acc: 83.33  time: 0.7920  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[8/60] Total time: 0:01:16 (0.8110 s / it)
+Rainbow Train Task[1/1] Epoch[9/60]  [ 0/94]  eta: 0:02:23  Loss: 1.1238  CE: 1.2112  Match: 0.0067  Sparsity: -8.7383  Acc: 79.69  time: 1.5285  data: 0.6988  max mem: 6510
+Rainbow Train Task[1/1] Epoch[9/60]  [10/94]  eta: 0:01:13  Loss: 0.8401  CE: 0.9275  Match: 0.0074  Sparsity: -8.7447  Acc: 81.25  time: 0.8711  data: 0.0638  max mem: 6510
+Rainbow Train Task[1/1] Epoch[9/60]  [20/94]  eta: 0:01:02  Loss: 0.9369  CE: 1.0243  Match: 0.0038  Sparsity: -8.7518  Acc: 79.69  time: 0.8054  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[9/60]  [30/94]  eta: 0:00:53  Loss: 0.9615  CE: 1.0490  Match: 0.0078  Sparsity: -8.7593  Acc: 79.69  time: 0.8061  data: 0.0005  max mem: 6510
+Rainbow Train Task[1/1] Epoch[9/60]  [40/94]  eta: 0:00:44  Loss: 1.1686  CE: 1.2562  Match: 0.0077  Sparsity: -8.7672  Acc: 73.44  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[9/60]  [50/94]  eta: 0:00:36  Loss: 0.9361  CE: 1.0237  Match: 0.0118  Sparsity: -8.7748  Acc: 81.25  time: 0.8062  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[9/60]  [60/94]  eta: 0:00:27  Loss: 0.6529  CE: 0.7407  Match: 0.0082  Sparsity: -8.7825  Acc: 89.06  time: 0.8055  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[9/60]  [70/94]  eta: 0:00:19  Loss: 0.8088  CE: 0.8967  Match: 0.0041  Sparsity: -8.7904  Acc: 85.94  time: 0.8052  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[9/60]  [80/94]  eta: 0:00:11  Loss: 0.8797  CE: 0.9676  Match: 0.0111  Sparsity: -8.7983  Acc: 79.69  time: 0.8059  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[9/60]  [90/94]  eta: 0:00:03  Loss: 0.9045  CE: 0.9925  Match: 0.0065  Sparsity: -8.8073  Acc: 79.69  time: 0.8060  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[9/60]  [93/94]  eta: 0:00:00  Loss: 1.0268  CE: 1.1147  Match: 0.0201  Sparsity: -8.8098  Acc: 73.81  time: 0.7922  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[9/60] Total time: 0:01:16 (0.8113 s / it)
+Rainbow Train Task[1/1] Epoch[10/60]  [ 0/94]  eta: 0:02:25  Loss: 0.7964  CE: 0.8845  Match: 0.0057  Sparsity: -8.8108  Acc: 78.12  time: 1.5514  data: 0.7152  max mem: 6510
+Rainbow Train Task[1/1] Epoch[10/60]  [10/94]  eta: 0:01:13  Loss: 0.8557  CE: 0.9438  Match: 0.0048  Sparsity: -8.8187  Acc: 78.12  time: 0.8740  data: 0.0654  max mem: 6510
+Rainbow Train Task[1/1] Epoch[10/60]  [20/94]  eta: 0:01:02  Loss: 0.8522  CE: 0.9404  Match: 0.0082  Sparsity: -8.8254  Acc: 84.38  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[10/60]  [30/94]  eta: 0:00:53  Loss: 0.8678  CE: 0.9561  Match: 0.0035  Sparsity: -8.8326  Acc: 76.56  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[10/60]  [40/94]  eta: 0:00:44  Loss: 0.9242  CE: 1.0125  Match: 0.0109  Sparsity: -8.8397  Acc: 79.69  time: 0.8059  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[10/60]  [50/94]  eta: 0:00:36  Loss: 0.9132  CE: 1.0014  Match: 0.0236  Sparsity: -8.8471  Acc: 79.69  time: 0.8055  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[10/60]  [60/94]  eta: 0:00:27  Loss: 0.9732  CE: 1.0617  Match: 0.0039  Sparsity: -8.8551  Acc: 78.12  time: 0.8057  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[10/60]  [70/94]  eta: 0:00:19  Loss: 0.6279  CE: 0.7165  Match: 0.0050  Sparsity: -8.8625  Acc: 85.94  time: 0.8061  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[10/60]  [80/94]  eta: 0:00:11  Loss: 0.7042  CE: 0.7928  Match: 0.0032  Sparsity: -8.8701  Acc: 82.81  time: 0.8057  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[10/60]  [90/94]  eta: 0:00:03  Loss: 0.9025  CE: 0.9911  Match: 0.0128  Sparsity: -8.8777  Acc: 79.69  time: 0.8048  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[10/60]  [93/94]  eta: 0:00:00  Loss: 0.7176  CE: 0.8064  Match: 0.0043  Sparsity: -8.8800  Acc: 88.10  time: 0.7915  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[10/60] Total time: 0:01:16 (0.8115 s / it)
+Rainbow Train Task[1/1] Epoch[11/60]  [ 0/94]  eta: 0:02:36  Loss: 0.6943  CE: 0.7831  Match: 0.0091  Sparsity: -8.8807  Acc: 82.81  time: 1.6624  data: 0.8378  max mem: 6510
+Rainbow Train Task[1/1] Epoch[11/60]  [10/94]  eta: 0:01:14  Loss: 0.6515  CE: 0.7402  Match: 0.0106  Sparsity: -8.8878  Acc: 81.25  time: 0.8832  data: 0.0765  max mem: 6510
+Rainbow Train Task[1/1] Epoch[11/60]  [20/94]  eta: 0:01:02  Loss: 0.6031  CE: 0.6920  Match: 0.0039  Sparsity: -8.8955  Acc: 87.50  time: 0.8056  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[11/60]  [30/94]  eta: 0:00:53  Loss: 0.9712  CE: 1.0602  Match: 0.0039  Sparsity: -8.9032  Acc: 78.12  time: 0.8060  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[11/60]  [40/94]  eta: 0:00:44  Loss: 0.6846  CE: 0.7736  Match: 0.0037  Sparsity: -8.9103  Acc: 82.81  time: 0.8062  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[11/60]  [50/94]  eta: 0:00:36  Loss: 0.8516  CE: 0.9407  Match: 0.0044  Sparsity: -8.9176  Acc: 82.81  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[11/60]  [60/94]  eta: 0:00:27  Loss: 0.8776  CE: 0.9668  Match: 0.0040  Sparsity: -8.9248  Acc: 78.12  time: 0.8057  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[11/60]  [70/94]  eta: 0:00:19  Loss: 0.5589  CE: 0.6482  Match: 0.0027  Sparsity: -8.9326  Acc: 87.50  time: 0.8051  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[11/60]  [80/94]  eta: 0:00:11  Loss: 0.5552  CE: 0.6446  Match: 0.0034  Sparsity: -8.9410  Acc: 87.50  time: 0.8057  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[11/60]  [90/94]  eta: 0:00:03  Loss: 0.8115  CE: 0.9009  Match: 0.0121  Sparsity: -8.9494  Acc: 79.69  time: 0.8057  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[11/60]  [93/94]  eta: 0:00:00  Loss: 0.8673  CE: 0.9567  Match: 0.0082  Sparsity: -8.9520  Acc: 78.57  time: 0.7921  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[11/60] Total time: 0:01:16 (0.8127 s / it)
+Rainbow Train Task[1/1] Epoch[12/60]  [ 0/94]  eta: 0:02:19  Loss: 0.8855  CE: 0.9749  Match: 0.0099  Sparsity: -8.9529  Acc: 75.00  time: 1.4881  data: 0.6545  max mem: 6510
+Rainbow Train Task[1/1] Epoch[12/60]  [10/94]  eta: 0:01:12  Loss: 0.9095  CE: 0.9991  Match: 0.0061  Sparsity: -8.9612  Acc: 76.56  time: 0.8674  data: 0.0598  max mem: 6510
+Rainbow Train Task[1/1] Epoch[12/60]  [20/94]  eta: 0:01:02  Loss: 0.9450  CE: 1.0347  Match: 0.0039  Sparsity: -8.9694  Acc: 79.69  time: 0.8059  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[12/60]  [30/94]  eta: 0:00:52  Loss: 0.6420  CE: 0.7317  Match: 0.0026  Sparsity: -8.9774  Acc: 84.38  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[12/60]  [40/94]  eta: 0:00:44  Loss: 0.6398  CE: 0.7297  Match: 0.0042  Sparsity: -8.9845  Acc: 87.50  time: 0.8062  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[12/60]  [50/94]  eta: 0:00:36  Loss: 0.6980  CE: 0.7879  Match: 0.0045  Sparsity: -8.9926  Acc: 85.94  time: 0.8060  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[12/60]  [60/94]  eta: 0:00:27  Loss: 0.5834  CE: 0.6734  Match: 0.0060  Sparsity: -9.0010  Acc: 92.19  time: 0.8058  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[12/60]  [70/94]  eta: 0:00:19  Loss: 0.8469  CE: 0.9370  Match: 0.0025  Sparsity: -9.0098  Acc: 82.81  time: 0.8057  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[12/60]  [80/94]  eta: 0:00:11  Loss: 0.7314  CE: 0.8215  Match: 0.0066  Sparsity: -9.0187  Acc: 79.69  time: 0.8060  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[12/60]  [90/94]  eta: 0:00:03  Loss: 0.6386  CE: 0.7289  Match: 0.0034  Sparsity: -9.0266  Acc: 85.94  time: 0.8062  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[12/60]  [93/94]  eta: 0:00:00  Loss: 0.6590  CE: 0.7492  Match: 0.0034  Sparsity: -9.0291  Acc: 85.71  time: 0.7928  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[12/60] Total time: 0:01:16 (0.8111 s / it)
+Rainbow Train Task[1/1] Epoch[13/60]  [ 0/94]  eta: 0:02:32  Loss: 1.0383  CE: 1.1286  Match: 0.0050  Sparsity: -9.0299  Acc: 75.00  time: 1.6212  data: 0.7912  max mem: 6510
+Rainbow Train Task[1/1] Epoch[13/60]  [10/94]  eta: 0:01:13  Loss: 1.1726  CE: 1.2629  Match: 0.0034  Sparsity: -9.0378  Acc: 76.56  time: 0.8799  data: 0.0722  max mem: 6510
+Rainbow Train Task[1/1] Epoch[13/60]  [20/94]  eta: 0:01:02  Loss: 0.7763  CE: 0.8667  Match: 0.0039  Sparsity: -9.0459  Acc: 84.38  time: 0.8058  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[13/60]  [30/94]  eta: 0:00:53  Loss: 0.5266  CE: 0.6171  Match: 0.0034  Sparsity: -9.0537  Acc: 87.50  time: 0.8061  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[13/60]  [40/94]  eta: 0:00:44  Loss: 0.8295  CE: 0.9199  Match: 0.0240  Sparsity: -9.0605  Acc: 82.81  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[13/60]  [50/94]  eta: 0:00:36  Loss: 0.6969  CE: 0.7876  Match: 0.0072  Sparsity: -9.0684  Acc: 81.25  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[13/60]  [60/94]  eta: 0:00:27  Loss: 0.6433  CE: 0.7340  Match: 0.0078  Sparsity: -9.0762  Acc: 78.12  time: 0.8061  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[13/60]  [70/94]  eta: 0:00:19  Loss: 0.6440  CE: 0.7348  Match: 0.0069  Sparsity: -9.0832  Acc: 82.81  time: 0.8057  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[13/60]  [80/94]  eta: 0:00:11  Loss: 0.6278  CE: 0.7187  Match: 0.0047  Sparsity: -9.0908  Acc: 82.81  time: 0.8054  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[13/60]  [90/94]  eta: 0:00:03  Loss: 0.4564  CE: 0.5473  Match: 0.0054  Sparsity: -9.0981  Acc: 93.75  time: 0.8055  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[13/60]  [93/94]  eta: 0:00:00  Loss: 0.5815  CE: 0.6724  Match: 0.0095  Sparsity: -9.1004  Acc: 78.57  time: 0.7922  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[13/60] Total time: 0:01:16 (0.8125 s / it)
+Rainbow Train Task[1/1] Epoch[14/60]  [ 0/94]  eta: 0:02:25  Loss: 0.5817  CE: 0.6727  Match: 0.0030  Sparsity: -9.1012  Acc: 85.94  time: 1.5434  data: 0.7117  max mem: 6510
+Rainbow Train Task[1/1] Epoch[14/60]  [10/94]  eta: 0:01:13  Loss: 0.9555  CE: 1.0465  Match: 0.0032  Sparsity: -9.1089  Acc: 75.00  time: 0.8730  data: 0.0650  max mem: 6510
+Rainbow Train Task[1/1] Epoch[14/60]  [20/94]  eta: 0:01:02  Loss: 0.6435  CE: 0.7345  Match: 0.0102  Sparsity: -9.1161  Acc: 84.38  time: 0.8062  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[14/60]  [30/94]  eta: 0:00:53  Loss: 0.7769  CE: 0.8680  Match: 0.0068  Sparsity: -9.1253  Acc: 81.25  time: 0.8061  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[14/60]  [40/94]  eta: 0:00:44  Loss: 0.7755  CE: 0.8668  Match: 0.0069  Sparsity: -9.1344  Acc: 82.81  time: 0.8060  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[14/60]  [50/94]  eta: 0:00:36  Loss: 1.1488  CE: 1.2402  Match: 0.0059  Sparsity: -9.1436  Acc: 71.88  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[14/60]  [60/94]  eta: 0:00:27  Loss: 0.6438  CE: 0.7352  Match: 0.0062  Sparsity: -9.1530  Acc: 84.38  time: 0.8062  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[14/60]  [70/94]  eta: 0:00:19  Loss: 0.8557  CE: 0.9473  Match: 0.0051  Sparsity: -9.1620  Acc: 76.56  time: 0.8060  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[14/60]  [80/94]  eta: 0:00:11  Loss: 0.5495  CE: 0.6412  Match: 0.0021  Sparsity: -9.1707  Acc: 85.94  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[14/60]  [90/94]  eta: 0:00:03  Loss: 0.4835  CE: 0.5753  Match: 0.0034  Sparsity: -9.1792  Acc: 87.50  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[14/60]  [93/94]  eta: 0:00:00  Loss: 0.8704  CE: 0.9622  Match: 0.0049  Sparsity: -9.1816  Acc: 71.43  time: 0.7926  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[14/60] Total time: 0:01:16 (0.8118 s / it)
+Rainbow Train Task[1/1] Epoch[15/60]  [ 0/94]  eta: 0:02:19  Loss: 0.8303  CE: 0.9220  Match: 0.0135  Sparsity: -9.1825  Acc: 81.25  time: 1.4880  data: 0.6575  max mem: 6510
+Rainbow Train Task[1/1] Epoch[15/60]  [10/94]  eta: 0:01:12  Loss: 0.6662  CE: 0.7581  Match: 0.0035  Sparsity: -9.1907  Acc: 82.81  time: 0.8674  data: 0.0601  max mem: 6510
+Rainbow Train Task[1/1] Epoch[15/60]  [20/94]  eta: 0:01:02  Loss: 0.8406  CE: 0.9325  Match: 0.0084  Sparsity: -9.1997  Acc: 79.69  time: 0.8057  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[15/60]  [30/94]  eta: 0:00:52  Loss: 0.6241  CE: 0.7161  Match: 0.0062  Sparsity: -9.2085  Acc: 85.94  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[15/60]  [40/94]  eta: 0:00:44  Loss: 0.5167  CE: 0.6089  Match: 0.0024  Sparsity: -9.2174  Acc: 87.50  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[15/60]  [50/94]  eta: 0:00:36  Loss: 0.5493  CE: 0.6415  Match: 0.0033  Sparsity: -9.2268  Acc: 87.50  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[15/60]  [60/94]  eta: 0:00:27  Loss: 0.7423  CE: 0.8347  Match: 0.0038  Sparsity: -9.2355  Acc: 76.56  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[15/60]  [70/94]  eta: 0:00:19  Loss: 0.6308  CE: 0.7232  Match: 0.0048  Sparsity: -9.2442  Acc: 87.50  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[15/60]  [80/94]  eta: 0:00:11  Loss: 0.5830  CE: 0.6755  Match: 0.0032  Sparsity: -9.2531  Acc: 85.94  time: 0.8058  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[15/60]  [90/94]  eta: 0:00:03  Loss: 0.5962  CE: 0.6888  Match: 0.0025  Sparsity: -9.2615  Acc: 87.50  time: 0.8054  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[15/60]  [93/94]  eta: 0:00:00  Loss: 0.8500  CE: 0.9426  Match: 0.0027  Sparsity: -9.2641  Acc: 83.33  time: 0.7922  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[15/60] Total time: 0:01:16 (0.8112 s / it)
+Rainbow Train Task[1/1] Epoch[16/60]  [ 0/94]  eta: 0:02:28  Loss: 0.3498  CE: 0.4424  Match: 0.0024  Sparsity: -9.2650  Acc: 95.31  time: 1.5757  data: 0.7574  max mem: 6510
+Rainbow Train Task[1/1] Epoch[16/60]  [10/94]  eta: 0:01:13  Loss: 0.5361  CE: 0.6288  Match: 0.0062  Sparsity: -9.2735  Acc: 85.94  time: 0.8752  data: 0.0692  max mem: 6510
+Rainbow Train Task[1/1] Epoch[16/60]  [20/94]  eta: 0:01:02  Loss: 1.1117  CE: 1.2045  Match: 0.0024  Sparsity: -9.2820  Acc: 70.31  time: 0.8059  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[16/60]  [30/94]  eta: 0:00:53  Loss: 0.6280  CE: 0.7209  Match: 0.0039  Sparsity: -9.2902  Acc: 87.50  time: 0.8061  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[16/60]  [40/94]  eta: 0:00:44  Loss: 0.7252  CE: 0.8182  Match: 0.0030  Sparsity: -9.2988  Acc: 79.69  time: 0.8058  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[16/60]  [50/94]  eta: 0:00:36  Loss: 0.7504  CE: 0.8435  Match: 0.0038  Sparsity: -9.3078  Acc: 82.81  time: 0.8058  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[16/60]  [60/94]  eta: 0:00:27  Loss: 0.6735  CE: 0.7666  Match: 0.0060  Sparsity: -9.3161  Acc: 84.38  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[16/60]  [70/94]  eta: 0:00:19  Loss: 0.6528  CE: 0.7461  Match: 0.0029  Sparsity: -9.3247  Acc: 82.81  time: 0.8066  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[16/60]  [80/94]  eta: 0:00:11  Loss: 0.7491  CE: 0.8424  Match: 0.0043  Sparsity: -9.3340  Acc: 84.38  time: 0.8060  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[16/60]  [90/94]  eta: 0:00:03  Loss: 0.8116  CE: 0.9050  Match: 0.0021  Sparsity: -9.3437  Acc: 79.69  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[16/60]  [93/94]  eta: 0:00:00  Loss: 0.4732  CE: 0.5666  Match: 0.0036  Sparsity: -9.3464  Acc: 90.48  time: 0.7930  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[16/60] Total time: 0:01:16 (0.8122 s / it)
+Rainbow Train Task[1/1] Epoch[17/60]  [ 0/94]  eta: 0:02:16  Loss: 0.8298  CE: 0.9232  Match: 0.0028  Sparsity: -9.3473  Acc: 76.56  time: 1.4515  data: 0.6114  max mem: 6510
+Rainbow Train Task[1/1] Epoch[17/60]  [10/94]  eta: 0:01:12  Loss: 0.5481  CE: 0.6417  Match: 0.0018  Sparsity: -9.3554  Acc: 85.94  time: 0.8644  data: 0.0559  max mem: 6510
+Rainbow Train Task[1/1] Epoch[17/60]  [20/94]  eta: 0:01:01  Loss: 0.5644  CE: 0.6580  Match: 0.0030  Sparsity: -9.3631  Acc: 89.06  time: 0.8058  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[17/60]  [30/94]  eta: 0:00:52  Loss: 0.5507  CE: 0.6444  Match: 0.0041  Sparsity: -9.3721  Acc: 87.50  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[17/60]  [40/94]  eta: 0:00:44  Loss: 0.6970  CE: 0.7908  Match: 0.0018  Sparsity: -9.3812  Acc: 81.25  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[17/60]  [50/94]  eta: 0:00:36  Loss: 0.6243  CE: 0.7182  Match: 0.0025  Sparsity: -9.3894  Acc: 79.69  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[17/60]  [60/94]  eta: 0:00:27  Loss: 0.8810  CE: 0.9749  Match: 0.0054  Sparsity: -9.3979  Acc: 79.69  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[17/60]  [70/94]  eta: 0:00:19  Loss: 0.8472  CE: 0.9413  Match: 0.0026  Sparsity: -9.4070  Acc: 75.00  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[17/60]  [80/94]  eta: 0:00:11  Loss: 0.7220  CE: 0.8161  Match: 0.0031  Sparsity: -9.4158  Acc: 78.12  time: 0.8061  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[17/60]  [90/94]  eta: 0:00:03  Loss: 0.4914  CE: 0.5857  Match: 0.0034  Sparsity: -9.4249  Acc: 85.94  time: 0.8057  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[17/60]  [93/94]  eta: 0:00:00  Loss: 0.6833  CE: 0.7776  Match: 0.0015  Sparsity: -9.4274  Acc: 85.71  time: 0.7925  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[17/60] Total time: 0:01:16 (0.8109 s / it)
+Rainbow Train Task[1/1] Epoch[18/60]  [ 0/94]  eta: 0:02:19  Loss: 0.7595  CE: 0.8538  Match: 0.0020  Sparsity: -9.4282  Acc: 79.69  time: 1.4858  data: 0.6499  max mem: 6510
+Rainbow Train Task[1/1] Epoch[18/60]  [10/94]  eta: 0:01:12  Loss: 0.6719  CE: 0.7663  Match: 0.0044  Sparsity: -9.4368  Acc: 82.81  time: 0.8678  data: 0.0594  max mem: 6510
+Rainbow Train Task[1/1] Epoch[18/60]  [20/94]  eta: 0:01:02  Loss: 0.4865  CE: 0.5810  Match: 0.0018  Sparsity: -9.4452  Acc: 89.06  time: 0.8059  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[18/60]  [30/94]  eta: 0:00:53  Loss: 0.6540  CE: 0.7484  Match: 0.0087  Sparsity: -9.4533  Acc: 81.25  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[18/60]  [40/94]  eta: 0:00:44  Loss: 0.6915  CE: 0.7860  Match: 0.0060  Sparsity: -9.4618  Acc: 81.25  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[18/60]  [50/94]  eta: 0:00:36  Loss: 0.6553  CE: 0.7500  Match: 0.0023  Sparsity: -9.4710  Acc: 84.38  time: 0.8061  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[18/60]  [60/94]  eta: 0:00:27  Loss: 0.5170  CE: 0.6118  Match: 0.0020  Sparsity: -9.4800  Acc: 89.06  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[18/60]  [70/94]  eta: 0:00:19  Loss: 0.8356  CE: 0.9305  Match: 0.0022  Sparsity: -9.4893  Acc: 76.56  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[18/60]  [80/94]  eta: 0:00:11  Loss: 0.5239  CE: 0.6188  Match: 0.0050  Sparsity: -9.4984  Acc: 85.94  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[18/60]  [90/94]  eta: 0:00:03  Loss: 0.2698  CE: 0.3649  Match: 0.0018  Sparsity: -9.5070  Acc: 95.31  time: 0.8060  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[18/60]  [93/94]  eta: 0:00:00  Loss: 0.4910  CE: 0.5861  Match: 0.0028  Sparsity: -9.5095  Acc: 85.71  time: 0.7928  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[18/60] Total time: 0:01:16 (0.8114 s / it)
+Rainbow Train Task[1/1] Epoch[19/60]  [ 0/94]  eta: 0:02:31  Loss: 0.3570  CE: 0.4521  Match: 0.0013  Sparsity: -9.5103  Acc: 90.62  time: 1.6092  data: 0.7702  max mem: 6510
+Rainbow Train Task[1/1] Epoch[19/60]  [10/94]  eta: 0:01:13  Loss: 0.5562  CE: 0.6513  Match: 0.0039  Sparsity: -9.5179  Acc: 85.94  time: 0.8788  data: 0.0703  max mem: 6510
+Rainbow Train Task[1/1] Epoch[19/60]  [20/94]  eta: 0:01:02  Loss: 0.7456  CE: 0.8408  Match: 0.0035  Sparsity: -9.5252  Acc: 75.00  time: 0.8059  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[19/60]  [30/94]  eta: 0:00:53  Loss: 0.4286  CE: 0.5239  Match: 0.0042  Sparsity: -9.5331  Acc: 89.06  time: 0.8057  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[19/60]  [40/94]  eta: 0:00:44  Loss: 0.5326  CE: 0.6280  Match: 0.0019  Sparsity: -9.5419  Acc: 82.81  time: 0.8057  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[19/60]  [50/94]  eta: 0:00:36  Loss: 0.6406  CE: 0.7360  Match: 0.0020  Sparsity: -9.5504  Acc: 81.25  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[19/60]  [60/94]  eta: 0:00:27  Loss: 0.6078  CE: 0.7033  Match: 0.0048  Sparsity: -9.5592  Acc: 82.81  time: 0.8058  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[19/60]  [70/94]  eta: 0:00:19  Loss: 0.5146  CE: 0.6103  Match: 0.0024  Sparsity: -9.5679  Acc: 87.50  time: 0.8054  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[19/60]  [80/94]  eta: 0:00:11  Loss: 0.6224  CE: 0.7181  Match: 0.0026  Sparsity: -9.5763  Acc: 79.69  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[19/60]  [90/94]  eta: 0:00:03  Loss: 0.6383  CE: 0.7341  Match: 0.0021  Sparsity: -9.5848  Acc: 81.25  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[19/60]  [93/94]  eta: 0:00:00  Loss: 0.8973  CE: 0.9932  Match: 0.0016  Sparsity: -9.5875  Acc: 80.95  time: 0.7932  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[19/60] Total time: 0:01:16 (0.8124 s / it)
+Rainbow Train Task[1/1] Epoch[20/60]  [ 0/94]  eta: 0:02:25  Loss: 0.5825  CE: 0.6783  Match: 0.0036  Sparsity: -9.5884  Acc: 82.81  time: 1.5517  data: 0.7028  max mem: 6510
+Rainbow Train Task[1/1] Epoch[20/60]  [10/94]  eta: 0:01:13  Loss: 0.6232  CE: 0.7192  Match: 0.0028  Sparsity: -9.5971  Acc: 85.94  time: 0.8741  data: 0.0642  max mem: 6510
+Rainbow Train Task[1/1] Epoch[20/60]  [20/94]  eta: 0:01:02  Loss: 0.5773  CE: 0.6733  Match: 0.0018  Sparsity: -9.6051  Acc: 84.38  time: 0.8065  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[20/60]  [30/94]  eta: 0:00:53  Loss: 0.4438  CE: 0.5399  Match: 0.0030  Sparsity: -9.6127  Acc: 82.81  time: 0.8068  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[20/60]  [40/94]  eta: 0:00:44  Loss: 0.6738  CE: 0.7700  Match: 0.0042  Sparsity: -9.6202  Acc: 82.81  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[20/60]  [50/94]  eta: 0:00:36  Loss: 0.7965  CE: 0.8927  Match: 0.0086  Sparsity: -9.6284  Acc: 76.56  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[20/60]  [60/94]  eta: 0:00:27  Loss: 0.3281  CE: 0.4244  Match: 0.0052  Sparsity: -9.6368  Acc: 89.06  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[20/60]  [70/94]  eta: 0:00:19  Loss: 0.8105  CE: 0.9069  Match: 0.0038  Sparsity: -9.6453  Acc: 78.12  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[20/60]  [80/94]  eta: 0:00:11  Loss: 0.6001  CE: 0.6966  Match: 0.0025  Sparsity: -9.6537  Acc: 81.25  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[20/60]  [90/94]  eta: 0:00:03  Loss: 0.7734  CE: 0.8700  Match: 0.0023  Sparsity: -9.6617  Acc: 81.25  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[20/60]  [93/94]  eta: 0:00:00  Loss: 0.4947  CE: 0.5913  Match: 0.0013  Sparsity: -9.6642  Acc: 83.33  time: 0.7926  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[20/60] Total time: 0:01:16 (0.8124 s / it)
+Rainbow Train Task[1/1] Epoch[21/60]  [ 0/94]  eta: 0:02:30  Loss: 0.8134  CE: 0.9100  Match: 0.0028  Sparsity: -9.6649  Acc: 73.44  time: 1.5975  data: 0.7592  max mem: 6510
+Rainbow Train Task[1/1] Epoch[21/60]  [10/94]  eta: 0:01:13  Loss: 0.3070  CE: 0.4037  Match: 0.0027  Sparsity: -9.6728  Acc: 89.06  time: 0.8782  data: 0.0693  max mem: 6510
+Rainbow Train Task[1/1] Epoch[21/60]  [20/94]  eta: 0:01:02  Loss: 0.5205  CE: 0.6173  Match: 0.0016  Sparsity: -9.6813  Acc: 85.94  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[21/60]  [30/94]  eta: 0:00:53  Loss: 0.4520  CE: 0.5488  Match: 0.0026  Sparsity: -9.6893  Acc: 89.06  time: 0.8062  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[21/60]  [40/94]  eta: 0:00:44  Loss: 0.8662  CE: 0.9632  Match: 0.0027  Sparsity: -9.6977  Acc: 85.94  time: 0.8061  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[21/60]  [50/94]  eta: 0:00:36  Loss: 0.5482  CE: 0.6452  Match: 0.0020  Sparsity: -9.7060  Acc: 84.38  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[21/60]  [60/94]  eta: 0:00:27  Loss: 0.4761  CE: 0.5732  Match: 0.0048  Sparsity: -9.7148  Acc: 85.94  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[21/60]  [70/94]  eta: 0:00:19  Loss: 0.5590  CE: 0.6562  Match: 0.0020  Sparsity: -9.7234  Acc: 85.94  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[21/60]  [80/94]  eta: 0:00:11  Loss: 0.6258  CE: 0.7231  Match: 0.0024  Sparsity: -9.7325  Acc: 82.81  time: 0.8059  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[21/60]  [90/94]  eta: 0:00:03  Loss: 0.6813  CE: 0.7787  Match: 0.0013  Sparsity: -9.7413  Acc: 82.81  time: 0.8059  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[21/60]  [93/94]  eta: 0:00:00  Loss: 0.7286  CE: 0.8260  Match: 0.0032  Sparsity: -9.7438  Acc: 76.19  time: 0.7925  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[21/60] Total time: 0:01:16 (0.8126 s / it)
+Rainbow Train Task[1/1] Epoch[22/60]  [ 0/94]  eta: 0:02:30  Loss: 0.5239  CE: 0.6213  Match: 0.0024  Sparsity: -9.7447  Acc: 87.50  time: 1.5962  data: 0.7631  max mem: 6510
+Rainbow Train Task[1/1] Epoch[22/60]  [10/94]  eta: 0:01:13  Loss: 0.5754  CE: 0.6729  Match: 0.0029  Sparsity: -9.7528  Acc: 82.81  time: 0.8786  data: 0.0697  max mem: 6510
+Rainbow Train Task[1/1] Epoch[22/60]  [20/94]  eta: 0:01:02  Loss: 0.5859  CE: 0.6835  Match: 0.0016  Sparsity: -9.7604  Acc: 85.94  time: 0.8065  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[22/60]  [30/94]  eta: 0:00:53  Loss: 0.4844  CE: 0.5821  Match: 0.0013  Sparsity: -9.7683  Acc: 87.50  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[22/60]  [40/94]  eta: 0:00:44  Loss: 0.6308  CE: 0.7285  Match: 0.0027  Sparsity: -9.7757  Acc: 84.38  time: 0.8072  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[22/60]  [50/94]  eta: 0:00:36  Loss: 0.5732  CE: 0.6710  Match: 0.0009  Sparsity: -9.7840  Acc: 87.50  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[22/60]  [60/94]  eta: 0:00:27  Loss: 0.7992  CE: 0.8971  Match: 0.0013  Sparsity: -9.7924  Acc: 78.12  time: 0.8062  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[22/60]  [70/94]  eta: 0:00:19  Loss: 0.5532  CE: 0.6512  Match: 0.0013  Sparsity: -9.8008  Acc: 90.62  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[22/60]  [80/94]  eta: 0:00:11  Loss: 0.5032  CE: 0.6013  Match: 0.0019  Sparsity: -9.8090  Acc: 82.81  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[22/60]  [90/94]  eta: 0:00:03  Loss: 0.4299  CE: 0.5280  Match: 0.0031  Sparsity: -9.8169  Acc: 89.06  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[22/60]  [93/94]  eta: 0:00:00  Loss: 0.3707  CE: 0.4689  Match: 0.0019  Sparsity: -9.8192  Acc: 88.10  time: 0.7931  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[22/60] Total time: 0:01:16 (0.8130 s / it)
+Rainbow Train Task[1/1] Epoch[23/60]  [ 0/94]  eta: 0:02:23  Loss: 0.4872  CE: 0.5854  Match: 0.0033  Sparsity: -9.8201  Acc: 87.50  time: 1.5291  data: 0.7073  max mem: 6510
+Rainbow Train Task[1/1] Epoch[23/60]  [10/94]  eta: 0:01:13  Loss: 0.5014  CE: 0.5997  Match: 0.0017  Sparsity: -9.8279  Acc: 84.38  time: 0.8725  data: 0.0646  max mem: 6510
+Rainbow Train Task[1/1] Epoch[23/60]  [20/94]  eta: 0:01:02  Loss: 0.4257  CE: 0.5241  Match: 0.0025  Sparsity: -9.8355  Acc: 90.62  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[23/60]  [30/94]  eta: 0:00:53  Loss: 0.4293  CE: 0.5277  Match: 0.0016  Sparsity: -9.8438  Acc: 87.50  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[23/60]  [40/94]  eta: 0:00:44  Loss: 0.5996  CE: 0.6981  Match: 0.0019  Sparsity: -9.8522  Acc: 81.25  time: 0.8070  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[23/60]  [50/94]  eta: 0:00:36  Loss: 0.4958  CE: 0.5943  Match: 0.0013  Sparsity: -9.8600  Acc: 89.06  time: 0.8074  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[23/60]  [60/94]  eta: 0:00:27  Loss: 0.4517  CE: 0.5504  Match: 0.0015  Sparsity: -9.8676  Acc: 92.19  time: 0.8077  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[23/60]  [70/94]  eta: 0:00:19  Loss: 0.4707  CE: 0.5694  Match: 0.0011  Sparsity: -9.8760  Acc: 89.06  time: 0.8073  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[23/60]  [80/94]  eta: 0:00:11  Loss: 0.7601  CE: 0.8589  Match: 0.0018  Sparsity: -9.8835  Acc: 81.25  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[23/60]  [90/94]  eta: 0:00:03  Loss: 0.5509  CE: 0.6498  Match: 0.0014  Sparsity: -9.8915  Acc: 84.38  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[23/60]  [93/94]  eta: 0:00:00  Loss: 0.8574  CE: 0.9564  Match: 0.0024  Sparsity: -9.8941  Acc: 76.19  time: 0.7930  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[23/60] Total time: 0:01:16 (0.8126 s / it)
+Rainbow Train Task[1/1] Epoch[24/60]  [ 0/94]  eta: 0:02:18  Loss: 0.3599  CE: 0.4588  Match: 0.0020  Sparsity: -9.8950  Acc: 89.06  time: 1.4749  data: 0.6480  max mem: 6510
+Rainbow Train Task[1/1] Epoch[24/60]  [10/94]  eta: 0:01:12  Loss: 0.5013  CE: 0.6003  Match: 0.0013  Sparsity: -9.9031  Acc: 84.38  time: 0.8670  data: 0.0592  max mem: 6510
+Rainbow Train Task[1/1] Epoch[24/60]  [20/94]  eta: 0:01:02  Loss: 0.5599  CE: 0.6590  Match: 0.0019  Sparsity: -9.9107  Acc: 89.06  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[24/60]  [30/94]  eta: 0:00:52  Loss: 0.3717  CE: 0.4709  Match: 0.0017  Sparsity: -9.9179  Acc: 87.50  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[24/60]  [40/94]  eta: 0:00:44  Loss: 0.3322  CE: 0.4314  Match: 0.0015  Sparsity: -9.9254  Acc: 93.75  time: 0.8067  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[24/60]  [50/94]  eta: 0:00:36  Loss: 0.7300  CE: 0.8293  Match: 0.0028  Sparsity: -9.9332  Acc: 78.12  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[24/60]  [60/94]  eta: 0:00:27  Loss: 0.3461  CE: 0.4455  Match: 0.0031  Sparsity: -9.9410  Acc: 92.19  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[24/60]  [70/94]  eta: 0:00:19  Loss: 0.6079  CE: 0.7073  Match: 0.0039  Sparsity: -9.9490  Acc: 78.12  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[24/60]  [80/94]  eta: 0:00:11  Loss: 0.4051  CE: 0.5047  Match: 0.0011  Sparsity: -9.9578  Acc: 87.50  time: 0.8061  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[24/60]  [90/94]  eta: 0:00:03  Loss: 0.5639  CE: 0.6636  Match: 0.0016  Sparsity: -9.9658  Acc: 82.81  time: 0.8062  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[24/60]  [93/94]  eta: 0:00:00  Loss: 0.8838  CE: 0.9835  Match: 0.0025  Sparsity: -9.9681  Acc: 76.19  time: 0.7924  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[24/60] Total time: 0:01:16 (0.8113 s / it)
+Rainbow Train Task[1/1] Epoch[25/60]  [ 0/94]  eta: 0:02:22  Loss: 0.2677  CE: 0.3673  Match: 0.0016  Sparsity: -9.9688  Acc: 92.19  time: 1.5114  data: 0.6729  max mem: 6510
+Rainbow Train Task[1/1] Epoch[25/60]  [10/94]  eta: 0:01:13  Loss: 0.6656  CE: 0.7654  Match: 0.0016  Sparsity: -9.9764  Acc: 78.12  time: 0.8703  data: 0.0615  max mem: 6510
+Rainbow Train Task[1/1] Epoch[25/60]  [20/94]  eta: 0:01:02  Loss: 0.3237  CE: 0.4235  Match: 0.0013  Sparsity: -9.9841  Acc: 87.50  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[25/60]  [30/94]  eta: 0:00:53  Loss: 0.4337  CE: 0.5336  Match: 0.0011  Sparsity: -9.9919  Acc: 87.50  time: 0.8071  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[25/60]  [40/94]  eta: 0:00:44  Loss: 0.5667  CE: 0.6666  Match: 0.0039  Sparsity: -9.9996  Acc: 85.94  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[25/60]  [50/94]  eta: 0:00:36  Loss: 0.4927  CE: 0.5928  Match: 0.0011  Sparsity: -10.0066  Acc: 85.94  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[25/60]  [60/94]  eta: 0:00:27  Loss: 0.5432  CE: 0.6434  Match: 0.0033  Sparsity: -10.0140  Acc: 87.50  time: 0.8065  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[25/60]  [70/94]  eta: 0:00:19  Loss: 0.8372  CE: 0.9374  Match: 0.0016  Sparsity: -10.0217  Acc: 78.12  time: 0.8065  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[25/60]  [80/94]  eta: 0:00:11  Loss: 0.8486  CE: 0.9489  Match: 0.0020  Sparsity: -10.0293  Acc: 81.25  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[25/60]  [90/94]  eta: 0:00:03  Loss: 0.6028  CE: 0.7031  Match: 0.0026  Sparsity: -10.0369  Acc: 82.81  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[25/60]  [93/94]  eta: 0:00:00  Loss: 0.4749  CE: 0.5753  Match: 0.0016  Sparsity: -10.0392  Acc: 83.33  time: 0.7931  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[25/60] Total time: 0:01:16 (0.8119 s / it)
+Rainbow Train Task[1/1] Epoch[26/60]  [ 0/94]  eta: 0:02:31  Loss: 0.4460  CE: 0.5464  Match: 0.0011  Sparsity: -10.0399  Acc: 84.38  time: 1.6122  data: 0.7833  max mem: 6510
+Rainbow Train Task[1/1] Epoch[26/60]  [10/94]  eta: 0:01:13  Loss: 0.3923  CE: 0.4928  Match: 0.0014  Sparsity: -10.0473  Acc: 92.19  time: 0.8786  data: 0.0715  max mem: 6510
+Rainbow Train Task[1/1] Epoch[26/60]  [20/94]  eta: 0:01:02  Loss: 0.4287  CE: 0.5293  Match: 0.0020  Sparsity: -10.0544  Acc: 87.50  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[26/60]  [30/94]  eta: 0:00:53  Loss: 0.4180  CE: 0.5186  Match: 0.0017  Sparsity: -10.0614  Acc: 90.62  time: 0.8072  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[26/60]  [40/94]  eta: 0:00:44  Loss: 0.7670  CE: 0.8677  Match: 0.0017  Sparsity: -10.0684  Acc: 76.56  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[26/60]  [50/94]  eta: 0:00:36  Loss: 0.3362  CE: 0.4369  Match: 0.0041  Sparsity: -10.0753  Acc: 87.50  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[26/60]  [60/94]  eta: 0:00:27  Loss: 0.5553  CE: 0.6561  Match: 0.0011  Sparsity: -10.0827  Acc: 87.50  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[26/60]  [70/94]  eta: 0:00:19  Loss: 0.7694  CE: 0.8703  Match: 0.0010  Sparsity: -10.0906  Acc: 82.81  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[26/60]  [80/94]  eta: 0:00:11  Loss: 0.6314  CE: 0.7323  Match: 0.0010  Sparsity: -10.0982  Acc: 81.25  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[26/60]  [90/94]  eta: 0:00:03  Loss: 0.3065  CE: 0.4075  Match: 0.0014  Sparsity: -10.1055  Acc: 92.19  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[26/60]  [93/94]  eta: 0:00:00  Loss: 0.5340  CE: 0.6351  Match: 0.0016  Sparsity: -10.1077  Acc: 90.48  time: 0.7931  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[26/60] Total time: 0:01:16 (0.8130 s / it)
+Rainbow Train Task[1/1] Epoch[27/60]  [ 0/94]  eta: 0:02:23  Loss: 0.8985  CE: 0.9996  Match: 0.0012  Sparsity: -10.1084  Acc: 79.69  time: 1.5227  data: 0.6872  max mem: 6510
+Rainbow Train Task[1/1] Epoch[27/60]  [10/94]  eta: 0:01:13  Loss: 0.5138  CE: 0.6149  Match: 0.0009  Sparsity: -10.1156  Acc: 85.94  time: 0.8713  data: 0.0628  max mem: 6510
+Rainbow Train Task[1/1] Epoch[27/60]  [20/94]  eta: 0:01:02  Loss: 0.6512  CE: 0.7524  Match: 0.0014  Sparsity: -10.1226  Acc: 79.69  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[27/60]  [30/94]  eta: 0:00:53  Loss: 0.5580  CE: 0.6592  Match: 0.0013  Sparsity: -10.1296  Acc: 89.06  time: 0.8062  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[27/60]  [40/94]  eta: 0:00:44  Loss: 0.4722  CE: 0.5736  Match: 0.0018  Sparsity: -10.1364  Acc: 85.94  time: 0.8062  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[27/60]  [50/94]  eta: 0:00:36  Loss: 0.4178  CE: 0.5193  Match: 0.0017  Sparsity: -10.1433  Acc: 85.94  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[27/60]  [60/94]  eta: 0:00:27  Loss: 0.5664  CE: 0.6679  Match: 0.0018  Sparsity: -10.1510  Acc: 87.50  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[27/60]  [70/94]  eta: 0:00:19  Loss: 0.4163  CE: 0.5179  Match: 0.0013  Sparsity: -10.1591  Acc: 87.50  time: 0.8072  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[27/60]  [80/94]  eta: 0:00:11  Loss: 0.3445  CE: 0.4462  Match: 0.0018  Sparsity: -10.1669  Acc: 90.62  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[27/60]  [90/94]  eta: 0:00:03  Loss: 0.6199  CE: 0.7217  Match: 0.0010  Sparsity: -10.1743  Acc: 78.12  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[27/60]  [93/94]  eta: 0:00:00  Loss: 0.5514  CE: 0.6532  Match: 0.0009  Sparsity: -10.1764  Acc: 83.33  time: 0.7933  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[27/60] Total time: 0:01:16 (0.8120 s / it)
+Rainbow Train Task[1/1] Epoch[28/60]  [ 0/94]  eta: 0:02:22  Loss: 0.8227  CE: 0.9244  Match: 0.0013  Sparsity: -10.1771  Acc: 78.12  time: 1.5161  data: 0.6829  max mem: 6510
+Rainbow Train Task[1/1] Epoch[28/60]  [10/94]  eta: 0:01:13  Loss: 0.5509  CE: 0.6527  Match: 0.0019  Sparsity: -10.1838  Acc: 89.06  time: 0.8707  data: 0.0624  max mem: 6510
+Rainbow Train Task[1/1] Epoch[28/60]  [20/94]  eta: 0:01:02  Loss: 0.3032  CE: 0.4051  Match: 0.0009  Sparsity: -10.1911  Acc: 92.19  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[28/60]  [30/94]  eta: 0:00:53  Loss: 0.4180  CE: 0.5200  Match: 0.0014  Sparsity: -10.1980  Acc: 85.94  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[28/60]  [40/94]  eta: 0:00:44  Loss: 0.6314  CE: 0.7334  Match: 0.0013  Sparsity: -10.2046  Acc: 79.69  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[28/60]  [50/94]  eta: 0:00:36  Loss: 0.5122  CE: 0.6143  Match: 0.0013  Sparsity: -10.2108  Acc: 85.94  time: 0.8061  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[28/60]  [60/94]  eta: 0:00:27  Loss: 0.4939  CE: 0.5961  Match: 0.0008  Sparsity: -10.2176  Acc: 87.50  time: 0.8057  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[28/60]  [70/94]  eta: 0:00:19  Loss: 0.4708  CE: 0.5731  Match: 0.0011  Sparsity: -10.2244  Acc: 89.06  time: 0.8062  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[28/60]  [80/94]  eta: 0:00:11  Loss: 0.6061  CE: 0.7084  Match: 0.0011  Sparsity: -10.2310  Acc: 87.50  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[28/60]  [90/94]  eta: 0:00:03  Loss: 0.5797  CE: 0.6820  Match: 0.0034  Sparsity: -10.2381  Acc: 84.38  time: 0.8058  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[28/60]  [93/94]  eta: 0:00:00  Loss: 0.7916  CE: 0.8939  Match: 0.0040  Sparsity: -10.2404  Acc: 78.57  time: 0.7924  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[28/60] Total time: 0:01:16 (0.8116 s / it)
+Rainbow Train Task[1/1] Epoch[29/60]  [ 0/94]  eta: 0:02:24  Loss: 0.3885  CE: 0.4909  Match: 0.0010  Sparsity: -10.2412  Acc: 85.94  time: 1.5325  data: 0.7146  max mem: 6510
+Rainbow Train Task[1/1] Epoch[29/60]  [10/94]  eta: 0:01:13  Loss: 0.3578  CE: 0.4602  Match: 0.0022  Sparsity: -10.2483  Acc: 90.62  time: 0.8723  data: 0.0653  max mem: 6510
+Rainbow Train Task[1/1] Epoch[29/60]  [20/94]  eta: 0:01:02  Loss: 0.4423  CE: 0.5448  Match: 0.0011  Sparsity: -10.2556  Acc: 87.50  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[29/60]  [30/94]  eta: 0:00:53  Loss: 0.3275  CE: 0.4301  Match: 0.0014  Sparsity: -10.2628  Acc: 90.62  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[29/60]  [40/94]  eta: 0:00:44  Loss: 0.4287  CE: 0.5313  Match: 0.0030  Sparsity: -10.2696  Acc: 90.62  time: 0.8066  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[29/60]  [50/94]  eta: 0:00:36  Loss: 0.7023  CE: 0.8051  Match: 0.0029  Sparsity: -10.2766  Acc: 81.25  time: 0.8065  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[29/60]  [60/94]  eta: 0:00:27  Loss: 0.5176  CE: 0.6205  Match: 0.0011  Sparsity: -10.2834  Acc: 85.94  time: 0.8065  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[29/60]  [70/94]  eta: 0:00:19  Loss: 0.4338  CE: 0.5367  Match: 0.0024  Sparsity: -10.2899  Acc: 84.38  time: 0.8062  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[29/60]  [80/94]  eta: 0:00:11  Loss: 0.7612  CE: 0.8641  Match: 0.0014  Sparsity: -10.2966  Acc: 79.69  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[29/60]  [90/94]  eta: 0:00:03  Loss: 0.4359  CE: 0.5389  Match: 0.0009  Sparsity: -10.3026  Acc: 87.50  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[29/60]  [93/94]  eta: 0:00:00  Loss: 0.5446  CE: 0.6476  Match: 0.0008  Sparsity: -10.3043  Acc: 88.10  time: 0.7928  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[29/60] Total time: 0:01:16 (0.8120 s / it)
+Rainbow Train Task[1/1] Epoch[30/60]  [ 0/94]  eta: 0:02:25  Loss: 0.5721  CE: 0.6751  Match: 0.0015  Sparsity: -10.3049  Acc: 89.06  time: 1.5497  data: 0.7037  max mem: 6510
+Rainbow Train Task[1/1] Epoch[30/60]  [10/94]  eta: 0:01:13  Loss: 0.6148  CE: 0.7179  Match: 0.0016  Sparsity: -10.3112  Acc: 82.81  time: 0.8744  data: 0.0643  max mem: 6510
+Rainbow Train Task[1/1] Epoch[30/60]  [20/94]  eta: 0:01:02  Loss: 0.7122  CE: 0.8153  Match: 0.0010  Sparsity: -10.3174  Acc: 81.25  time: 0.8061  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[30/60]  [30/94]  eta: 0:00:53  Loss: 0.3942  CE: 0.4974  Match: 0.0009  Sparsity: -10.3238  Acc: 87.50  time: 0.8061  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[30/60]  [40/94]  eta: 0:00:44  Loss: 0.6888  CE: 0.7921  Match: 0.0010  Sparsity: -10.3299  Acc: 79.69  time: 0.8067  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[30/60]  [50/94]  eta: 0:00:36  Loss: 0.2772  CE: 0.3805  Match: 0.0010  Sparsity: -10.3362  Acc: 87.50  time: 0.8066  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[30/60]  [60/94]  eta: 0:00:27  Loss: 0.5795  CE: 0.6829  Match: 0.0015  Sparsity: -10.3423  Acc: 84.38  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[30/60]  [70/94]  eta: 0:00:19  Loss: 0.4109  CE: 0.5144  Match: 0.0013  Sparsity: -10.3482  Acc: 92.19  time: 0.8059  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[30/60]  [80/94]  eta: 0:00:11  Loss: 0.5350  CE: 0.6385  Match: 0.0014  Sparsity: -10.3547  Acc: 84.38  time: 0.8065  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[30/60]  [90/94]  eta: 0:00:03  Loss: 0.4393  CE: 0.5429  Match: 0.0011  Sparsity: -10.3616  Acc: 87.50  time: 0.8072  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[30/60]  [93/94]  eta: 0:00:00  Loss: 0.4572  CE: 0.5608  Match: 0.0009  Sparsity: -10.3636  Acc: 88.10  time: 0.7933  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[30/60] Total time: 0:01:16 (0.8122 s / it)
+Rainbow Train Task[1/1] Epoch[31/60]  [ 0/94]  eta: 0:02:21  Loss: 0.3976  CE: 0.5012  Match: 0.0018  Sparsity: -10.3643  Acc: 89.06  time: 1.5102  data: 0.6855  max mem: 6510
+Rainbow Train Task[1/1] Epoch[31/60]  [10/94]  eta: 0:01:13  Loss: 0.2861  CE: 0.3898  Match: 0.0011  Sparsity: -10.3706  Acc: 90.62  time: 0.8703  data: 0.0627  max mem: 6510
+Rainbow Train Task[1/1] Epoch[31/60]  [20/94]  eta: 0:01:02  Loss: 0.2975  CE: 0.4013  Match: 0.0024  Sparsity: -10.3769  Acc: 90.62  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[31/60]  [30/94]  eta: 0:00:53  Loss: 0.4131  CE: 0.5169  Match: 0.0008  Sparsity: -10.3830  Acc: 89.06  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[31/60]  [40/94]  eta: 0:00:44  Loss: 0.6002  CE: 0.7041  Match: 0.0015  Sparsity: -10.3888  Acc: 81.25  time: 0.8070  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[31/60]  [50/94]  eta: 0:00:36  Loss: 0.6587  CE: 0.7626  Match: 0.0007  Sparsity: -10.3947  Acc: 81.25  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[31/60]  [60/94]  eta: 0:00:27  Loss: 0.4324  CE: 0.5364  Match: 0.0015  Sparsity: -10.4009  Acc: 85.94  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[31/60]  [70/94]  eta: 0:00:19  Loss: 0.3639  CE: 0.4680  Match: 0.0017  Sparsity: -10.4073  Acc: 84.38  time: 0.8070  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[31/60]  [80/94]  eta: 0:00:11  Loss: 0.3075  CE: 0.4117  Match: 0.0014  Sparsity: -10.4134  Acc: 92.19  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[31/60]  [90/94]  eta: 0:00:03  Loss: 0.5161  CE: 0.6203  Match: 0.0012  Sparsity: -10.4194  Acc: 87.50  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[31/60]  [93/94]  eta: 0:00:00  Loss: 0.7324  CE: 0.8366  Match: 0.0017  Sparsity: -10.4213  Acc: 78.57  time: 0.7930  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[31/60] Total time: 0:01:16 (0.8121 s / it)
+Rainbow Train Task[1/1] Epoch[32/60]  [ 0/94]  eta: 0:02:19  Loss: 0.4586  CE: 0.5628  Match: 0.0009  Sparsity: -10.4218  Acc: 85.94  time: 1.4869  data: 0.6584  max mem: 6510
+Rainbow Train Task[1/1] Epoch[32/60]  [10/94]  eta: 0:01:12  Loss: 0.5710  CE: 0.6752  Match: 0.0106  Sparsity: -10.4277  Acc: 85.94  time: 0.8681  data: 0.0602  max mem: 6510
+Rainbow Train Task[1/1] Epoch[32/60]  [20/94]  eta: 0:01:02  Loss: 0.4601  CE: 0.5644  Match: 0.0008  Sparsity: -10.4341  Acc: 90.62  time: 0.8067  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[32/60]  [30/94]  eta: 0:00:53  Loss: 0.5795  CE: 0.6839  Match: 0.0011  Sparsity: -10.4401  Acc: 85.94  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[32/60]  [40/94]  eta: 0:00:44  Loss: 0.4004  CE: 0.5048  Match: 0.0011  Sparsity: -10.4462  Acc: 90.62  time: 0.8072  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[32/60]  [50/94]  eta: 0:00:36  Loss: 0.5288  CE: 0.6334  Match: 0.0011  Sparsity: -10.4525  Acc: 84.38  time: 0.8072  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[32/60]  [60/94]  eta: 0:00:27  Loss: 0.4913  CE: 0.5959  Match: 0.0018  Sparsity: -10.4587  Acc: 87.50  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[32/60]  [70/94]  eta: 0:00:19  Loss: 0.5552  CE: 0.6599  Match: 0.0012  Sparsity: -10.4648  Acc: 85.94  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[32/60]  [80/94]  eta: 0:00:11  Loss: 0.4538  CE: 0.5585  Match: 0.0007  Sparsity: -10.4703  Acc: 89.06  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[32/60]  [90/94]  eta: 0:00:03  Loss: 0.3273  CE: 0.4321  Match: 0.0007  Sparsity: -10.4760  Acc: 89.06  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[32/60]  [93/94]  eta: 0:00:00  Loss: 0.2354  CE: 0.3402  Match: 0.0022  Sparsity: -10.4778  Acc: 95.24  time: 0.7932  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[32/60] Total time: 0:01:16 (0.8119 s / it)
+Rainbow Train Task[1/1] Epoch[33/60]  [ 0/94]  eta: 0:02:20  Loss: 0.6181  CE: 0.7229  Match: 0.0013  Sparsity: -10.4784  Acc: 82.81  time: 1.4903  data: 0.6546  max mem: 6510
+Rainbow Train Task[1/1] Epoch[33/60]  [10/94]  eta: 0:01:12  Loss: 0.2593  CE: 0.3642  Match: 0.0010  Sparsity: -10.4839  Acc: 92.19  time: 0.8683  data: 0.0599  max mem: 6510
+Rainbow Train Task[1/1] Epoch[33/60]  [20/94]  eta: 0:01:02  Loss: 0.5992  CE: 0.7041  Match: 0.0020  Sparsity: -10.4895  Acc: 87.50  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[33/60]  [30/94]  eta: 0:00:53  Loss: 0.3528  CE: 0.4577  Match: 0.0021  Sparsity: -10.4951  Acc: 92.19  time: 0.8073  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[33/60]  [40/94]  eta: 0:00:44  Loss: 0.5851  CE: 0.6901  Match: 0.0009  Sparsity: -10.5002  Acc: 85.94  time: 0.8074  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[33/60]  [50/94]  eta: 0:00:36  Loss: 0.5737  CE: 0.6788  Match: 0.0012  Sparsity: -10.5059  Acc: 85.94  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[33/60]  [60/94]  eta: 0:00:27  Loss: 0.2829  CE: 0.3880  Match: 0.0011  Sparsity: -10.5111  Acc: 90.62  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[33/60]  [70/94]  eta: 0:00:19  Loss: 0.5151  CE: 0.6202  Match: 0.0010  Sparsity: -10.5161  Acc: 79.69  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[33/60]  [80/94]  eta: 0:00:11  Loss: 0.3511  CE: 0.4563  Match: 0.0014  Sparsity: -10.5214  Acc: 89.06  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[33/60]  [90/94]  eta: 0:00:03  Loss: 0.3034  CE: 0.4087  Match: 0.0011  Sparsity: -10.5270  Acc: 92.19  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[33/60]  [93/94]  eta: 0:00:00  Loss: 0.4915  CE: 0.5968  Match: 0.0007  Sparsity: -10.5286  Acc: 90.48  time: 0.7929  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[33/60] Total time: 0:01:16 (0.8118 s / it)
+Rainbow Train Task[1/1] Epoch[34/60]  [ 0/94]  eta: 0:02:25  Loss: 0.6369  CE: 0.7421  Match: 0.0012  Sparsity: -10.5291  Acc: 82.81  time: 1.5518  data: 0.7153  max mem: 6510
+Rainbow Train Task[1/1] Epoch[34/60]  [10/94]  eta: 0:01:13  Loss: 0.4346  CE: 0.5399  Match: 0.0009  Sparsity: -10.5343  Acc: 87.50  time: 0.8744  data: 0.0654  max mem: 6510
+Rainbow Train Task[1/1] Epoch[34/60]  [20/94]  eta: 0:01:02  Loss: 0.3888  CE: 0.4942  Match: 0.0009  Sparsity: -10.5396  Acc: 89.06  time: 0.8073  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[34/60]  [30/94]  eta: 0:00:53  Loss: 0.4592  CE: 0.5646  Match: 0.0011  Sparsity: -10.5448  Acc: 84.38  time: 0.8075  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[34/60]  [40/94]  eta: 0:00:44  Loss: 0.2682  CE: 0.3736  Match: 0.0034  Sparsity: -10.5500  Acc: 90.62  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[34/60]  [50/94]  eta: 0:00:36  Loss: 0.5905  CE: 0.6961  Match: 0.0013  Sparsity: -10.5555  Acc: 82.81  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[34/60]  [60/94]  eta: 0:00:27  Loss: 0.3487  CE: 0.4543  Match: 0.0025  Sparsity: -10.5609  Acc: 84.38  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[34/60]  [70/94]  eta: 0:00:19  Loss: 0.4781  CE: 0.5837  Match: 0.0025  Sparsity: -10.5657  Acc: 89.06  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[34/60]  [80/94]  eta: 0:00:11  Loss: 0.4964  CE: 0.6021  Match: 0.0014  Sparsity: -10.5709  Acc: 84.38  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[34/60]  [90/94]  eta: 0:00:03  Loss: 0.6838  CE: 0.7895  Match: 0.0015  Sparsity: -10.5763  Acc: 82.81  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[34/60]  [93/94]  eta: 0:00:00  Loss: 0.1097  CE: 0.2154  Match: 0.0011  Sparsity: -10.5780  Acc: 97.62  time: 0.7931  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[34/60] Total time: 0:01:16 (0.8126 s / it)
+Rainbow Train Task[1/1] Epoch[35/60]  [ 0/94]  eta: 0:02:26  Loss: 0.5784  CE: 0.6841  Match: 0.0022  Sparsity: -10.5786  Acc: 84.38  time: 1.5611  data: 0.7328  max mem: 6510
+Rainbow Train Task[1/1] Epoch[35/60]  [10/94]  eta: 0:01:13  Loss: 0.3057  CE: 0.4115  Match: 0.0008  Sparsity: -10.5838  Acc: 92.19  time: 0.8750  data: 0.0669  max mem: 6510
+Rainbow Train Task[1/1] Epoch[35/60]  [20/94]  eta: 0:01:02  Loss: 0.3192  CE: 0.4251  Match: 0.0009  Sparsity: -10.5889  Acc: 89.06  time: 0.8068  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[35/60]  [30/94]  eta: 0:00:53  Loss: 0.6782  CE: 0.7841  Match: 0.0014  Sparsity: -10.5938  Acc: 76.56  time: 0.8073  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[35/60]  [40/94]  eta: 0:00:44  Loss: 0.1325  CE: 0.2385  Match: 0.0007  Sparsity: -10.5986  Acc: 96.88  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[35/60]  [50/94]  eta: 0:00:36  Loss: 0.6989  CE: 0.8049  Match: 0.0007  Sparsity: -10.6034  Acc: 81.25  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[35/60]  [60/94]  eta: 0:00:27  Loss: 0.4075  CE: 0.5136  Match: 0.0009  Sparsity: -10.6085  Acc: 89.06  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[35/60]  [70/94]  eta: 0:00:19  Loss: 0.4025  CE: 0.5087  Match: 0.0006  Sparsity: -10.6137  Acc: 84.38  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[35/60]  [80/94]  eta: 0:00:11  Loss: 0.4179  CE: 0.5241  Match: 0.0017  Sparsity: -10.6184  Acc: 89.06  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[35/60]  [90/94]  eta: 0:00:03  Loss: 0.4767  CE: 0.5829  Match: 0.0014  Sparsity: -10.6231  Acc: 89.06  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[35/60]  [93/94]  eta: 0:00:00  Loss: 0.5202  CE: 0.6265  Match: 0.0017  Sparsity: -10.6244  Acc: 88.10  time: 0.7931  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[35/60] Total time: 0:01:16 (0.8126 s / it)
+Rainbow Train Task[1/1] Epoch[36/60]  [ 0/94]  eta: 0:02:32  Loss: 0.4773  CE: 0.5836  Match: 0.0018  Sparsity: -10.6249  Acc: 87.50  time: 1.6171  data: 0.7888  max mem: 6510
+Rainbow Train Task[1/1] Epoch[36/60]  [10/94]  eta: 0:01:13  Loss: 0.3693  CE: 0.4756  Match: 0.0017  Sparsity: -10.6293  Acc: 87.50  time: 0.8802  data: 0.0720  max mem: 6510
+Rainbow Train Task[1/1] Epoch[36/60]  [20/94]  eta: 0:01:02  Loss: 0.5009  CE: 0.6073  Match: 0.0012  Sparsity: -10.6340  Acc: 85.94  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[36/60]  [30/94]  eta: 0:00:53  Loss: 0.3513  CE: 0.4577  Match: 0.0009  Sparsity: -10.6387  Acc: 89.06  time: 0.8072  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[36/60]  [40/94]  eta: 0:00:44  Loss: 0.3393  CE: 0.4457  Match: 0.0016  Sparsity: -10.6432  Acc: 92.19  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[36/60]  [50/94]  eta: 0:00:36  Loss: 0.4730  CE: 0.5795  Match: 0.0011  Sparsity: -10.6476  Acc: 89.06  time: 0.8061  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[36/60]  [60/94]  eta: 0:00:27  Loss: 0.2777  CE: 0.3842  Match: 0.0011  Sparsity: -10.6522  Acc: 93.75  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[36/60]  [70/94]  eta: 0:00:19  Loss: 0.5068  CE: 0.6133  Match: 0.0009  Sparsity: -10.6566  Acc: 87.50  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[36/60]  [80/94]  eta: 0:00:11  Loss: 0.4921  CE: 0.5987  Match: 0.0009  Sparsity: -10.6608  Acc: 85.94  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[36/60]  [90/94]  eta: 0:00:03  Loss: 0.5566  CE: 0.6632  Match: 0.0007  Sparsity: -10.6647  Acc: 84.38  time: 0.8065  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[36/60]  [93/94]  eta: 0:00:00  Loss: 0.5934  CE: 0.7001  Match: 0.0015  Sparsity: -10.6660  Acc: 85.71  time: 0.7929  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[36/60] Total time: 0:01:16 (0.8131 s / it)
+Rainbow Train Task[1/1] Epoch[37/60]  [ 0/94]  eta: 0:02:26  Loss: 0.4729  CE: 0.5796  Match: 0.0008  Sparsity: -10.6664  Acc: 85.94  time: 1.5551  data: 0.7285  max mem: 6510
+Rainbow Train Task[1/1] Epoch[37/60]  [10/94]  eta: 0:01:13  Loss: 0.5164  CE: 0.6231  Match: 0.0012  Sparsity: -10.6706  Acc: 81.25  time: 0.8748  data: 0.0666  max mem: 6510
+Rainbow Train Task[1/1] Epoch[37/60]  [20/94]  eta: 0:01:02  Loss: 0.5877  CE: 0.6944  Match: 0.0012  Sparsity: -10.6746  Acc: 82.81  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[37/60]  [30/94]  eta: 0:00:53  Loss: 0.5383  CE: 0.6451  Match: 0.0007  Sparsity: -10.6784  Acc: 84.38  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[37/60]  [40/94]  eta: 0:00:44  Loss: 0.4372  CE: 0.5441  Match: 0.0011  Sparsity: -10.6823  Acc: 89.06  time: 0.8067  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[37/60]  [50/94]  eta: 0:00:36  Loss: 0.6431  CE: 0.7500  Match: 0.0009  Sparsity: -10.6861  Acc: 87.50  time: 0.8063  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[37/60]  [60/94]  eta: 0:00:27  Loss: 0.2698  CE: 0.3767  Match: 0.0017  Sparsity: -10.6894  Acc: 90.62  time: 0.8066  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[37/60]  [70/94]  eta: 0:00:19  Loss: 0.4900  CE: 0.5969  Match: 0.0034  Sparsity: -10.6929  Acc: 84.38  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[37/60]  [80/94]  eta: 0:00:11  Loss: 0.3622  CE: 0.4691  Match: 0.0010  Sparsity: -10.6972  Acc: 89.06  time: 0.8073  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[37/60]  [90/94]  eta: 0:00:03  Loss: 0.2794  CE: 0.3864  Match: 0.0013  Sparsity: -10.7013  Acc: 92.19  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[37/60]  [93/94]  eta: 0:00:00  Loss: 0.6236  CE: 0.7307  Match: 0.0008  Sparsity: -10.7024  Acc: 83.33  time: 0.7936  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[37/60] Total time: 0:01:16 (0.8125 s / it)
+Rainbow Train Task[1/1] Epoch[38/60]  [ 0/94]  eta: 0:02:20  Loss: 0.2969  CE: 0.4039  Match: 0.0012  Sparsity: -10.7027  Acc: 92.19  time: 1.4939  data: 0.6525  max mem: 6510
+Rainbow Train Task[1/1] Epoch[38/60]  [10/94]  eta: 0:01:12  Loss: 0.3736  CE: 0.4807  Match: 0.0006  Sparsity: -10.7064  Acc: 89.06  time: 0.8685  data: 0.0596  max mem: 6510
+Rainbow Train Task[1/1] Epoch[38/60]  [20/94]  eta: 0:01:02  Loss: 0.6116  CE: 0.7187  Match: 0.0008  Sparsity: -10.7099  Acc: 84.38  time: 0.8061  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[38/60]  [30/94]  eta: 0:00:53  Loss: 0.2719  CE: 0.3790  Match: 0.0008  Sparsity: -10.7130  Acc: 93.75  time: 0.8068  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[38/60]  [40/94]  eta: 0:00:44  Loss: 0.5750  CE: 0.6822  Match: 0.0008  Sparsity: -10.7161  Acc: 84.38  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[38/60]  [50/94]  eta: 0:00:36  Loss: 0.3393  CE: 0.4464  Match: 0.0005  Sparsity: -10.7188  Acc: 90.62  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[38/60]  [60/94]  eta: 0:00:27  Loss: 0.4180  CE: 0.5252  Match: 0.0009  Sparsity: -10.7221  Acc: 87.50  time: 0.8073  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[38/60]  [70/94]  eta: 0:00:19  Loss: 0.5397  CE: 0.6469  Match: 0.0006  Sparsity: -10.7255  Acc: 84.38  time: 0.8075  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[38/60]  [80/94]  eta: 0:00:11  Loss: 0.8188  CE: 0.9261  Match: 0.0011  Sparsity: -10.7281  Acc: 79.69  time: 0.8076  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[38/60]  [90/94]  eta: 0:00:03  Loss: 0.5945  CE: 0.7018  Match: 0.0017  Sparsity: -10.7306  Acc: 84.38  time: 0.8072  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[38/60]  [93/94]  eta: 0:00:00  Loss: 0.3272  CE: 0.4345  Match: 0.0009  Sparsity: -10.7316  Acc: 95.24  time: 0.7937  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[38/60] Total time: 0:01:16 (0.8122 s / it)
+Rainbow Train Task[1/1] Epoch[39/60]  [ 0/94]  eta: 0:02:31  Loss: 0.4623  CE: 0.5696  Match: 0.0005  Sparsity: -10.7319  Acc: 87.50  time: 1.6127  data: 0.7859  max mem: 6510
+Rainbow Train Task[1/1] Epoch[39/60]  [10/94]  eta: 0:01:13  Loss: 0.4914  CE: 0.5987  Match: 0.0007  Sparsity: -10.7351  Acc: 87.50  time: 0.8804  data: 0.0718  max mem: 6510
+Rainbow Train Task[1/1] Epoch[39/60]  [20/94]  eta: 0:01:02  Loss: 0.4849  CE: 0.5922  Match: 0.0024  Sparsity: -10.7384  Acc: 81.25  time: 0.8072  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[39/60]  [30/94]  eta: 0:00:53  Loss: 0.3969  CE: 0.5042  Match: 0.0100  Sparsity: -10.7414  Acc: 87.50  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[39/60]  [40/94]  eta: 0:00:44  Loss: 0.5531  CE: 0.6606  Match: 0.0021  Sparsity: -10.7445  Acc: 85.94  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[39/60]  [50/94]  eta: 0:00:36  Loss: 0.5323  CE: 0.6398  Match: 0.0009  Sparsity: -10.7474  Acc: 85.94  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[39/60]  [60/94]  eta: 0:00:27  Loss: 0.1397  CE: 0.2472  Match: 0.0006  Sparsity: -10.7502  Acc: 92.19  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[39/60]  [70/94]  eta: 0:00:19  Loss: 0.3291  CE: 0.4367  Match: 0.0005  Sparsity: -10.7530  Acc: 90.62  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[39/60]  [80/94]  eta: 0:00:11  Loss: 0.4909  CE: 0.5984  Match: 0.0006  Sparsity: -10.7562  Acc: 84.38  time: 0.8066  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[39/60]  [90/94]  eta: 0:00:03  Loss: 0.4687  CE: 0.5763  Match: 0.0009  Sparsity: -10.7595  Acc: 85.94  time: 0.8065  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[39/60]  [93/94]  eta: 0:00:00  Loss: 0.4395  CE: 0.5471  Match: 0.0006  Sparsity: -10.7604  Acc: 85.71  time: 0.7924  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[39/60] Total time: 0:01:16 (0.8131 s / it)
+Rainbow Train Task[1/1] Epoch[40/60]  [ 0/94]  eta: 0:02:19  Loss: 0.3909  CE: 0.4985  Match: 0.0008  Sparsity: -10.7607  Acc: 89.06  time: 1.4864  data: 0.6447  max mem: 6510
+Rainbow Train Task[1/1] Epoch[40/60]  [10/94]  eta: 0:01:12  Loss: 0.3214  CE: 0.4290  Match: 0.0014  Sparsity: -10.7636  Acc: 92.19  time: 0.8680  data: 0.0589  max mem: 6510
+Rainbow Train Task[1/1] Epoch[40/60]  [20/94]  eta: 0:01:02  Loss: 0.5569  CE: 0.6646  Match: 0.0008  Sparsity: -10.7664  Acc: 87.50  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[40/60]  [30/94]  eta: 0:00:53  Loss: 0.2611  CE: 0.3687  Match: 0.0007  Sparsity: -10.7689  Acc: 89.06  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[40/60]  [40/94]  eta: 0:00:44  Loss: 0.4161  CE: 0.5238  Match: 0.0006  Sparsity: -10.7718  Acc: 90.62  time: 0.8066  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[40/60]  [50/94]  eta: 0:00:36  Loss: 0.4122  CE: 0.5199  Match: 0.0006  Sparsity: -10.7748  Acc: 92.19  time: 0.8065  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[40/60]  [60/94]  eta: 0:00:27  Loss: 0.7340  CE: 0.8418  Match: 0.0005  Sparsity: -10.7773  Acc: 82.81  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[40/60]  [70/94]  eta: 0:00:19  Loss: 0.3753  CE: 0.4831  Match: 0.0012  Sparsity: -10.7796  Acc: 90.62  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[40/60]  [80/94]  eta: 0:00:11  Loss: 0.3018  CE: 0.4096  Match: 0.0010  Sparsity: -10.7821  Acc: 89.06  time: 0.8072  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[40/60]  [90/94]  eta: 0:00:03  Loss: 0.3884  CE: 0.4962  Match: 0.0009  Sparsity: -10.7844  Acc: 92.19  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[40/60]  [93/94]  eta: 0:00:00  Loss: 0.4409  CE: 0.5488  Match: 0.0010  Sparsity: -10.7851  Acc: 85.71  time: 0.7929  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[40/60] Total time: 0:01:16 (0.8118 s / it)
+Rainbow Train Task[1/1] Epoch[41/60]  [ 0/94]  eta: 0:02:22  Loss: 0.4307  CE: 0.5385  Match: 0.0010  Sparsity: -10.7854  Acc: 85.94  time: 1.5149  data: 0.6783  max mem: 6510
+Rainbow Train Task[1/1] Epoch[41/60]  [10/94]  eta: 0:01:13  Loss: 0.2757  CE: 0.3836  Match: 0.0006  Sparsity: -10.7877  Acc: 90.62  time: 0.8715  data: 0.0620  max mem: 6510
+Rainbow Train Task[1/1] Epoch[41/60]  [20/94]  eta: 0:01:02  Loss: 0.1535  CE: 0.2614  Match: 0.0009  Sparsity: -10.7904  Acc: 95.31  time: 0.8068  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[41/60]  [30/94]  eta: 0:00:53  Loss: 0.2908  CE: 0.3987  Match: 0.0019  Sparsity: -10.7931  Acc: 92.19  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[41/60]  [40/94]  eta: 0:00:44  Loss: 0.5124  CE: 0.6204  Match: 0.0008  Sparsity: -10.7958  Acc: 82.81  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[41/60]  [50/94]  eta: 0:00:36  Loss: 0.6175  CE: 0.7255  Match: 0.0017  Sparsity: -10.7987  Acc: 87.50  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[41/60]  [60/94]  eta: 0:00:27  Loss: 0.4162  CE: 0.5242  Match: 0.0006  Sparsity: -10.8012  Acc: 87.50  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[41/60]  [70/94]  eta: 0:00:19  Loss: 0.4472  CE: 0.5552  Match: 0.0007  Sparsity: -10.8033  Acc: 87.50  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[41/60]  [80/94]  eta: 0:00:11  Loss: 0.4221  CE: 0.5302  Match: 0.0007  Sparsity: -10.8058  Acc: 90.62  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[41/60]  [90/94]  eta: 0:00:03  Loss: 0.3300  CE: 0.4381  Match: 0.0006  Sparsity: -10.8086  Acc: 87.50  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[41/60]  [93/94]  eta: 0:00:00  Loss: 0.2266  CE: 0.3347  Match: 0.0010  Sparsity: -10.8094  Acc: 92.86  time: 0.7932  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[41/60] Total time: 0:01:16 (0.8121 s / it)
+Rainbow Train Task[1/1] Epoch[42/60]  [ 0/94]  eta: 0:02:31  Loss: 0.3919  CE: 0.5000  Match: 0.0007  Sparsity: -10.8097  Acc: 85.94  time: 1.6133  data: 0.7665  max mem: 6510
+Rainbow Train Task[1/1] Epoch[42/60]  [10/94]  eta: 0:01:13  Loss: 0.5771  CE: 0.6852  Match: 0.0005  Sparsity: -10.8121  Acc: 82.81  time: 0.8807  data: 0.0700  max mem: 6510
+Rainbow Train Task[1/1] Epoch[42/60]  [20/94]  eta: 0:01:02  Loss: 0.4467  CE: 0.5549  Match: 0.0007  Sparsity: -10.8149  Acc: 90.62  time: 0.8070  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[42/60]  [30/94]  eta: 0:00:53  Loss: 0.7366  CE: 0.8448  Match: 0.0011  Sparsity: -10.8177  Acc: 78.12  time: 0.8066  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[42/60]  [40/94]  eta: 0:00:44  Loss: 0.2108  CE: 0.3190  Match: 0.0011  Sparsity: -10.8203  Acc: 95.31  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[42/60]  [50/94]  eta: 0:00:36  Loss: 0.2750  CE: 0.3833  Match: 0.0014  Sparsity: -10.8227  Acc: 89.06  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[42/60]  [60/94]  eta: 0:00:27  Loss: 0.1603  CE: 0.2686  Match: 0.0010  Sparsity: -10.8251  Acc: 96.88  time: 0.8072  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[42/60]  [70/94]  eta: 0:00:19  Loss: 0.2131  CE: 0.3214  Match: 0.0006  Sparsity: -10.8273  Acc: 92.19  time: 0.8072  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[42/60]  [80/94]  eta: 0:00:11  Loss: 0.5747  CE: 0.6830  Match: 0.0005  Sparsity: -10.8295  Acc: 87.50  time: 0.8070  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[42/60]  [90/94]  eta: 0:00:03  Loss: 0.3183  CE: 0.4266  Match: 0.0015  Sparsity: -10.8316  Acc: 89.06  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[42/60]  [93/94]  eta: 0:00:00  Loss: 0.3593  CE: 0.4676  Match: 0.0007  Sparsity: -10.8322  Acc: 85.71  time: 0.7933  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[42/60] Total time: 0:01:16 (0.8133 s / it)
+Rainbow Train Task[1/1] Epoch[43/60]  [ 0/94]  eta: 0:02:23  Loss: 0.3957  CE: 0.5041  Match: 0.0008  Sparsity: -10.8324  Acc: 85.94  time: 1.5232  data: 0.6847  max mem: 6510
+Rainbow Train Task[1/1] Epoch[43/60]  [10/94]  eta: 0:01:13  Loss: 0.4378  CE: 0.5461  Match: 0.0017  Sparsity: -10.8344  Acc: 85.94  time: 0.8718  data: 0.0626  max mem: 6510
+Rainbow Train Task[1/1] Epoch[43/60]  [20/94]  eta: 0:01:02  Loss: 0.5593  CE: 0.6677  Match: 0.0013  Sparsity: -10.8365  Acc: 87.50  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[43/60]  [30/94]  eta: 0:00:53  Loss: 0.6174  CE: 0.7258  Match: 0.0007  Sparsity: -10.8385  Acc: 79.69  time: 0.8073  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[43/60]  [40/94]  eta: 0:00:44  Loss: 0.8442  CE: 0.9526  Match: 0.0013  Sparsity: -10.8404  Acc: 79.69  time: 0.8077  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[43/60]  [50/94]  eta: 0:00:36  Loss: 0.4190  CE: 0.5274  Match: 0.0006  Sparsity: -10.8424  Acc: 85.94  time: 0.8075  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[43/60]  [60/94]  eta: 0:00:27  Loss: 0.3037  CE: 0.4121  Match: 0.0011  Sparsity: -10.8444  Acc: 90.62  time: 0.8072  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[43/60]  [70/94]  eta: 0:00:19  Loss: 0.3603  CE: 0.4687  Match: 0.0007  Sparsity: -10.8466  Acc: 89.06  time: 0.8067  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[43/60]  [80/94]  eta: 0:00:11  Loss: 0.4057  CE: 0.5142  Match: 0.0012  Sparsity: -10.8488  Acc: 87.50  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[43/60]  [90/94]  eta: 0:00:03  Loss: 0.3324  CE: 0.4409  Match: 0.0006  Sparsity: -10.8507  Acc: 89.06  time: 0.8072  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[43/60]  [93/94]  eta: 0:00:00  Loss: 0.5130  CE: 0.6215  Match: 0.0006  Sparsity: -10.8513  Acc: 85.71  time: 0.7937  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[43/60] Total time: 0:01:16 (0.8126 s / it)
+Rainbow Train Task[1/1] Epoch[44/60]  [ 0/94]  eta: 0:02:28  Loss: 0.4965  CE: 0.6050  Match: 0.0017  Sparsity: -10.8515  Acc: 84.38  time: 1.5771  data: 0.7388  max mem: 6510
+Rainbow Train Task[1/1] Epoch[44/60]  [10/94]  eta: 0:01:13  Loss: 0.4314  CE: 0.5399  Match: 0.0008  Sparsity: -10.8533  Acc: 89.06  time: 0.8768  data: 0.0675  max mem: 6510
+Rainbow Train Task[1/1] Epoch[44/60]  [20/94]  eta: 0:01:02  Loss: 0.6950  CE: 0.8035  Match: 0.0053  Sparsity: -10.8550  Acc: 81.25  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[44/60]  [30/94]  eta: 0:00:53  Loss: 0.3215  CE: 0.4301  Match: 0.0005  Sparsity: -10.8567  Acc: 89.06  time: 0.8080  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[44/60]  [40/94]  eta: 0:00:44  Loss: 0.5105  CE: 0.6191  Match: 0.0009  Sparsity: -10.8584  Acc: 84.38  time: 0.8078  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[44/60]  [50/94]  eta: 0:00:36  Loss: 0.4730  CE: 0.5816  Match: 0.0011  Sparsity: -10.8601  Acc: 87.50  time: 0.8066  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[44/60]  [60/94]  eta: 0:00:27  Loss: 0.7141  CE: 0.8227  Match: 0.0006  Sparsity: -10.8618  Acc: 76.56  time: 0.8067  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[44/60]  [70/94]  eta: 0:00:19  Loss: 0.4589  CE: 0.5675  Match: 0.0011  Sparsity: -10.8636  Acc: 84.38  time: 0.8065  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[44/60]  [80/94]  eta: 0:00:11  Loss: 0.4941  CE: 0.6028  Match: 0.0027  Sparsity: -10.8655  Acc: 84.38  time: 0.8066  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[44/60]  [90/94]  eta: 0:00:03  Loss: 0.3313  CE: 0.4400  Match: 0.0012  Sparsity: -10.8672  Acc: 92.19  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[44/60]  [93/94]  eta: 0:00:00  Loss: 0.5825  CE: 0.6912  Match: 0.0005  Sparsity: -10.8677  Acc: 83.33  time: 0.7931  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[44/60] Total time: 0:01:16 (0.8129 s / it)
+Rainbow Train Task[1/1] Epoch[45/60]  [ 0/94]  eta: 0:02:21  Loss: 0.3947  CE: 0.5034  Match: 0.0012  Sparsity: -10.8678  Acc: 90.62  time: 1.5030  data: 0.6599  max mem: 6510
+Rainbow Train Task[1/1] Epoch[45/60]  [10/94]  eta: 0:01:13  Loss: 0.6465  CE: 0.7552  Match: 0.0006  Sparsity: -10.8691  Acc: 82.81  time: 0.8710  data: 0.0603  max mem: 6510
+Rainbow Train Task[1/1] Epoch[45/60]  [20/94]  eta: 0:01:02  Loss: 0.5246  CE: 0.6333  Match: 0.0010  Sparsity: -10.8706  Acc: 84.38  time: 0.8078  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[45/60]  [30/94]  eta: 0:00:53  Loss: 0.4262  CE: 0.5349  Match: 0.0007  Sparsity: -10.8721  Acc: 90.62  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[45/60]  [40/94]  eta: 0:00:44  Loss: 0.3483  CE: 0.4570  Match: 0.0013  Sparsity: -10.8735  Acc: 90.62  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[45/60]  [50/94]  eta: 0:00:36  Loss: 0.3550  CE: 0.4638  Match: 0.0008  Sparsity: -10.8750  Acc: 89.06  time: 0.8072  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[45/60]  [60/94]  eta: 0:00:27  Loss: 0.2113  CE: 0.3200  Match: 0.0004  Sparsity: -10.8765  Acc: 95.31  time: 0.8073  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[45/60]  [70/94]  eta: 0:00:19  Loss: 0.2861  CE: 0.3949  Match: 0.0009  Sparsity: -10.8782  Acc: 92.19  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[45/60]  [80/94]  eta: 0:00:11  Loss: 0.6023  CE: 0.7111  Match: 0.0006  Sparsity: -10.8797  Acc: 85.94  time: 0.8067  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[45/60]  [90/94]  eta: 0:00:03  Loss: 0.3735  CE: 0.4823  Match: 0.0006  Sparsity: -10.8814  Acc: 85.94  time: 0.8070  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[45/60]  [93/94]  eta: 0:00:00  Loss: 0.4247  CE: 0.5335  Match: 0.0012  Sparsity: -10.8819  Acc: 85.71  time: 0.7936  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[45/60] Total time: 0:01:16 (0.8123 s / it)
+Rainbow Train Task[1/1] Epoch[46/60]  [ 0/94]  eta: 0:02:29  Loss: 0.3458  CE: 0.4546  Match: 0.0005  Sparsity: -10.8821  Acc: 92.19  time: 1.5941  data: 0.7773  max mem: 6510
+Rainbow Train Task[1/1] Epoch[46/60]  [10/94]  eta: 0:01:13  Loss: 0.3099  CE: 0.4187  Match: 0.0011  Sparsity: -10.8836  Acc: 95.31  time: 0.8782  data: 0.0710  max mem: 6510
+Rainbow Train Task[1/1] Epoch[46/60]  [20/94]  eta: 0:01:02  Loss: 0.3826  CE: 0.4914  Match: 0.0016  Sparsity: -10.8849  Acc: 90.62  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[46/60]  [30/94]  eta: 0:00:53  Loss: 0.3607  CE: 0.4695  Match: 0.0009  Sparsity: -10.8863  Acc: 89.06  time: 0.8073  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[46/60]  [40/94]  eta: 0:00:44  Loss: 0.2322  CE: 0.3410  Match: 0.0012  Sparsity: -10.8880  Acc: 92.19  time: 0.8077  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[46/60]  [50/94]  eta: 0:00:36  Loss: 0.1262  CE: 0.2351  Match: 0.0016  Sparsity: -10.8896  Acc: 95.31  time: 0.8078  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[46/60]  [60/94]  eta: 0:00:27  Loss: 0.6652  CE: 0.7741  Match: 0.0005  Sparsity: -10.8912  Acc: 82.81  time: 0.8078  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[46/60]  [70/94]  eta: 0:00:19  Loss: 0.3167  CE: 0.4256  Match: 0.0007  Sparsity: -10.8925  Acc: 92.19  time: 0.8079  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[46/60]  [80/94]  eta: 0:00:11  Loss: 0.6797  CE: 0.7886  Match: 0.0121  Sparsity: -10.8938  Acc: 79.69  time: 0.8074  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[46/60]  [90/94]  eta: 0:00:03  Loss: 0.4958  CE: 0.6048  Match: 0.0008  Sparsity: -10.8952  Acc: 84.38  time: 0.8070  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[46/60]  [93/94]  eta: 0:00:00  Loss: 0.1888  CE: 0.2978  Match: 0.0009  Sparsity: -10.8956  Acc: 90.48  time: 0.7936  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[46/60] Total time: 0:01:16 (0.8136 s / it)
+Rainbow Train Task[1/1] Epoch[47/60]  [ 0/94]  eta: 0:02:36  Loss: 0.2641  CE: 0.3731  Match: 0.0006  Sparsity: -10.8958  Acc: 92.19  time: 1.6616  data: 0.8367  max mem: 6510
+Rainbow Train Task[1/1] Epoch[47/60]  [10/94]  eta: 0:01:14  Loss: 0.4239  CE: 0.5329  Match: 0.0007  Sparsity: -10.8970  Acc: 89.06  time: 0.8844  data: 0.0764  max mem: 6510
+Rainbow Train Task[1/1] Epoch[47/60]  [20/94]  eta: 0:01:02  Loss: 0.2343  CE: 0.3432  Match: 0.0009  Sparsity: -10.8982  Acc: 96.88  time: 0.8076  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[47/60]  [30/94]  eta: 0:00:53  Loss: 0.4361  CE: 0.5451  Match: 0.0007  Sparsity: -10.8995  Acc: 89.06  time: 0.8082  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[47/60]  [40/94]  eta: 0:00:44  Loss: 0.3254  CE: 0.4344  Match: 0.0010  Sparsity: -10.9006  Acc: 92.19  time: 0.8082  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[47/60]  [50/94]  eta: 0:00:36  Loss: 0.3225  CE: 0.4315  Match: 0.0008  Sparsity: -10.9020  Acc: 92.19  time: 0.8075  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[47/60]  [60/94]  eta: 0:00:27  Loss: 0.4570  CE: 0.5660  Match: 0.0006  Sparsity: -10.9032  Acc: 89.06  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[47/60]  [70/94]  eta: 0:00:19  Loss: 0.4130  CE: 0.5221  Match: 0.0008  Sparsity: -10.9044  Acc: 90.62  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[47/60]  [80/94]  eta: 0:00:11  Loss: 0.4332  CE: 0.5423  Match: 0.0007  Sparsity: -10.9055  Acc: 87.50  time: 0.8065  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[47/60]  [90/94]  eta: 0:00:03  Loss: 0.3788  CE: 0.4878  Match: 0.0014  Sparsity: -10.9066  Acc: 89.06  time: 0.8070  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[47/60]  [93/94]  eta: 0:00:00  Loss: 0.4307  CE: 0.5398  Match: 0.0006  Sparsity: -10.9069  Acc: 85.71  time: 0.7938  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[47/60] Total time: 0:01:16 (0.8142 s / it)
+Rainbow Train Task[1/1] Epoch[48/60]  [ 0/94]  eta: 0:02:21  Loss: 0.4713  CE: 0.5803  Match: 0.0008  Sparsity: -10.9071  Acc: 87.50  time: 1.5003  data: 0.6642  max mem: 6510
+Rainbow Train Task[1/1] Epoch[48/60]  [10/94]  eta: 0:01:13  Loss: 0.4369  CE: 0.5459  Match: 0.0009  Sparsity: -10.9081  Acc: 90.62  time: 0.8700  data: 0.0607  max mem: 6510
+Rainbow Train Task[1/1] Epoch[48/60]  [20/94]  eta: 0:01:02  Loss: 0.2615  CE: 0.3706  Match: 0.0018  Sparsity: -10.9092  Acc: 92.19  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[48/60]  [30/94]  eta: 0:00:53  Loss: 0.3640  CE: 0.4731  Match: 0.0008  Sparsity: -10.9104  Acc: 87.50  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[48/60]  [40/94]  eta: 0:00:44  Loss: 0.5050  CE: 0.6141  Match: 0.0017  Sparsity: -10.9115  Acc: 85.94  time: 0.8073  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[48/60]  [50/94]  eta: 0:00:36  Loss: 0.4666  CE: 0.5757  Match: 0.0006  Sparsity: -10.9126  Acc: 84.38  time: 0.8076  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[48/60]  [60/94]  eta: 0:00:27  Loss: 0.5657  CE: 0.6748  Match: 0.0010  Sparsity: -10.9137  Acc: 85.94  time: 0.8077  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[48/60]  [70/94]  eta: 0:00:19  Loss: 0.6193  CE: 0.7284  Match: 0.0012  Sparsity: -10.9147  Acc: 84.38  time: 0.8074  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[48/60]  [80/94]  eta: 0:00:11  Loss: 0.6874  CE: 0.7965  Match: 0.0006  Sparsity: -10.9158  Acc: 78.12  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[48/60]  [90/94]  eta: 0:00:03  Loss: 0.3830  CE: 0.4921  Match: 0.0004  Sparsity: -10.9168  Acc: 82.81  time: 0.8062  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[48/60]  [93/94]  eta: 0:00:00  Loss: 0.1620  CE: 0.2712  Match: 0.0007  Sparsity: -10.9172  Acc: 95.24  time: 0.7931  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[48/60] Total time: 0:01:16 (0.8124 s / it)
+Rainbow Train Task[1/1] Epoch[49/60]  [ 0/94]  eta: 0:02:19  Loss: 0.6536  CE: 0.7628  Match: 0.0025  Sparsity: -10.9173  Acc: 82.81  time: 1.4857  data: 0.6531  max mem: 6510
+Rainbow Train Task[1/1] Epoch[49/60]  [10/94]  eta: 0:01:12  Loss: 0.3236  CE: 0.4328  Match: 0.0017  Sparsity: -10.9181  Acc: 92.19  time: 0.8683  data: 0.0597  max mem: 6510
+Rainbow Train Task[1/1] Epoch[49/60]  [20/94]  eta: 0:01:02  Loss: 0.3810  CE: 0.4902  Match: 0.0015  Sparsity: -10.9191  Acc: 92.19  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[49/60]  [30/94]  eta: 0:00:53  Loss: 0.2291  CE: 0.3383  Match: 0.0007  Sparsity: -10.9202  Acc: 93.75  time: 0.8073  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[49/60]  [40/94]  eta: 0:00:44  Loss: 0.2924  CE: 0.4016  Match: 0.0004  Sparsity: -10.9213  Acc: 90.62  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[49/60]  [50/94]  eta: 0:00:36  Loss: 0.3592  CE: 0.4684  Match: 0.0005  Sparsity: -10.9223  Acc: 87.50  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[49/60]  [60/94]  eta: 0:00:27  Loss: 0.4428  CE: 0.5520  Match: 0.0005  Sparsity: -10.9232  Acc: 85.94  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[49/60]  [70/94]  eta: 0:00:19  Loss: 0.3329  CE: 0.4421  Match: 0.0005  Sparsity: -10.9241  Acc: 89.06  time: 0.8061  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[49/60]  [80/94]  eta: 0:00:11  Loss: 0.1533  CE: 0.2625  Match: 0.0012  Sparsity: -10.9251  Acc: 93.75  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[49/60]  [90/94]  eta: 0:00:03  Loss: 0.2585  CE: 0.3678  Match: 0.0014  Sparsity: -10.9261  Acc: 89.06  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[49/60]  [93/94]  eta: 0:00:00  Loss: 0.1020  CE: 0.2112  Match: 0.0006  Sparsity: -10.9264  Acc: 97.62  time: 0.7932  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[49/60] Total time: 0:01:16 (0.8118 s / it)
+Rainbow Train Task[1/1] Epoch[50/60]  [ 0/94]  eta: 0:02:17  Loss: 0.5580  CE: 0.6673  Match: 0.0016  Sparsity: -10.9264  Acc: 85.94  time: 1.4651  data: 0.6357  max mem: 6510
+Rainbow Train Task[1/1] Epoch[50/60]  [10/94]  eta: 0:01:12  Loss: 0.3416  CE: 0.4509  Match: 0.0011  Sparsity: -10.9273  Acc: 93.75  time: 0.8667  data: 0.0581  max mem: 6510
+Rainbow Train Task[1/1] Epoch[50/60]  [20/94]  eta: 0:01:02  Loss: 0.1947  CE: 0.3040  Match: 0.0009  Sparsity: -10.9282  Acc: 93.75  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[50/60]  [30/94]  eta: 0:00:53  Loss: 0.2863  CE: 0.3955  Match: 0.0009  Sparsity: -10.9290  Acc: 90.62  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[50/60]  [40/94]  eta: 0:00:44  Loss: 0.4953  CE: 0.6046  Match: 0.0005  Sparsity: -10.9298  Acc: 90.62  time: 0.8072  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[50/60]  [50/94]  eta: 0:00:36  Loss: 0.5952  CE: 0.7045  Match: 0.0006  Sparsity: -10.9306  Acc: 84.38  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[50/60]  [60/94]  eta: 0:00:27  Loss: 0.4410  CE: 0.5503  Match: 0.0005  Sparsity: -10.9314  Acc: 87.50  time: 0.8070  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[50/60]  [70/94]  eta: 0:00:19  Loss: 0.3536  CE: 0.4629  Match: 0.0007  Sparsity: -10.9323  Acc: 87.50  time: 0.8070  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[50/60]  [80/94]  eta: 0:00:11  Loss: 0.3618  CE: 0.4711  Match: 0.0007  Sparsity: -10.9330  Acc: 90.62  time: 0.8067  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[50/60]  [90/94]  eta: 0:00:03  Loss: 0.4140  CE: 0.5233  Match: 0.0005  Sparsity: -10.9337  Acc: 84.38  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[50/60]  [93/94]  eta: 0:00:00  Loss: 0.1809  CE: 0.2902  Match: 0.0007  Sparsity: -10.9339  Acc: 95.24  time: 0.7937  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[50/60] Total time: 0:01:16 (0.8119 s / it)
+Rainbow Train Task[1/1] Epoch[51/60]  [ 0/94]  eta: 0:02:18  Loss: 0.3069  CE: 0.4162  Match: 0.0012  Sparsity: -10.9339  Acc: 90.62  time: 1.4696  data: 0.6376  max mem: 6510
+Rainbow Train Task[1/1] Epoch[51/60]  [10/94]  eta: 0:01:12  Loss: 0.3038  CE: 0.4131  Match: 0.0005  Sparsity: -10.9345  Acc: 87.50  time: 0.8677  data: 0.0583  max mem: 6510
+Rainbow Train Task[1/1] Epoch[51/60]  [80/94]  eta: 0:00:11  Loss: 0.3513  CE: 0.4607  Match: 0.0012  Sparsity: -10.9391  Acc: 90.62  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[51/60]  [90/94]  eta: 0:00:03  Loss: 0.0749  CE: 0.1843  Match: 0.0010  Sparsity: -10.9397  Acc: 98.44  time: 0.8062  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[51/60]  [93/94]  eta: 0:00:00  Loss: 0.7631  CE: 0.8725  Match: 0.0006  Sparsity: -10.9399  Acc: 80.95  time: 0.7925  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[51/60] Total time: 0:01:16 (0.8119 s / it)
+Rainbow Train Task[1/1] Epoch[52/60]  [ 0/94]  eta: 0:02:31  Loss: 0.4347  CE: 0.5441  Match: 0.0006  Sparsity: -10.9400  Acc: 84.38  time: 1.6089  data: 0.7787  max mem: 6510
+Rainbow Train Task[1/1] Epoch[52/60]  [10/94]  eta: 0:01:13  Loss: 0.6180  CE: 0.7274  Match: 0.0006  Sparsity: -10.9403  Acc: 78.12  time: 0.8791  data: 0.0711  max mem: 6510
+Rainbow Train Task[1/1] Epoch[52/60]  [20/94]  eta: 0:01:02  Loss: 0.2860  CE: 0.3954  Match: 0.0009  Sparsity: -10.9408  Acc: 90.62  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[52/60]  [30/94]  eta: 0:00:53  Loss: 0.3387  CE: 0.4481  Match: 0.0017  Sparsity: -10.9413  Acc: 90.62  time: 0.8077  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[52/60]  [40/94]  eta: 0:00:44  Loss: 0.5576  CE: 0.6670  Match: 0.0006  Sparsity: -10.9418  Acc: 89.06  time: 0.8080  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[52/60]  [50/94]  eta: 0:00:36  Loss: 0.2724  CE: 0.3818  Match: 0.0058  Sparsity: -10.9424  Acc: 93.75  time: 0.8080  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[52/60]  [60/94]  eta: 0:00:27  Loss: 0.5473  CE: 0.6567  Match: 0.0004  Sparsity: -10.9429  Acc: 81.25  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[52/60]  [70/94]  eta: 0:00:19  Loss: 0.1933  CE: 0.3027  Match: 0.0005  Sparsity: -10.9435  Acc: 92.19  time: 0.8076  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[52/60]  [80/94]  eta: 0:00:11  Loss: 0.5238  CE: 0.6333  Match: 0.0007  Sparsity: -10.9440  Acc: 84.38  time: 0.8078  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[52/60]  [90/94]  eta: 0:00:03  Loss: 0.5356  CE: 0.6450  Match: 0.0012  Sparsity: -10.9446  Acc: 82.81  time: 0.8071  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[52/60]  [93/94]  eta: 0:00:00  Loss: 0.3440  CE: 0.4534  Match: 0.0013  Sparsity: -10.9448  Acc: 90.48  time: 0.7939  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[52/60] Total time: 0:01:16 (0.8138 s / it)
+Rainbow Train Task[1/1] Epoch[53/60]  [ 0/94]  eta: 0:02:33  Loss: 0.3228  CE: 0.4323  Match: 0.0008  Sparsity: -10.9448  Acc: 93.75  time: 1.6351  data: 0.8205  max mem: 6510
+Rainbow Train Task[1/1] Epoch[53/60]  [10/94]  eta: 0:01:14  Loss: 0.4090  CE: 0.5184  Match: 0.0009  Sparsity: -10.9453  Acc: 89.06  time: 0.8825  data: 0.0749  max mem: 6510
+Rainbow Train Task[1/1] Epoch[53/60]  [20/94]  eta: 0:01:02  Loss: 0.8797  CE: 0.9891  Match: 0.0023  Sparsity: -10.9458  Acc: 76.56  time: 0.8073  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[53/60]  [30/94]  eta: 0:00:53  Loss: 0.7262  CE: 0.8356  Match: 0.0006  Sparsity: -10.9462  Acc: 78.12  time: 0.8074  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[53/60]  [40/94]  eta: 0:00:44  Loss: 0.3413  CE: 0.4508  Match: 0.0013  Sparsity: -10.9466  Acc: 90.62  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[53/60]  [50/94]  eta: 0:00:36  Loss: 0.5383  CE: 0.6478  Match: 0.0013  Sparsity: -10.9470  Acc: 85.94  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[53/60]  [60/94]  eta: 0:00:27  Loss: 0.4500  CE: 0.5595  Match: 0.0012  Sparsity: -10.9475  Acc: 92.19  time: 0.8077  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[53/60]  [70/94]  eta: 0:00:19  Loss: 0.4600  CE: 0.5695  Match: 0.0005  Sparsity: -10.9479  Acc: 84.38  time: 0.8078  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[53/60]  [80/94]  eta: 0:00:11  Loss: 0.4962  CE: 0.6057  Match: 0.0011  Sparsity: -10.9484  Acc: 87.50  time: 0.8075  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[53/60]  [90/94]  eta: 0:00:03  Loss: 0.4867  CE: 0.5962  Match: 0.0009  Sparsity: -10.9488  Acc: 84.38  time: 0.8072  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[53/60]  [93/94]  eta: 0:00:00  Loss: 0.1885  CE: 0.2980  Match: 0.0006  Sparsity: -10.9490  Acc: 97.62  time: 0.7938  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[53/60] Total time: 0:01:16 (0.8140 s / it)
+Rainbow Train Task[1/1] Epoch[54/60]  [ 0/94]  eta: 0:02:28  Loss: 0.4040  CE: 0.5135  Match: 0.0006  Sparsity: -10.9490  Acc: 92.19  time: 1.5779  data: 0.7568  max mem: 6510
+Rainbow Train Task[1/1] Epoch[54/60]  [10/94]  eta: 0:01:13  Loss: 0.3247  CE: 0.4342  Match: 0.0006  Sparsity: -10.9493  Acc: 89.06  time: 0.8765  data: 0.0691  max mem: 6510
+Rainbow Train Task[1/1] Epoch[54/60]  [20/94]  eta: 0:01:02  Loss: 0.4361  CE: 0.5456  Match: 0.0007  Sparsity: -10.9495  Acc: 84.38  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[54/60]  [30/94]  eta: 0:00:53  Loss: 0.6525  CE: 0.7620  Match: 0.0018  Sparsity: -10.9498  Acc: 81.25  time: 0.8072  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[54/60]  [40/94]  eta: 0:00:44  Loss: 0.5307  CE: 0.6402  Match: 0.0015  Sparsity: -10.9501  Acc: 85.94  time: 0.8072  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[54/60]  [50/94]  eta: 0:00:36  Loss: 0.6481  CE: 0.7576  Match: 0.0006  Sparsity: -10.9505  Acc: 84.38  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[54/60]  [60/94]  eta: 0:00:27  Loss: 0.4778  CE: 0.5873  Match: 0.0009  Sparsity: -10.9508  Acc: 89.06  time: 0.8075  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[54/60]  [70/94]  eta: 0:00:19  Loss: 0.4229  CE: 0.5324  Match: 0.0009  Sparsity: -10.9511  Acc: 85.94  time: 0.8075  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[54/60]  [80/94]  eta: 0:00:11  Loss: 0.1038  CE: 0.2133  Match: 0.0019  Sparsity: -10.9515  Acc: 98.44  time: 0.8073  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[54/60]  [90/94]  eta: 0:00:03  Loss: 0.3456  CE: 0.4551  Match: 0.0007  Sparsity: -10.9518  Acc: 92.19  time: 0.8074  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[54/60]  [93/94]  eta: 0:00:00  Loss: 0.4508  CE: 0.5603  Match: 0.0005  Sparsity: -10.9519  Acc: 88.10  time: 0.7935  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[54/60] Total time: 0:01:16 (0.8132 s / it)
+Rainbow Train Task[1/1] Epoch[55/60]  [ 0/94]  eta: 0:02:30  Loss: 0.2903  CE: 0.3998  Match: 0.0005  Sparsity: -10.9519  Acc: 89.06  time: 1.6024  data: 0.7767  max mem: 6510
+Rainbow Train Task[1/1] Epoch[55/60]  [10/94]  eta: 0:01:13  Loss: 0.2569  CE: 0.3664  Match: 0.0007  Sparsity: -10.9521  Acc: 93.75  time: 0.8787  data: 0.0709  max mem: 6510
+Rainbow Train Task[1/1] Epoch[55/60]  [20/94]  eta: 0:01:02  Loss: 0.4733  CE: 0.5828  Match: 0.0007  Sparsity: -10.9523  Acc: 87.50  time: 0.8067  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[55/60]  [30/94]  eta: 0:00:53  Loss: 0.5496  CE: 0.6591  Match: 0.0009  Sparsity: -10.9526  Acc: 84.38  time: 0.8075  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[55/60]  [40/94]  eta: 0:00:44  Loss: 0.2795  CE: 0.3890  Match: 0.0011  Sparsity: -10.9528  Acc: 90.62  time: 0.8076  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[55/60]  [50/94]  eta: 0:00:36  Loss: 0.5307  CE: 0.6403  Match: 0.0012  Sparsity: -10.9530  Acc: 79.69  time: 0.8074  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[55/60]  [60/94]  eta: 0:00:27  Loss: 0.2395  CE: 0.3491  Match: 0.0010  Sparsity: -10.9533  Acc: 92.19  time: 0.8074  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[55/60]  [70/94]  eta: 0:00:19  Loss: 0.4797  CE: 0.5892  Match: 0.0019  Sparsity: -10.9536  Acc: 87.50  time: 0.8073  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[55/60]  [80/94]  eta: 0:00:11  Loss: 0.5054  CE: 0.6150  Match: 0.0007  Sparsity: -10.9539  Acc: 84.38  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[55/60]  [90/94]  eta: 0:00:03  Loss: 0.4830  CE: 0.5925  Match: 0.0008  Sparsity: -10.9541  Acc: 87.50  time: 0.8064  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[55/60]  [93/94]  eta: 0:00:00  Loss: 0.4570  CE: 0.5665  Match: 0.0007  Sparsity: -10.9542  Acc: 83.33  time: 0.7930  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[55/60] Total time: 0:01:16 (0.8134 s / it)
+Rainbow Train Task[1/1] Epoch[56/60]  [ 0/94]  eta: 0:02:29  Loss: 0.6400  CE: 0.7496  Match: 0.0006  Sparsity: -10.9542  Acc: 84.38  time: 1.5894  data: 0.7522  max mem: 6510
+Rainbow Train Task[1/1] Epoch[56/60]  [10/94]  eta: 0:01:13  Loss: 0.6179  CE: 0.7274  Match: 0.0004  Sparsity: -10.9543  Acc: 84.38  time: 0.8779  data: 0.0687  max mem: 6510
+Rainbow Train Task[1/1] Epoch[56/60]  [20/94]  eta: 0:01:02  Loss: 0.4370  CE: 0.5465  Match: 0.0010  Sparsity: -10.9545  Acc: 85.94  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[56/60]  [30/94]  eta: 0:00:53  Loss: 0.4280  CE: 0.5375  Match: 0.0005  Sparsity: -10.9547  Acc: 85.94  time: 0.8073  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[56/60]  [40/94]  eta: 0:00:44  Loss: 0.4122  CE: 0.5218  Match: 0.0013  Sparsity: -10.9548  Acc: 89.06  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[56/60]  [50/94]  eta: 0:00:36  Loss: 0.3108  CE: 0.4203  Match: 0.0010  Sparsity: -10.9549  Acc: 87.50  time: 0.8070  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[56/60]  [60/94]  eta: 0:00:27  Loss: 0.3756  CE: 0.4851  Match: 0.0016  Sparsity: -10.9551  Acc: 92.19  time: 0.8072  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[56/60]  [70/94]  eta: 0:00:19  Loss: 0.2678  CE: 0.3773  Match: 0.0006  Sparsity: -10.9553  Acc: 92.19  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[56/60]  [80/94]  eta: 0:00:11  Loss: 0.3563  CE: 0.4659  Match: 0.0007  Sparsity: -10.9554  Acc: 92.19  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[56/60]  [90/94]  eta: 0:00:03  Loss: 0.2479  CE: 0.3574  Match: 0.0018  Sparsity: -10.9556  Acc: 92.19  time: 0.8066  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[56/60]  [93/94]  eta: 0:00:00  Loss: 0.2191  CE: 0.3287  Match: 0.0006  Sparsity: -10.9557  Acc: 92.86  time: 0.7932  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[56/60] Total time: 0:01:16 (0.8132 s / it)
+Rainbow Train Task[1/1] Epoch[57/60]  [ 0/94]  eta: 0:02:19  Loss: 0.4716  CE: 0.5811  Match: 0.0006  Sparsity: -10.9557  Acc: 82.81  time: 1.4807  data: 0.6366  max mem: 6510
+Rainbow Train Task[1/1] Epoch[57/60]  [10/94]  eta: 0:01:12  Loss: 0.3347  CE: 0.4442  Match: 0.0005  Sparsity: -10.9558  Acc: 93.75  time: 0.8681  data: 0.0582  max mem: 6510
+Rainbow Train Task[1/1] Epoch[57/60]  [20/94]  eta: 0:01:02  Loss: 0.3355  CE: 0.4450  Match: 0.0022  Sparsity: -10.9559  Acc: 90.62  time: 0.8071  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[57/60]  [30/94]  eta: 0:00:53  Loss: 0.2912  CE: 0.4007  Match: 0.0006  Sparsity: -10.9560  Acc: 92.19  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[57/60]  [40/94]  eta: 0:00:44  Loss: 0.4668  CE: 0.5763  Match: 0.0020  Sparsity: -10.9561  Acc: 90.62  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[57/60]  [50/94]  eta: 0:00:36  Loss: 0.2997  CE: 0.4093  Match: 0.0008  Sparsity: -10.9562  Acc: 89.06  time: 0.8066  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[57/60]  [60/94]  eta: 0:00:27  Loss: 0.4671  CE: 0.5767  Match: 0.0014  Sparsity: -10.9562  Acc: 85.94  time: 0.8064  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[57/60]  [70/94]  eta: 0:00:19  Loss: 0.2391  CE: 0.3487  Match: 0.0008  Sparsity: -10.9563  Acc: 90.62  time: 0.8067  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[57/60]  [80/94]  eta: 0:00:11  Loss: 0.3442  CE: 0.4537  Match: 0.0005  Sparsity: -10.9564  Acc: 93.75  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[57/60]  [90/94]  eta: 0:00:03  Loss: 0.3993  CE: 0.5089  Match: 0.0004  Sparsity: -10.9565  Acc: 89.06  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[57/60]  [93/94]  eta: 0:00:00  Loss: 0.3494  CE: 0.4589  Match: 0.0005  Sparsity: -10.9565  Acc: 90.48  time: 0.7934  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[57/60] Total time: 0:01:16 (0.8117 s / it)
+Rainbow Train Task[1/1] Epoch[58/60]  [ 0/94]  eta: 0:02:21  Loss: 0.4335  CE: 0.5431  Match: 0.0004  Sparsity: -10.9565  Acc: 89.06  time: 1.5038  data: 0.6830  max mem: 6510
+Rainbow Train Task[1/1] Epoch[58/60]  [10/94]  eta: 0:01:13  Loss: 0.2539  CE: 0.3634  Match: 0.0005  Sparsity: -10.9566  Acc: 93.75  time: 0.8702  data: 0.0624  max mem: 6510
+Rainbow Train Task[1/1] Epoch[58/60]  [20/94]  eta: 0:01:02  Loss: 0.5786  CE: 0.6882  Match: 0.0013  Sparsity: -10.9566  Acc: 82.81  time: 0.8073  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[58/60]  [30/94]  eta: 0:00:53  Loss: 0.3858  CE: 0.4953  Match: 0.0018  Sparsity: -10.9567  Acc: 90.62  time: 0.8077  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[58/60]  [40/94]  eta: 0:00:44  Loss: 0.3922  CE: 0.5018  Match: 0.0005  Sparsity: -10.9567  Acc: 90.62  time: 0.8072  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[58/60]  [50/94]  eta: 0:00:36  Loss: 0.3666  CE: 0.4760  Match: 0.0163  Sparsity: -10.9568  Acc: 89.06  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[58/60]  [60/94]  eta: 0:00:27  Loss: 0.3218  CE: 0.4313  Match: 0.0006  Sparsity: -10.9569  Acc: 87.50  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[58/60]  [70/94]  eta: 0:00:19  Loss: 0.2313  CE: 0.3409  Match: 0.0012  Sparsity: -10.9569  Acc: 90.62  time: 0.8069  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[58/60]  [80/94]  eta: 0:00:11  Loss: 0.5326  CE: 0.6421  Match: 0.0005  Sparsity: -10.9570  Acc: 85.94  time: 0.8074  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[58/60]  [90/94]  eta: 0:00:03  Loss: 0.4174  CE: 0.5270  Match: 0.0009  Sparsity: -10.9570  Acc: 89.06  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[58/60]  [93/94]  eta: 0:00:00  Loss: 0.3762  CE: 0.4858  Match: 0.0010  Sparsity: -10.9570  Acc: 88.10  time: 0.7936  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[58/60] Total time: 0:01:16 (0.8124 s / it)
+Rainbow Train Task[1/1] Epoch[59/60]  [ 0/94]  eta: 0:02:24  Loss: 0.6733  CE: 0.7829  Match: 0.0006  Sparsity: -10.9571  Acc: 78.12  time: 1.5367  data: 0.7015  max mem: 6510
+Rainbow Train Task[1/1] Epoch[59/60]  [10/94]  eta: 0:01:13  Loss: 0.3145  CE: 0.4240  Match: 0.0008  Sparsity: -10.9571  Acc: 90.62  time: 0.8732  data: 0.0641  max mem: 6510
+Rainbow Train Task[1/1] Epoch[59/60]  [20/94]  eta: 0:01:02  Loss: 0.3630  CE: 0.4726  Match: 0.0008  Sparsity: -10.9571  Acc: 92.19  time: 0.8068  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[59/60]  [30/94]  eta: 0:00:53  Loss: 0.4301  CE: 0.5396  Match: 0.0020  Sparsity: -10.9571  Acc: 87.50  time: 0.8068  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[59/60]  [40/94]  eta: 0:00:44  Loss: 0.5239  CE: 0.6334  Match: 0.0006  Sparsity: -10.9572  Acc: 85.94  time: 0.8070  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[59/60]  [50/94]  eta: 0:00:36  Loss: 0.2216  CE: 0.3312  Match: 0.0025  Sparsity: -10.9572  Acc: 95.31  time: 0.8069  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[59/60]  [60/94]  eta: 0:00:27  Loss: 0.7027  CE: 0.8123  Match: 0.0005  Sparsity: -10.9572  Acc: 79.69  time: 0.8072  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[59/60]  [70/94]  eta: 0:00:19  Loss: 0.2509  CE: 0.3604  Match: 0.0011  Sparsity: -10.9572  Acc: 90.62  time: 0.8074  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[59/60]  [80/94]  eta: 0:00:11  Loss: 0.2235  CE: 0.3330  Match: 0.0005  Sparsity: -10.9573  Acc: 93.75  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[59/60]  [90/94]  eta: 0:00:03  Loss: 0.2487  CE: 0.3582  Match: 0.0007  Sparsity: -10.9573  Acc: 89.06  time: 0.8066  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[59/60]  [93/94]  eta: 0:00:00  Loss: 0.3547  CE: 0.4643  Match: 0.0006  Sparsity: -10.9573  Acc: 92.86  time: 0.7935  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[59/60] Total time: 0:01:16 (0.8126 s / it)
+Rainbow Train Task[1/1] Epoch[60/60]  [ 0/94]  eta: 0:02:29  Loss: 0.6059  CE: 0.7155  Match: 0.0011  Sparsity: -10.9573  Acc: 85.94  time: 1.5945  data: 0.7580  max mem: 6510
+Rainbow Train Task[1/1] Epoch[60/60]  [10/94]  eta: 0:01:13  Loss: 0.4258  CE: 0.5354  Match: 0.0004  Sparsity: -10.9573  Acc: 89.06  time: 0.8784  data: 0.0693  max mem: 6510
+Rainbow Train Task[1/1] Epoch[60/60]  [20/94]  eta: 0:01:02  Loss: 0.2300  CE: 0.3396  Match: 0.0004  Sparsity: -10.9573  Acc: 93.75  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[60/60]  [30/94]  eta: 0:00:53  Loss: 0.3135  CE: 0.4231  Match: 0.0005  Sparsity: -10.9573  Acc: 93.75  time: 0.8071  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[60/60]  [40/94]  eta: 0:00:44  Loss: 0.3675  CE: 0.4770  Match: 0.0003  Sparsity: -10.9573  Acc: 87.50  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[60/60]  [50/94]  eta: 0:00:36  Loss: 0.3326  CE: 0.4422  Match: 0.0006  Sparsity: -10.9573  Acc: 89.06  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[60/60]  [60/94]  eta: 0:00:27  Loss: 0.3808  CE: 0.4904  Match: 0.0006  Sparsity: -10.9573  Acc: 87.50  time: 0.8063  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[60/60]  [70/94]  eta: 0:00:19  Loss: 0.3811  CE: 0.4907  Match: 0.0004  Sparsity: -10.9573  Acc: 87.50  time: 0.8064  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[60/60]  [80/94]  eta: 0:00:11  Loss: 0.3742  CE: 0.4837  Match: 0.0005  Sparsity: -10.9573  Acc: 85.94  time: 0.8065  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[60/60]  [90/94]  eta: 0:00:03  Loss: 0.4153  CE: 0.5249  Match: 0.0006  Sparsity: -10.9573  Acc: 90.62  time: 0.8068  data: 0.0004  max mem: 6510
+Rainbow Train Task[1/1] Epoch[60/60]  [93/94]  eta: 0:00:00  Loss: 0.1301  CE: 0.2397  Match: 0.0015  Sparsity: -10.9573  Acc: 97.62  time: 0.7931  data: 0.0003  max mem: 6510
+Rainbow Train Task[1/1] Epoch[60/60] Total time: 0:01:16 (0.8129 s / it)
+Rainbow Eval Task[1/1]  [ 0/91]  eta: 0:01:49  Loss: 0.3319  Acc@1: 90.62  Acc@5: 98.44  time: 1.2004  data: 0.8106  max mem: 6510
+Rainbow Eval Task[1/1]  [10/91]  eta: 0:00:38  Loss: 0.5810  Acc@1: 85.94  Acc@5: 96.88  time: 0.4692  data: 0.0785  max mem: 6510
+Rainbow Eval Task[1/1]  [20/91]  eta: 0:00:30  Loss: 0.1602  Acc@1: 95.31  Acc@5: 100.00  time: 0.3942  data: 0.0031  max mem: 6510
+Rainbow Eval Task[1/1]  [30/91]  eta: 0:00:25  Loss: 0.1686  Acc@1: 95.31  Acc@5: 100.00  time: 0.3941  data: 0.0030  max mem: 6510
+Rainbow Eval Task[1/1]  [40/91]  eta: 0:00:21  Loss: 0.1648  Acc@1: 98.44  Acc@5: 100.00  time: 0.3945  data: 0.0036  max mem: 6510
+Rainbow Eval Task[1/1]  [50/91]  eta: 0:00:16  Loss: 0.2682  Acc@1: 98.44  Acc@5: 100.00  time: 0.3940  data: 0.0029  max mem: 6510
+Rainbow Eval Task[1/1]  [60/91]  eta: 0:00:12  Loss: 0.5137  Acc@1: 82.81  Acc@5: 98.44  time: 0.3950  data: 0.0041  max mem: 6510
+Rainbow Eval Task[1/1]  [70/91]  eta: 0:00:08  Loss: 0.4133  Acc@1: 92.19  Acc@5: 98.44  time: 0.3954  data: 0.0051  max mem: 6510
+Rainbow Eval Task[1/1]  [80/91]  eta: 0:00:04  Loss: 0.6738  Acc@1: 87.50  Acc@5: 95.31  time: 0.3962  data: 0.0054  max mem: 6510
+Rainbow Eval Task[1/1]  [90/91]  eta: 0:00:00  Loss: 0.3022  Acc@1: 94.12  Acc@5: 100.00  time: 0.4083  data: 0.0044  max mem: 6510
+Rainbow Eval Task[1/1] Total time: 0:00:37 (0.4073 s / it)
+Average accuracy over all seen classes after task 1: 90.4556
+[Average accuracy till task1]	Acc@1: 90.4556	Acc@5: 98.7056	Loss: 0.3729
+Total training time: 1:17:00
