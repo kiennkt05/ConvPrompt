@@ -210,6 +210,11 @@ def evaluate_till_now(model: torch.nn.Module, data_loader,
     diagonal = np.diag(acc_matrix)
 
     final_acc = np.divide(correct.cpu(), total)*100.0
+    avg_seen_str = (
+        f"Average accuracy over all seen classes after task {task_id + 1}: {final_acc:.4f}"
+    )
+    print(avg_seen_str)
+    logging.info(avg_seen_str)
     result_str = "[Average accuracy till task{}]\tAcc@1: {:.4f}\tAcc@5: {:.4f}\tLoss: {:.4f}".format(task_id+1, final_acc, avg_stat[1], avg_stat[2])
     if task_id > 0:
         forgetting = np.mean((np.max(acc_matrix, axis=1) -
@@ -486,12 +491,14 @@ def evaluate_rainbow(
 
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('Loss', utils.SmoothedValue(window_size=1, fmt='{value:.4f}'))
-    metric_logger.add_meter('Acc', utils.SmoothedValue(window_size=1, fmt='{value:.2f}'))
+    metric_logger.add_meter('Acc@1', utils.SmoothedValue(window_size=1, fmt='{value:.2f}'))
+    metric_logger.add_meter('Acc@5', utils.SmoothedValue(window_size=1, fmt='{value:.2f}'))
 
     criterion = torch.nn.CrossEntropyLoss()
 
     total = 0
-    correct = 0
+    correct_top1 = 0
+    correct_top5 = 0
 
     header = f'Rainbow Eval Task[{task_id + 1}/{args.num_tasks}]'
 
@@ -505,19 +512,27 @@ def evaluate_rainbow(
         adjusted_targets = targets - offset
 
         loss = criterion(logits_current, adjusted_targets)
-        preds = logits_current.argmax(dim=1)
 
-        total += targets.size(0)
-        correct += (preds == adjusted_targets).sum().item()
-        acc = (preds == adjusted_targets).float().mean() * 100.0
+        acc1, acc5 = accuracy(logits_current, adjusted_targets, topk=(1, 5))
+        batch_size = targets.size(0)
+        total += batch_size
+        correct_top1 += acc1.item() / 100.0 * batch_size
+        correct_top5 += acc5.item() / 100.0 * batch_size
 
-        metric_logger.update(Loss=loss.item(), Acc=acc.item())
+        metric_logger.meters['Loss'].update(loss.item(), n=batch_size)
+        metric_logger.meters['Acc@1'].update(acc1.item(), n=batch_size)
+        metric_logger.meters['Acc@5'].update(acc5.item(), n=batch_size)
+
+    avg_acc1 = metric_logger.meters['Acc@1'].global_avg
+    avg_acc5 = metric_logger.meters['Acc@5'].global_avg
 
     return {
         'loss': metric_logger.meters['Loss'].global_avg,
-        'acc1': metric_logger.meters['Acc'].global_avg,
+        'acc1': avg_acc1,
+        'acc5': avg_acc5,
         'total': total,
-        'correct': correct,
+        'correct_top1': correct_top1,
+        'correct_top5': correct_top5,
     }
 
 
@@ -531,48 +546,70 @@ def evaluate_rainbow_till_now(
     acc_matrix,
     args,
 ):
-    task_accuracies = []
+    num_tasks = args.num_tasks
+    stat_matrix = np.zeros((3, num_tasks))
+
     total_samples = 0
-    total_correct = 0
+    total_correct_top1 = 0
+    total_correct_top5 = 0
 
     for eval_task in range(task_id + 1):
-        stats = evaluate_rainbow(model, matcher, data_loader[eval_task]['val'], device, eval_task, class_mask, args)
+        stats = evaluate_rainbow(
+            model,
+            matcher,
+            data_loader[eval_task]['val'],
+            device,
+            eval_task,
+            class_mask,
+            args,
+        )
         acc_matrix[eval_task, task_id] = stats['acc1']
-        task_accuracies.append(stats['acc1'])
-        total_samples += stats['total']
-        total_correct += stats['correct']
+        stat_matrix[0, eval_task] = stats['acc1']
+        stat_matrix[1, eval_task] = stats['acc5']
+        stat_matrix[2, eval_task] = stats['loss']
 
-    avg_accuracy = float(np.mean(task_accuracies)) if task_accuracies else 0.0
+        total_samples += stats['total']
+        total_correct_top1 += stats['correct_top1']
+        total_correct_top5 += stats['correct_top5']
+
+    avg_stat = np.divide(np.sum(stat_matrix[:, : task_id + 1], axis=1), task_id + 1)
+
+    final_acc1 = 100.0 * total_correct_top1 / max(total_samples, 1)
+    final_acc5 = 100.0 * total_correct_top5 / max(total_samples, 1)
+
+    avg_seen_str = (
+        f"Average accuracy over all seen classes after task {task_id + 1}: {final_acc1:.4f}"
+    )
+    print(avg_seen_str)
+    logging.info(avg_seen_str)
 
     forgetting = 0.0
+    backward = 0.0
     if task_id > 0:
         previous_max = np.max(acc_matrix[:, :task_id], axis=1)
         current_acc = acc_matrix[:, task_id]
         forgetting = float(np.mean((previous_max - current_acc)[:task_id]))
+        diagonal = np.diag(acc_matrix)
+        backward = float(np.mean((current_acc - diagonal)[:task_id]))
 
-    overall_acc = 100.0 * total_correct / max(total_samples, 1)
+    summary_str = (
+        f"[Average accuracy till task{task_id + 1}]\tAcc@1: {final_acc1:.4f}\tAcc@5: {avg_stat[1]:.4f}"
+        f"\tLoss: {avg_stat[2]:.4f}"
+    )
+    if task_id > 0:
+        summary_str += f"\tForgetting: {forgetting:.4f}\tBackward: {backward:.4f}"
 
-    result = {
-        'average_accuracy': avg_accuracy,
-        'overall_accuracy': overall_acc,
+    print(summary_str)
+    logging.info(summary_str)
+
+    return {
+        'avg_acc1': final_acc1,
+        'avg_acc5': avg_stat[1],
+        'avg_loss': avg_stat[2],
         'forgetting': forgetting,
+        'backward': backward,
+        'summary': summary_str,
     }
-
-    logging.info(
-        "[Rainbow avg till task %d]\tAcc@1: %.4f\tOverall: %.4f\tForgetting: %.4f",
-        task_id + 1,
-        avg_accuracy,
-        overall_acc,
-        forgetting,
-    )
-
-    print(
-        "[Rainbow avg till task{}]\tAcc@1: {:.4f}\tOverall: {:.4f}\tForgetting: {:.4f}".format(
-            task_id + 1, avg_accuracy, overall_acc, forgetting
-        )
-    )
-
-    return result
 
 
 def train_and_evaluate_rainbow(
@@ -617,7 +654,7 @@ def train_and_evaluate_rainbow(
 
         model.rainbow_finalize_task(task_id)
 
-        eval_stats = evaluate_rainbow_till_now(
+        summary_stats = evaluate_rainbow_till_now(
             model=model,
             matcher=matcher,
             data_loader=data_loader,
@@ -626,14 +663,6 @@ def train_and_evaluate_rainbow(
             class_mask=class_mask,
             acc_matrix=acc_matrix,
             args=args,
-        )
-
-        logging.info(
-            'After task %d: Avg Acc %.4f | Overall Acc %.4f | Forgetting %.4f',
-            task_id + 1,
-            eval_stats['average_accuracy'],
-            eval_stats['overall_accuracy'],
-            eval_stats['forgetting'],
         )
 
         if getattr(args, 'output_dir', None) and utils.is_main_process():

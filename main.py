@@ -183,6 +183,7 @@ def main_rainbow(args):
         )
         return
 
+    start_time = time.time()
     train_and_evaluate_rainbow(
         model=model,
         matcher=matcher,
@@ -192,6 +193,10 @@ def main_rainbow(args):
         class_mask=class_mask,
         args=args,
     )
+
+    total_time = time.time() - start_time
+    total_time_str = str(datetime.timedelta(seconds=int(total_time)))
+    print(f"Total training time: {total_time_str}")
 
 
 def parse_legacy_args():
