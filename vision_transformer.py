@@ -465,6 +465,7 @@ class VisionTransformer(nn.Module):
                 "enable_feature_level": True,
                 "enable_alignment": True,
                 "use_adaptive_gating": True,
+                "mode": "enhanced",
                 "lambda_sparse": 0.0,
                 "lambda_match": 0.0,
             }
@@ -487,6 +488,7 @@ class VisionTransformer(nn.Module):
                 enable_feature_level=rainbow_defaults["enable_feature_level"],
                 enable_alignment=rainbow_defaults["enable_alignment"],
                 use_adaptive_gating=rainbow_defaults["use_adaptive_gating"],
+                evolution_mode=rainbow_defaults["mode"],
             )
             self.lambda_sparse = rainbow_defaults.get("lambda_sparse", 0.0)
             self.lambda_match = rainbow_defaults.get("lambda_match", 0.0)

@@ -31,6 +31,7 @@ class RainbowPromptModule(nn.Module):
         enable_feature_level: bool = True,
         enable_alignment: bool = True,
         use_adaptive_gating: bool = True,
+        evolution_mode: str = "enhanced",
     ) -> None:
         super().__init__()
 
@@ -57,6 +58,7 @@ class RainbowPromptModule(nn.Module):
                     enable_task_level=enable_task_level,
                     enable_feature_level=enable_feature_level,
                     enable_alignment=enable_alignment,
+                    mode=evolution_mode,
                 )
                 for _ in range(num_layers)
             ]
