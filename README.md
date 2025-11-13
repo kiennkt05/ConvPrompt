@@ -61,17 +61,6 @@ python main.py --config configs/rainbow_imagenet_r.yaml \
 ```
 Optional overrides such as `--epochs`, `--batch_size`, or `--device` can be appended to each command. The YAML file under `configs/` controls optimizer, scheduler, and RainbowPrompt-specific hyperparameters.
 
-#### Selecting the RainbowPrompt variant
-Set `rainbow.mode` in the config to choose between the implementation in this repo (`enhanced`, default) and a reproduction closer to the original paper (`paper`):
-
-```yaml
-rainbow:
-  mode: paper      # or "enhanced"
-  proj_dim: 96
-  align_hidden_dim: 56
-  ...
-```
-
 
 ## Acknowledgement
 

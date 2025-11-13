@@ -242,6 +242,8 @@ warnings.filterwarnings('ignore', 'Argument interpolation should be of type Inte
 
 
 def main(args):
+    # Print args
+    print(args)
     if getattr(args, 'method', None) == 'rainbow':
         main_rainbow(args)
         return

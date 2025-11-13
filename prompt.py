@@ -31,7 +31,7 @@ class RainbowPromptModule(nn.Module):
         enable_feature_level: bool = True,
         enable_alignment: bool = True,
         use_adaptive_gating: bool = True,
-        evolution_mode: str = "enhanced",
+        use_paper_evolution: bool = False,
     ) -> None:
         super().__init__()
 
@@ -45,6 +45,7 @@ class RainbowPromptModule(nn.Module):
         self.head_dim = embed_dim // num_heads
         self.use_task_conditioning = use_task_conditioning
         self.use_adaptive_gating = use_adaptive_gating
+        self.use_paper_evolution = use_paper_evolution
 
         self.evolutions = nn.ModuleList(
             [
@@ -58,7 +59,7 @@ class RainbowPromptModule(nn.Module):
                     enable_task_level=enable_task_level,
                     enable_feature_level=enable_feature_level,
                     enable_alignment=enable_alignment,
-                    mode=evolution_mode,
+                    use_paper_evolution=use_paper_evolution,
                 )
                 for _ in range(num_layers)
             ]

@@ -23,7 +23,7 @@ class RainbowEvolution(nn.Module):
         enable_task_level: bool = True,
         enable_feature_level: bool = True,
         enable_alignment: bool = True,
-        mode: str = "enhanced",
+        use_paper_evolution: bool = False,
     ) -> None:
         super().__init__()
         self.embed_dim = embed_dim
@@ -35,9 +35,7 @@ class RainbowEvolution(nn.Module):
         self.enable_task_level = enable_task_level
         self.enable_feature_level = enable_feature_level
         self.enable_alignment = enable_alignment
-        self.mode = mode.lower()
-        if self.mode not in {"enhanced", "paper"}:
-            raise ValueError(f"Unsupported rainbow evolution mode: {mode}")
+        self.use_paper_evolution = use_paper_evolution
 
         self.task_proj = nn.Linear(embed_dim, proj_dim) if use_task_conditioning else None
         self.query_proj = nn.Linear(embed_dim, proj_dim)
@@ -116,7 +114,8 @@ class RainbowEvolution(nn.Module):
         keys = self.key_proj(conditioned_prompts)  # [num_prompts, prompt_len, proj_dim]
         values = self.value_proj(conditioned_prompts)  # [num_prompts, prompt_len, proj_dim]
 
-        # Task-level transformation: weight historical prompts for each layer
+        feature_attn: Optional[torch.Tensor]
+
         if self.enable_task_level:
             pooled_query = query.mean(dim=0, keepdim=True)  # [1, proj_dim]
             pooled_keys = keys.mean(dim=1).transpose(0, 1)  # [proj_dim, num_prompts]
@@ -130,12 +129,11 @@ class RainbowEvolution(nn.Module):
 
         task_weights = task_weights / task_weights.sum().clamp(min=1e-6)
 
-        if self.mode == "enhanced":
+        if not self.use_paper_evolution:
             weighted_values = torch.einsum("p,pld->ld", task_weights, values)
             weighted_keys = torch.einsum("p,pld->ld", task_weights, keys)
             weighted_prompts = torch.einsum("p,pld->ld", task_weights, conditioned_prompts)
 
-            # Feature-level transformation
             if self.enable_feature_level:
                 feature_logits = torch.matmul(query, weighted_keys.transpose(0, 1)) / math.sqrt(self.proj_dim)
                 feature_attn = torch.softmax(feature_logits, dim=-1)
@@ -144,7 +142,6 @@ class RainbowEvolution(nn.Module):
                 feature_attn = None
                 evolved_proj = weighted_values
 
-            # Project back to embedding dimension and add residual
             evolved_embeds = self.output_proj(evolved_proj)
             evolved_embeds = self.layer_norm_in(weighted_prompts + evolved_embeds)
 
@@ -155,45 +152,51 @@ class RainbowEvolution(nn.Module):
 
             aligned_prompts = torch.stack([aligned for _ in range(num_prompts)], dim=0)
 
-            feature_attn_out = feature_attn.detach() if feature_attn is not None else None
-            rainbow_prompt = aligned
-        else:
-            # Paper-faithful evolution: evolve each prompt before averaging.
-            if self.enable_feature_level:
-                feature_logits = torch.matmul(
-                    query.unsqueeze(0), keys.transpose(-2, -1)
-                ) / math.sqrt(self.proj_dim)
-                # feature_logits: [num_prompts, prompt_len, prompt_len]
-                feature_attn = torch.softmax(feature_logits, dim=-1)
-                evolved_proj = torch.matmul(feature_attn, values)
-            else:
-                feature_attn = None
-                evolved_proj = values
+            return {
+                "rainbow_prompt": aligned,
+                "aligned_prompts": aligned_prompts,
+                "task_weights": task_weights.detach(),
+                "feature_attn": feature_attn.detach() if feature_attn is not None else None,
+            }
 
-            if self.enable_task_level:
-                evolved_proj = evolved_proj * task_weights.view(num_prompts, 1, 1)
+        expanded_weights = task_weights.view(num_prompts, 1, 1)
+        weighted_values = expanded_weights * values
+        weighted_keys = expanded_weights * keys
+
+        aligned_prompts_list = []
+        feature_attn_list = []
+
+        for prompt_idx in range(num_prompts):
+            value_i = weighted_values[prompt_idx]
+            key_i = weighted_keys[prompt_idx]
+            prompt_i = conditioned_prompts[prompt_idx]
+
+            if self.enable_feature_level:
+                logits = torch.matmul(query, key_i.transpose(0, 1)) / math.sqrt(self.proj_dim)
+                attn = torch.softmax(logits, dim=-1)
+                evolved_proj = torch.matmul(attn, value_i)
+                feature_attn_list.append(attn.detach())
+            else:
+                evolved_proj = value_i
 
             evolved_embeds = self.output_proj(evolved_proj)
-            evolved_embeds = self.layer_norm_in(conditioned_prompts + evolved_embeds)
+            evolved_embeds = self.layer_norm_in(prompt_i + evolved_embeds)
 
             if self.enable_alignment:
-                aligned_prompts = self.layer_norm_out(
-                    evolved_embeds + self.alignment(evolved_embeds)
-                )
+                aligned_i = self.layer_norm_out(evolved_embeds + self.alignment(evolved_embeds))
             else:
-                aligned_prompts = self.layer_norm_out(evolved_embeds)
+                aligned_i = self.layer_norm_out(evolved_embeds)
 
-            rainbow_prompt = aligned_prompts.mean(dim=0)
-            feature_attn_out = (
-                feature_attn.detach().mean(dim=0)
-                if feature_attn is not None
-                else None
-            )
+            aligned_prompts_list.append(aligned_i)
+
+        aligned_prompts = torch.stack(aligned_prompts_list, dim=0)
+        rainbow_prompt = aligned_prompts.mean(dim=0)
+        feature_attn = torch.stack(feature_attn_list, dim=0) if feature_attn_list else None
 
         return {
             "rainbow_prompt": rainbow_prompt,
             "aligned_prompts": aligned_prompts,
             "task_weights": task_weights.detach(),
-            "feature_attn": feature_attn_out,
+            "feature_attn": feature_attn,
         }
 
