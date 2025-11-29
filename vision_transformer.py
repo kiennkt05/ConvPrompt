@@ -468,6 +468,7 @@ class VisionTransformer(nn.Module):
                 "use_paper_evolution": False,
                 "lambda_sparse": 0.0,
                 "lambda_match": 0.0,
+                "hard_prompt_selection": False,
             }
             if rainbow_config:
                 rainbow_defaults.update(rainbow_config)
@@ -489,6 +490,7 @@ class VisionTransformer(nn.Module):
                 enable_alignment=rainbow_defaults["enable_alignment"],
                 use_adaptive_gating=rainbow_defaults["use_adaptive_gating"],
                 use_paper_evolution=rainbow_defaults["use_paper_evolution"],
+                hard_prompt_selection=rainbow_defaults.get("hard_prompt_selection", False),
             )
             self.lambda_sparse = rainbow_defaults.get("lambda_sparse", 0.0)
             self.lambda_match = rainbow_defaults.get("lambda_match", 0.0)
@@ -720,6 +722,24 @@ class VisionTransformer(nn.Module):
             return
         self.rainbow_prompt.set_training(False)
         self.rainbow_prompt.load_task(task_id, device=device)
+
+    def rainbow_load_all_tasks(self, max_task_id: int, device: torch.device) -> None:
+        """Load prompts for all tasks up to `max_task_id` into the storage cache.
+
+        This is used at evaluation time so that RainbowPrompt can expose prompts
+        from every observed task simultaneously and rely on self-attention for
+        soft routing, instead of selecting a single task's prompt.
+        """
+        if not self.use_rainbow_prompt:
+            return
+        self.rainbow_prompt.set_training(False)
+        for task_id in range(max_task_id + 1):
+            try:
+                self.rainbow_prompt.load_task(task_id, device=device)
+            except FileNotFoundError:
+                # It is possible that not all earlier tasks have stored prompts
+                # (e.g., partial training); we simply skip missing tasks.
+                continue
 
     def rainbow_set_task_embedding(self, embedding: Optional[torch.Tensor]) -> None:
         if not self.use_rainbow_prompt:

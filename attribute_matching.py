@@ -185,3 +185,27 @@ class RainbowAttributeMatcher(nn.Module):
         target = F.normalize(task_embedding.unsqueeze(0), dim=-1)
         cosine = torch.sum(projected * target, dim=-1)
         return 1.0 - cosine.mean()
+
+    @torch.no_grad()
+    def predict_task_id(self, features: torch.Tensor, device: torch.device) -> int:
+        """Predict the most likely task ID given feature vectors.
+
+        Args:
+            features: Tensor of shape [B, D] (pre_logits from the model).
+            device: Torch device for computations.
+
+        Returns:
+            Integer task index in [0, num_tasks).
+        """
+        if features.ndim != 2:
+            raise ValueError(f"features must have shape [B, D], got {tuple(features.shape)}")
+
+        # Aggregate batch features into a single query representation.
+        query = features.mean(dim=0, keepdim=True)  # [1, D]
+        query = F.normalize(query.to(device), dim=-1)  # [1, D]
+
+        task_embs = self.task_embeddings.weight.to(device)  # [T, D]
+        task_embs = F.normalize(task_embs, dim=-1)
+
+        sims = torch.matmul(query, task_embs.t()).squeeze(0)  # [T]
+        return int(torch.argmax(sims).item())

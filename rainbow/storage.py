@@ -66,3 +66,9 @@ class RainbowPromptStorage:
             for k, v in data.items()
         }
 
+    # NOTE: The RainbowPromptModule uses the internal `_cache` to build
+    # multi-task prompts at inference time. We intentionally keep this
+    # class lightweight and do not add extra public aggregation helpers
+    # here; see `RainbowPromptModule._prepare_inference_prompt` for how
+    # the cached tensors are combined across tasks.
+

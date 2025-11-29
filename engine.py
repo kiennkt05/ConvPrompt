@@ -210,11 +210,6 @@ def evaluate_till_now(model: torch.nn.Module, data_loader,
     diagonal = np.diag(acc_matrix)
 
     final_acc = np.divide(correct.cpu(), total)*100.0
-    avg_seen_str = (
-        f"Average accuracy over all seen classes after task {task_id + 1}: {final_acc:.4f}"
-    )
-    print(avg_seen_str)
-    logging.info(avg_seen_str)
     result_str = "[Average accuracy till task{}]\tAcc@1: {:.4f}\tAcc@5: {:.4f}\tLoss: {:.4f}".format(task_id+1, final_acc, avg_stat[1], avg_stat[2])
     if task_id > 0:
         forgetting = np.mean((np.max(acc_matrix, axis=1) -
@@ -481,10 +476,10 @@ def evaluate_rainbow(
 ):
     model.eval()
     model.rainbow_prompt.set_training(False)
-    model.rainbow_load_task(task_id, device)
 
-    task_embedding = matcher.get_task_embedding(task_id, device)
-    model.rainbow_set_task_embedding(task_embedding)
+    # We still use the ground-truth task_id for class masking and metrics,
+    # but prompt selection itself can be driven by RainbowAttributeMatcher
+    # (hard routing) instead of this external task_id.
 
     offset = _class_offset(class_mask, task_id)
     task_classes = _task_num_classes(class_mask, task_id)
@@ -500,13 +495,48 @@ def evaluate_rainbow(
     correct_top1 = 0
     correct_top5 = 0
 
+    # Metrics for how often the matcher predicts the correct task id
+    task_match_total = 0
+    task_match_correct = 0
+
     header = f'Rainbow Eval Task[{task_id + 1}/{args.num_tasks}]'
+    start_eval_time = time.time()
 
     for samples, targets in metric_logger.log_every(data_loader, args.print_freq, header):
         samples = samples.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
 
-        output = model(samples, task_id=task_id, train=False)
+        # If RainbowPrompt is in hard-selection mode, we first run a
+        # soft-routing pass (ignoring task-specific prompts) to obtain
+        # features, use the matcher to predict the most likely task, and
+        # then run a second pass with prompts from that predicted task.
+        hard_prompt_mode = getattr(getattr(model, 'rainbow_prompt', None), 'hard_prompt_selection', False)
+
+        if hard_prompt_mode:
+            # 1) Soft pass for task prediction
+            rp_module = model.rainbow_prompt
+            prev_flag = rp_module.hard_prompt_selection
+            rp_module.hard_prompt_selection = False
+            tmp_out = model(samples, task_id=task_id, train=False)
+            rp_module.hard_prompt_selection = prev_flag
+
+            pre_logits = tmp_out['pre_logits']
+            pred_task_id = matcher.predict_task_id(pre_logits, device=device)
+
+            # Update task prediction accuracy stats (ground-truth task is `task_id`)
+            task_match_total += 1
+            if pred_task_id == task_id:
+                task_match_correct += 1
+
+            # 2) Hard-routing pass using predicted task id
+            task_embedding = matcher.get_task_embedding(pred_task_id, device)
+            model.rainbow_set_task_embedding(task_embedding)
+            output = model(samples, task_id=pred_task_id, train=False)
+        else:
+            # Original behavior: prompts conditioned on external task_id
+            task_embedding = matcher.get_task_embedding(task_id, device)
+            model.rainbow_set_task_embedding(task_embedding)
+            output = model(samples, task_id=task_id, train=False)
         logits = output['logits']
         logits_current = logits[:, offset: offset + task_classes]
         adjusted_targets = targets - offset
@@ -526,6 +556,25 @@ def evaluate_rainbow(
     avg_acc1 = metric_logger.meters['Acc@1'].global_avg
     avg_acc5 = metric_logger.meters['Acc@5'].global_avg
 
+    # Synchronize metrics across distributed workers and log summary
+    metric_logger.synchronize_between_processes()
+    print('* [Rainbow] Acc@1 {top1.global_avg:.3f} Acc@5 {top5.global_avg:.3f} loss {losses.global_avg:.3f}'
+          .format(top1=metric_logger.meters['Acc@1'], top5=metric_logger.meters['Acc@5'], losses=metric_logger.meters['Loss']))
+    logging.info('* [Rainbow] Acc@1 {top1.global_avg:.3f} Acc@5 {top5.global_avg:.3f} loss {losses.global_avg:.3f}'
+          .format(top1=metric_logger.meters['Acc@1'], top5=metric_logger.meters['Acc@5'], losses=metric_logger.meters['Loss']))
+
+    end_eval_time = time.time()
+    print(f"[Rainbow] Batchwise eval time for task {task_id + 1} = {(end_eval_time - start_eval_time) / len(data_loader):.4f}")
+
+    # Log task routing accuracy if hard selection is enabled
+    task_acc = None
+    if hard_prompt_mode and task_match_total > 0:
+        task_acc = 100.0 * task_match_correct / task_match_total
+        msg = f"[Rainbow] Task routing accuracy for eval task {task_id + 1}: {task_acc:.2f}% " \
+              f"({task_match_correct}/{task_match_total})"
+        print(msg)
+        logging.info(msg)
+
     return {
         'loss': metric_logger.meters['Loss'].global_avg,
         'acc1': avg_acc1,
@@ -533,6 +582,7 @@ def evaluate_rainbow(
         'total': total,
         'correct_top1': correct_top1,
         'correct_top5': correct_top5,
+        'task_route_acc': task_acc,
     }
 
 
@@ -552,6 +602,11 @@ def evaluate_rainbow_till_now(
     total_samples = 0
     total_correct_top1 = 0
     total_correct_top5 = 0
+
+    # Load prompts for all tasks seen so far so that inference can expose
+    # all RainbowPrompts simultaneously and rely on self-attention for
+    # soft routing across tasks.
+    model.rainbow_load_all_tasks(task_id, device)
 
     for eval_task in range(task_id + 1):
         stats = evaluate_rainbow(
@@ -577,11 +632,7 @@ def evaluate_rainbow_till_now(
     final_acc1 = 100.0 * total_correct_top1 / max(total_samples, 1)
     final_acc5 = 100.0 * total_correct_top5 / max(total_samples, 1)
 
-    avg_seen_str = (
-        f"Average accuracy over all seen classes after task {task_id + 1}: {final_acc1:.4f}"
-    )
-    print(avg_seen_str)
-    logging.info(avg_seen_str)
+
 
     forgetting = 0.0
     backward = 0.0

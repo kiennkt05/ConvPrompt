@@ -32,6 +32,7 @@ class RainbowPromptModule(nn.Module):
         enable_alignment: bool = True,
         use_adaptive_gating: bool = True,
         use_paper_evolution: bool = False,
+        hard_prompt_selection: bool = False,
     ) -> None:
         super().__init__()
 
@@ -46,6 +47,9 @@ class RainbowPromptModule(nn.Module):
         self.use_task_conditioning = use_task_conditioning
         self.use_adaptive_gating = use_adaptive_gating
         self.use_paper_evolution = use_paper_evolution
+        # If True, use a single task's prompt at inference (hard routing) instead
+        # of concatenating prompts from all tasks (soft routing).
+        self.hard_prompt_selection = hard_prompt_selection
 
         self.evolutions = nn.ModuleList(
             [
@@ -125,7 +129,14 @@ class RainbowPromptModule(nn.Module):
         return torch.stack([p for p in prompts], dim=0)
 
     def _format_prompt(self, prompt: torch.Tensor, gate_value: torch.Tensor, batch_size: int) -> torch.Tensor:
-        prompt = prompt.view(self.prompt_length, self.num_heads, self.head_dim)
+        """Format a (possibly multi-task) prompt for PreT_Attention.
+
+        The first dimension of `prompt` is treated as the *effective* prompt length,
+        which allows us to concatenate prompts from multiple tasks at inference time
+        (soft routing), while still supporting single-task prompts during training.
+        """
+        prompt_length = prompt.shape[0]
+        prompt = prompt.view(prompt_length, self.num_heads, self.head_dim)
         key_prompt = prompt
         value_prompt = prompt
         prefix = torch.stack([key_prompt, value_prompt], dim=0)  # [2, length, num_heads, head_dim]
@@ -172,7 +183,60 @@ class RainbowPromptModule(nn.Module):
 
         return formatted_prompt
 
-    def _prepare_inference_prompt(self, task_id: int, layer_idx: int, batch_size: int, device: torch.device) -> Optional[torch.Tensor]:
+    def _prepare_inference_prompt(self, layer_idx: int, batch_size: int, device: torch.device) -> Optional[torch.Tensor]:
+        """Build a multi-task prefix prompt for inference.
+
+        Instead of selecting a single task's prompt (via task_id), we concatenate
+        prompts from *all* observed tasks along the length dimension. The ViT
+        attention then performs soft routing over these positions automatically.
+        """
+        # Ensure any on-disk prompts are loaded into the storage cache.
+        # This is a no-op if everything is already cached.
+        if not self.storage._cache:  # type: ignore[attr-defined]
+            # Lazy import to avoid circular imports at module load time.
+            from pathlib import Path
+
+            root: Path = self.storage.root  # type: ignore[attr-defined]
+            for path in root.glob("task_*.pt"):
+                try:
+                    task_str = path.stem.split("_")[1]
+                    task_idx = int(task_str)
+                except (IndexError, ValueError):
+                    continue
+                # Load without overriding device placement logic inside storage.
+                self.storage.load_task(task_idx, device=device)
+
+        prompts = []
+        # Sort by task id to keep ordering consistent across runs.
+        for task_id in sorted(self.storage._cache.keys()):  # type: ignore[attr-defined]
+            layer_dict = self.storage._cache[task_id]  # type: ignore[index]
+            if layer_idx not in layer_dict:
+                continue
+            data = layer_dict[layer_idx]
+            prompts.append(data["prompt"].to(device))
+
+        if not prompts:
+            return None
+
+        # Concatenate prompts from all tasks along the length dimension:
+        # [T, L, D] -> [T*L, D]
+        prompt_tensor = torch.cat(prompts, dim=0)
+        gate_value = torch.ones((), device=device)
+        return self._format_prompt(prompt_tensor, gate_value, batch_size)
+
+    def _prepare_single_task_inference_prompt(
+        self,
+        task_id: int,
+        layer_idx: int,
+        batch_size: int,
+        device: torch.device,
+    ) -> Optional[torch.Tensor]:
+        """Inference prefix that uses only one task's prompt (hard routing).
+
+        This mirrors the original behavior where a single task_id selects the
+        corresponding stored prompt for each layer, similar to DualPrompt's
+        hard E-Prompt selection.
+        """
         stored = self.storage.get(task_id, layer_idx)
         if stored is None:
             return None
@@ -189,8 +253,17 @@ class RainbowPromptModule(nn.Module):
         device: torch.device,
     ) -> Optional[torch.Tensor]:
         if self.training_mode:
+            # During training we only expose the current task's prompt;
+            # routing is trivial because there is exactly one prompt per layer.
             return self._prepare_training_prompt(layer_idx, batch_size)
-        return self._prepare_inference_prompt(task_id, layer_idx, batch_size, device)
+
+        # Inference-time routing:
+        # - hard_prompt_selection=True  -> use only the prompt for `task_id`
+        # - hard_prompt_selection=False -> expose prompts from all observed tasks
+        #   so that self-attention can route softly across them.
+        if self.hard_prompt_selection:
+            return self._prepare_single_task_inference_prompt(task_id, layer_idx, batch_size, device)
+        return self._prepare_inference_prompt(layer_idx, batch_size, device)
 
     def auxiliary_losses(self) -> Dict[str, torch.Tensor]:
         losses = {k: v for k, v in self._aux_losses.items()}
