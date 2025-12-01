@@ -3,7 +3,7 @@ dataset: Split-CUB200
 data_path: ./data/cubs
 output_dir: ./outputs/rainbow_cubs
 
-# training setup
+# training setup (match cub_convprompt.py defaults)
 batch_size: 24
 epochs: 60
 num_workers: 4
@@ -26,13 +26,14 @@ freeze:
   - cls_token
   - pos_embed
 
+# optimizer/scheduler (sync with cub_convprompt.py: opt=adam, lr=0.001, min_lr=1e-5)
 optimizer:
-  name: adamw
-  lr: 1.0e-4
+  name: adam
+  lr: 1.0e-3
   weight_decay: 0.0
 scheduler:
   name: cosine
-  min_lr: 0.0
+  min_lr: 1.0e-5
 
 # prompt hyperparameters
 prompt_length: 20

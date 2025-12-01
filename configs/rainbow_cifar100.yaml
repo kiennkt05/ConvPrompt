@@ -3,9 +3,9 @@ dataset: Split-CIFAR100
 data_path: ./data/cifar100
 output_dir: ./outputs/rainbow_cifar100
 
-# training setup
-batch_size: 64
-epochs: 60
+# training setup (match cifar100_convprompt.py defaults)
+batch_size: 128
+epochs: 10
 num_workers: 4
 seed: 1996
 
@@ -26,13 +26,14 @@ freeze:
   - cls_token
   - pos_embed
 
+# optimizer/scheduler (sync with cifar100_convprompt.py: opt=adam, lr=0.005, min_lr=1e-5)
 optimizer:
-  name: adamw
-  lr: 1.0e-4
+  name: adam
+  lr: 5.0e-3
   weight_decay: 0.0
 scheduler:
   name: cosine
-  min_lr: 0.0
+  min_lr: 1.0e-5
 
 # prompt hyperparameters
 prompt_length: 20
