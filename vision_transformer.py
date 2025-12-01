@@ -597,6 +597,8 @@ class VisionTransformer(nn.Module):
                     layer_idx=i,
                     batch_size=x.shape[0],
                     device=x.device,
+                    x_embed=x,  # Pass current layer embeddings for similarity matching
+                    cls_features=x[:, 0] if x.shape[1] > 0 else None,  # CLS token features
                 )
                 x = block(x, prompt=prompt_tokens)
             res["rainbow_aux"] = self.rainbow_prompt.auxiliary_losses()

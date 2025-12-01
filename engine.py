@@ -495,10 +495,6 @@ def evaluate_rainbow(
     correct_top1 = 0
     correct_top5 = 0
 
-    # Metrics for how often the matcher predicts the correct task id
-    task_match_total = 0
-    task_match_correct = 0
-
     header = f'Rainbow Eval Task[{task_id + 1}/{args.num_tasks}]'
     start_eval_time = time.time()
 
@@ -506,37 +502,17 @@ def evaluate_rainbow(
         samples = samples.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
 
-        # If RainbowPrompt is in hard-selection mode, we first run a
-        # soft-routing pass (ignoring task-specific prompts) to obtain
-        # features, use the matcher to predict the most likely task, and
-        # then run a second pass with prompts from that predicted task.
-        hard_prompt_mode = getattr(getattr(model, 'rainbow_prompt', None), 'hard_prompt_selection', False)
-
-        if hard_prompt_mode:
-            # 1) Soft pass for task prediction
-            rp_module = model.rainbow_prompt
-            prev_flag = rp_module.hard_prompt_selection
-            rp_module.hard_prompt_selection = False
-            tmp_out = model(samples, task_id=task_id, train=False)
-            rp_module.hard_prompt_selection = prev_flag
-
-            pre_logits = tmp_out['pre_logits']
-            pred_task_id = matcher.predict_task_id(pre_logits, device=device)
-
-            # Update task prediction accuracy stats (ground-truth task is `task_id`)
-            task_match_total += 1
-            if pred_task_id == task_id:
-                task_match_correct += 1
-
-            # 2) Hard-routing pass using predicted task id
-            task_embedding = matcher.get_task_embedding(pred_task_id, device)
-            model.rainbow_set_task_embedding(task_embedding)
-            output = model(samples, task_id=pred_task_id, train=False)
-        else:
-            # Original behavior: prompts conditioned on external task_id
-            task_embedding = matcher.get_task_embedding(task_id, device)
-            model.rainbow_set_task_embedding(task_embedding)
-            output = model(samples, task_id=task_id, train=False)
+        # Set task embedding for task conditioning in RainbowEvolution
+        # Note: With similarity-based selection (when hard_prompt_selection=True),
+        # the prompt is selected automatically based on sample features, but task
+        # embedding is still used for task conditioning during evolution
+        task_embedding = matcher.get_task_embedding(task_id, device)
+        model.rainbow_set_task_embedding(task_embedding)
+        
+        # Forward pass: similarity-based selection happens automatically inside
+        # RainbowPromptModule._prepare_single_task_inference_prompt() when
+        # hard_prompt_selection=True (DualPrompt E-Prompt style)
+        output = model(samples, task_id=task_id, train=False)
         logits = output['logits']
         logits_current = logits[:, offset: offset + task_classes]
         adjusted_targets = targets - offset
@@ -566,15 +542,6 @@ def evaluate_rainbow(
     end_eval_time = time.time()
     print(f"[Rainbow] Batchwise eval time for task {task_id + 1} = {(end_eval_time - start_eval_time) / len(data_loader):.4f}")
 
-    # Log task routing accuracy if hard selection is enabled
-    task_acc = None
-    if hard_prompt_mode and task_match_total > 0:
-        task_acc = 100.0 * task_match_correct / task_match_total
-        msg = f"[Rainbow] Task routing accuracy for eval task {task_id + 1}: {task_acc:.2f}% " \
-              f"({task_match_correct}/{task_match_total})"
-        print(msg)
-        logging.info(msg)
-
     return {
         'loss': metric_logger.meters['Loss'].global_avg,
         'acc1': avg_acc1,
@@ -582,7 +549,6 @@ def evaluate_rainbow(
         'total': total,
         'correct_top1': correct_top1,
         'correct_top5': correct_top5,
-        'task_route_acc': task_acc,
     }
 
 

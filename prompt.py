@@ -82,6 +82,18 @@ class RainbowPromptModule(nn.Module):
         self._latest_layer_cache: Dict[int, Dict[str, torch.Tensor]] = {}
         self._aux_losses: Dict[str, torch.Tensor] = {}
 
+        # For DualPrompt-style similarity-based selection
+        # Embedding matcher to project sample features (like EPrompt)
+        self.use_prompt_embed_matcher = True
+        if self.use_prompt_embed_matcher:
+            self.prompt_embed_matcher = nn.Sequential(
+                nn.Linear(embed_dim, embed_dim // 2),
+                nn.ReLU(),
+                nn.Linear(embed_dim // 2, embed_dim // 4)
+            )
+        else:
+            self.prompt_embed_matcher = None
+
         self._gate_config = dict(
             tau_start=gate_tau_start,
             tau_end=gate_tau_end,
@@ -224,26 +236,116 @@ class RainbowPromptModule(nn.Module):
         gate_value = torch.ones((), device=device)
         return self._format_prompt(prompt_tensor, gate_value, batch_size)
 
+    def _l2_normalize(self, x: torch.Tensor, dim: Optional[int] = None, epsilon: float = 1e-12) -> torch.Tensor:
+        """L2 normalize a tensor (like EPrompt's l2_normalize)."""
+        square_sum = torch.sum(x ** 2, dim=dim, keepdim=True)
+        x_inv_norm = torch.rsqrt(torch.maximum(square_sum, torch.tensor(epsilon, device=x.device)))
+        return x * x_inv_norm
+
     def _prepare_single_task_inference_prompt(
         self,
-        task_id: int,
+        task_id: int,  # Kept for backward compatibility, but not used for selection
         layer_idx: int,
         batch_size: int,
         device: torch.device,
+        x_embed: Optional[torch.Tensor] = None,
+        cls_features: Optional[torch.Tensor] = None,
     ) -> Optional[torch.Tensor]:
-        """Inference prefix that uses only one task's prompt (hard routing).
+        """Inference prefix that selects one prompt using similarity matching (DualPrompt E-Prompt style).
 
-        This mirrors the original behavior where a single task_id selects the
-        corresponding stored prompt for each layer, similar to DualPrompt's
-        hard E-Prompt selection.
+        Instead of directly using task_id, this method:
+        1. Loads all prompts from storage (prompt pool)
+        2. Computes similarity between sample features and prompt keys
+        3. Selects top-1 prompt based on similarity
+        4. Returns the selected prompt
         """
-        stored = self.storage.get(task_id, layer_idx)
-        if stored is None:
-            return None
+        # Load all prompts from storage (create prompt pool)
+        if not self.storage._cache:  # type: ignore[attr-defined]
+            from pathlib import Path
+            root: Path = self.storage.root  # type: ignore[attr-defined]
+            for path in root.glob("task_*.pt"):
+                try:
+                    task_str = path.stem.split("_")[1]
+                    task_idx = int(task_str)
+                    self.storage.load_task(task_idx, device=device)
+                except (IndexError, ValueError):
+                    continue
 
-        prompt_tensor = stored["prompt"].to(device)
-        gate_value = stored["gate"].to(device)
-        return self._format_prompt(prompt_tensor, gate_value, batch_size)
+        # Collect all prompts and compute their keys for this layer
+        prompt_pool = []
+        prompt_keys = []
+        task_ids_list = []
+
+        for stored_task_id in sorted(self.storage._cache.keys()):  # type: ignore[attr-defined]
+            layer_dict = self.storage._cache[stored_task_id]  # type: ignore[index]
+            if layer_idx not in layer_dict:
+                continue
+
+            data = layer_dict[layer_idx]
+            prompt = data["prompt"].to(device)  # [prompt_length, embed_dim]
+            prompt_pool.append(prompt)
+            task_ids_list.append(stored_task_id)
+
+            # Use mean of prompt as key (like EPrompt when prompt_key=False)
+            prompt_key = prompt.mean(dim=0)  # [embed_dim]
+            prompt_keys.append(prompt_key)
+
+        if not prompt_pool:
+            # Fallback: if no prompts in pool, try direct lookup (backward compatibility)
+            stored = self.storage.get(task_id, layer_idx)
+            if stored is None:
+                return None
+            prompt_tensor = stored["prompt"].to(device)
+            gate_value = stored["gate"].to(device)
+            return self._format_prompt(prompt_tensor, gate_value, batch_size)
+
+        # Stack prompts and keys
+        prompt_keys_tensor = torch.stack(prompt_keys, dim=0)  # [num_prompts, embed_dim]
+
+        # Get sample embedding (like EPrompt's embedding_key logic)
+        if cls_features is not None:
+            x_embed_mean = cls_features  # [batch_size, embed_dim]
+        elif x_embed is not None:
+            # Use mean pooling (like EPrompt's 'mean' option)
+            x_embed_mean = torch.mean(x_embed, dim=1)  # [batch_size, embed_dim]
+        else:
+            # Fallback: if no features provided, use task_id (backward compatibility)
+            stored = self.storage.get(task_id, layer_idx)
+            if stored is None:
+                return None
+            prompt_tensor = stored["prompt"].to(device)
+            gate_value = stored["gate"].to(device)
+            return self._format_prompt(prompt_tensor, gate_value, batch_size)
+
+        # Optional: Use embedding matcher (like EPrompt)
+        # If using matcher, both sample features and prompt keys need to be projected
+        if self.use_prompt_embed_matcher and self.prompt_embed_matcher is not None:
+            x_embed_mean = self.prompt_embed_matcher(x_embed_mean)  # [batch_size, embed_dim // 4]
+            prompt_keys_tensor = self.prompt_embed_matcher(prompt_keys_tensor)  # [num_prompts, embed_dim // 4]
+
+        # Normalize for cosine similarity (like EPrompt)
+        prompt_keys_norm = self._l2_normalize(prompt_keys_tensor, dim=-1)  # [num_prompts, embed_dim or embed_dim//4]
+        x_embed_norm = self._l2_normalize(x_embed_mean, dim=-1)  # [batch_size, embed_dim or embed_dim//4]
+
+        # Compute similarity: [batch_size, num_prompts]
+        similarity = torch.matmul(x_embed_norm, prompt_keys_norm.t())
+
+        # Select top-1 prompt for each sample in batch
+        # For now, use the most common selection across batch (mode)
+        # This ensures we return a single prompt tensor for the whole batch
+        top1_indices = similarity.argmax(dim=-1)  # [batch_size]
+        unique_indices, counts = torch.unique(top1_indices, return_counts=True)
+        selected_idx = unique_indices[counts.argmax()].item()
+
+        # Get selected prompt
+        selected_prompt = prompt_pool[selected_idx]  # [prompt_length, embed_dim]
+        selected_task_id = task_ids_list[selected_idx]
+
+        # Get gate value for selected prompt
+        stored = self.storage.get(selected_task_id, layer_idx)
+        gate_value = stored["gate"].to(device) if stored else torch.ones((), device=device)
+
+        return self._format_prompt(selected_prompt, gate_value, batch_size)
 
     def forward(
         self,
@@ -251,6 +353,8 @@ class RainbowPromptModule(nn.Module):
         layer_idx: int,
         batch_size: int,
         device: torch.device,
+        x_embed: Optional[torch.Tensor] = None,
+        cls_features: Optional[torch.Tensor] = None,
     ) -> Optional[torch.Tensor]:
         if self.training_mode:
             # During training we only expose the current task's prompt;
@@ -258,11 +362,13 @@ class RainbowPromptModule(nn.Module):
             return self._prepare_training_prompt(layer_idx, batch_size)
 
         # Inference-time routing:
-        # - hard_prompt_selection=True  -> use only the prompt for `task_id`
+        # - hard_prompt_selection=True  -> similarity-based selection (DualPrompt E-Prompt style)
         # - hard_prompt_selection=False -> expose prompts from all observed tasks
         #   so that self-attention can route softly across them.
         if self.hard_prompt_selection:
-            return self._prepare_single_task_inference_prompt(task_id, layer_idx, batch_size, device)
+            return self._prepare_single_task_inference_prompt(
+                task_id, layer_idx, batch_size, device, x_embed, cls_features
+            )
         return self._prepare_inference_prompt(layer_idx, batch_size, device)
 
     def auxiliary_losses(self) -> Dict[str, torch.Tensor]:

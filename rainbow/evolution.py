@@ -99,13 +99,24 @@ class RainbowEvolution(nn.Module):
         device = base_prompts.device
         task_weights = torch.ones(num_prompts, device=device) / max(num_prompts, 1)
 
-        conditioned_prompts = base_prompts
+        # Task conditioning: create attention-weighted combination of base prompts
         if self.use_task_conditioning and task_embedding is not None:
-            task_vec = torch.tanh(self.task_proj(task_embedding))  # [proj_dim]
-            key_repr = self.key_proj(base_prompts).mean(dim=1)  # [num_prompts, proj_dim]
-            scores = torch.matmul(key_repr, task_vec) / math.sqrt(self.proj_dim)
-            task_weights = torch.softmax(scores, dim=0)
-            conditioned_prompts = base_prompts * (1 + task_weights[:, None, None])
+            # Paper: Task conditioning via attention (Section 3.2.1)
+            # σ(e_t) P_l / sqrt(d_p) -> softmax -> attention weights
+            # Then: P_l <- softmax(...) P_l (weighted combination)
+            task_vec = torch.sigmoid(self.task_proj(task_embedding))  # [proj_dim], using sigmoid as in paper
+            # Project base_prompts to compute similarity
+            projected_prompts = self.key_proj(base_prompts)  # [num_prompts, prompt_len, proj_dim]
+            # Compute similarity per prompt (average over prompt_len for task-level similarity)
+            key_repr = projected_prompts.mean(dim=1)  # [num_prompts, proj_dim]
+            scores = torch.matmul(key_repr, task_vec) / math.sqrt(self.proj_dim)  # [num_prompts]
+            task_weights_conditioning = torch.softmax(scores, dim=0)  # [num_prompts]
+            # Paper: Attention-based combination - weighted sum of prompts
+            # This creates a single conditioned prompt from all base prompts
+            conditioned_single = torch.einsum("p,pld->ld", task_weights_conditioning, base_prompts)  # [prompt_len, embed_dim]
+            # Expand to maintain shape [num_prompts, prompt_len, embed_dim] for downstream processing
+            # All prompts become the same conditioned prompt (as per paper's attention-based combination)
+            conditioned_prompts = conditioned_single.unsqueeze(0).expand(num_prompts, -1, -1)  # [num_prompts, prompt_len, embed_dim]
         else:
             conditioned_prompts = base_prompts
 
@@ -135,9 +146,17 @@ class RainbowEvolution(nn.Module):
             weighted_prompts = torch.einsum("p,pld->ld", task_weights, conditioned_prompts)
 
             if self.enable_feature_level:
-                feature_logits = torch.matmul(query, weighted_keys.transpose(0, 1)) / math.sqrt(self.proj_dim)
-                feature_attn = torch.softmax(feature_logits, dim=-1)
-                evolved_proj = torch.matmul(feature_attn, weighted_values)
+                # Paper: Feature-level attention (Q^T K / sqrt(d_k))
+                # Q: [prompt_len, proj_dim] -> transpose -> [proj_dim, prompt_len]
+                # K: [prompt_len, proj_dim] -> transpose -> [proj_dim, prompt_len]
+                # Q^T @ K: [proj_dim, prompt_len] @ [prompt_len, proj_dim] = [proj_dim, proj_dim]
+                feature_logits = torch.matmul(query.transpose(-1, -2), weighted_keys) / math.sqrt(self.proj_dim)  # [proj_dim, proj_dim]
+                feature_attn = torch.softmax(feature_logits, dim=-1)  # [proj_dim, proj_dim]
+                # Apply attention to values: feature_attn @ V^T
+                # V: [prompt_len, proj_dim] -> transpose -> [proj_dim, prompt_len]
+                # feature_attn @ V^T: [proj_dim, proj_dim] @ [proj_dim, prompt_len] = [proj_dim, prompt_len]
+                # Transpose back: [prompt_len, proj_dim]
+                evolved_proj = torch.matmul(feature_attn, weighted_values.transpose(-1, -2)).transpose(-1, -2)  # [prompt_len, proj_dim]
             else:
                 feature_attn = None
                 evolved_proj = weighted_values
@@ -172,9 +191,17 @@ class RainbowEvolution(nn.Module):
             prompt_i = conditioned_prompts[prompt_idx]
 
             if self.enable_feature_level:
-                logits = torch.matmul(query, key_i.transpose(0, 1)) / math.sqrt(self.proj_dim)
-                attn = torch.softmax(logits, dim=-1)
-                evolved_proj = torch.matmul(attn, value_i)
+                # Paper: Feature-level attention (Q^T K / sqrt(d_k))
+                # Q: [prompt_len, proj_dim] -> transpose -> [proj_dim, prompt_len]
+                # K: [prompt_len, proj_dim] -> transpose -> [proj_dim, prompt_len]
+                # Q^T @ K: [proj_dim, prompt_len] @ [prompt_len, proj_dim] = [proj_dim, proj_dim]
+                logits = torch.matmul(query.transpose(-1, -2), key_i) / math.sqrt(self.proj_dim)  # [proj_dim, proj_dim]
+                attn = torch.softmax(logits, dim=-1)  # [proj_dim, proj_dim]
+                # Apply attention to values: attn @ V^T
+                # V: [prompt_len, proj_dim] -> transpose -> [proj_dim, prompt_len]
+                # attn @ V^T: [proj_dim, proj_dim] @ [proj_dim, prompt_len] = [proj_dim, prompt_len]
+                # Transpose back: [prompt_len, proj_dim]
+                evolved_proj = torch.matmul(attn, value_i.transpose(-1, -2)).transpose(-1, -2)  # [prompt_len, proj_dim]
                 feature_attn_list.append(attn.detach())
             else:
                 evolved_proj = value_i
