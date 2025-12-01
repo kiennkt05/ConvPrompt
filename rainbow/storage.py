@@ -9,31 +9,42 @@ import torch
 
 
 class RainbowPromptStorage:
-    """Store and retrieve RainbowPrompts per task and layer."""
+    """In-memory store for RainbowPrompts per task and layer.
+
+    NOTE:
+        This implementation is intentionally kept in-memory only. It does
+        not perform any on-disk serialization, and is meant to keep the
+        latest prompts alive only for the current run.
+    """
 
     def __init__(self, root: str | Path) -> None:
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
-        self._cache: Dict[int, Dict[int, Dict[str, torch.Tensor]]] = {}
+        # Single global cache: we keep only the latest prompts per layer for
+        # the current run, independent of task id.
+        self._cache: Dict[int, Dict[str, torch.Tensor]] = {}
 
     def put(self, task_id: int, layer_idx: int, prompt: torch.Tensor, gate: torch.Tensor) -> None:
-        if task_id not in self._cache:
-            self._cache[task_id] = {}
-        self._cache[task_id][layer_idx] = {
+        """Store the latest prompt/gate for a given layer, ignoring task_id.
+
+        The `task_id` argument is retained only for API compatibility; this
+        storage keeps a single global RainbowPrompt per layer.
+        """
+        _ = task_id  # unused
+        self._cache[layer_idx] = {
             "prompt": prompt.detach().cpu().clone(),
             "gate": gate.detach().cpu().clone(),
         }
 
     def get(self, task_id: int, layer_idx: int) -> Optional[Dict[str, torch.Tensor]]:
-        if task_id not in self._cache:
-            file_path = self.root / f"task_{task_id:03d}.pt"
-            if file_path.exists():
-                data = torch.load(file_path, map_location="cpu")
-                self._cache[task_id] = {int(k): {"prompt": v["prompt"], "gate": v["gate"]} for k, v in data.items()}
-            else:
-                return None
+        """Retrieve the latest global prompt/gate for a layer, ignoring task_id.
 
-        stored = self._cache[task_id].get(layer_idx)
+        The `task_id` argument is retained only for API compatibility; prompts
+        are stored per-layer globally, corresponding to the most recently
+        finalized RainbowPrompt in this run.
+        """
+        _ = task_id  # unused
+        stored = self._cache.get(layer_idx)
         if stored is None:
             return None
         return {
@@ -42,33 +53,22 @@ class RainbowPromptStorage:
         }
 
     def save_task(self, task_id: int) -> None:
-        if task_id not in self._cache:
-            raise KeyError(f"No prompts cached for task {task_id}")
+        """No-op for compatibility.
 
-        serialized = {
-            layer: {"prompt": data["prompt"].cpu(), "gate": data["gate"].cpu()}
-            for layer, data in self._cache[task_id].items()
-        }
-        file_path = self.root / f"task_{task_id:03d}.pt"
-        torch.save(serialized, file_path)
+        Historically this method serialized prompts for a task to disk.
+        We now keep prompts in-memory only and do not distinguish tasks, so
+        this is intentionally a no-op to preserve the public API without
+        performing I/O.
+        """
+        _ = task_id  # unused
 
     def load_task(self, task_id: int, device: torch.device | None = None) -> None:
-        file_path = self.root / f"task_{task_id:03d}.pt"
-        if not file_path.exists():
-            raise FileNotFoundError(f"RainbowPrompts for task {task_id} not found at {file_path}")
+        """No-op for compatibility.
 
-        data = torch.load(file_path, map_location=device or "cpu")
-        self._cache[task_id] = {
-            int(k): {
-                "prompt": v["prompt"].to(device or "cpu"),
-                "gate": v["gate"].to(device or "cpu"),
-            }
-            for k, v in data.items()
-        }
-
-    # NOTE: The RainbowPromptModule uses the internal `_cache` to build
-    # multi-task prompts at inference time. We intentionally keep this
-    # class lightweight and do not add extra public aggregation helpers
-    # here; see `RainbowPromptModule._prepare_inference_prompt` for how
-    # the cached tensors are combined across tasks.
-
+        Disk-based loading of prompts is no longer supported, and prompts are
+        not partitioned by task. The method remains to avoid breaking existing
+        call sites but does not modify the in-memory cache.
+        """
+        _ = task_id  # unused
+        _ = device  # unused, kept for signature compatibility
+        return

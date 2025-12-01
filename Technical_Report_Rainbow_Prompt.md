@@ -14,7 +14,7 @@ Pipeline Rainbow Prompt bao gồm bốn thành phần chính:
 1. **`RainbowPromptModule`**: quản lý tập prompt nền theo từng layer, thực thi tiến hóa, gating, và lưu trữ.
 2. **`RainbowEvolution`**: biến đổi prompt mới dựa trên lịch sử các prompt đã quan sát.
 3. **`ProbabilisticGate`**: quyết định mức sử dụng prompt tiến hóa cho từng layer bằng Gumbel-Softmax.
-4. **`RainbowPromptStorage`**: lưu lại prompt và trạng thái gate sau khi hoàn tất từng tác vụ.
+4. **`RainbowPromptStorage`**: lưu lại prompt và trạng thái gate theo từng tác vụ trong bộ nhớ cho phiên chạy hiện tại (không còn lưu ra đĩa).
 
 Các thành phần này được gắn vào backbone ViT thông qua tham số `use_rainbow_prompt`. Trong quá trình forward, mỗi block của ViT có thể nhận thêm token prefix được xây dựng từ Rainbow Prompt trước khi đi vào cơ chế self-attention.
 
@@ -215,17 +215,13 @@ Quy trình huấn luyện được thực hiện trong hàm `train_and_evaluate_
 
 **Quá trình**:
 1. **Kiểm tra cache**: Nếu `self._latest_layer_cache` rỗng, return ngay
-2. **Lưu prompt và gate** (`prompt.py:276-277`):
+2. **Lưu prompt và gate vào bộ nhớ**:
    - Với mỗi layer trong cache:
      - Lấy `prompt` và `gate` từ `self._latest_layer_cache[layer_idx]`
      - Gọi `self.storage.put(task_id, layer_idx, prompt, gate)`
      - Module: `RainbowPromptStorage.put()` - lưu vào memory cache `self._cache[task_id][layer_idx]`
-3. **Lưu ra file** (`prompt.py:278`):
-   - Gọi `self.storage.save_task(task_id)`
-   - Module: `RainbowPromptStorage.save_task()`
-   - Serialize tất cả prompt và gate của task thành dict: `{layer_idx: {"prompt": ..., "gate": ...}}`
-   - Lưu vào file: `{save_dir}/task_{task_id:03d}.pt`
-4. **Xóa cache**: `self._latest_layer_cache.clear()`
+3. **Xóa cache tạm thời**:
+   - Sau khi đã lưu vào `RainbowPromptStorage` trong bộ nhớ, gọi `self._latest_layer_cache.clear()` để giải phóng cache tạm thời.
 
 **Đầu ra**: Không có giá trị trả về.
 
@@ -500,17 +496,12 @@ Quy trình huấn luyện được thực hiện trong hàm `train_and_evaluate_
 
 **Quá trình**:
 
-1. **Nạp prompt cho tất cả tác vụ đã học** (`engine.py:609`):
-   - Gọi `model.rainbow_load_all_tasks(task_id, device)`
-   - Module: `VisionTransformer.rainbow_load_all_tasks()` → `RainbowPromptModule.load_task()` cho mỗi task
-   - Mục đích: Nạp tất cả prompt từ storage vào memory cache để có thể sử dụng trong inference
-
-2. **Đánh giá tuần tự trên từng tác vụ** (`engine.py:611-620`):
+1. **Đánh giá tuần tự trên từng tác vụ** (`engine.py:611-620`):
    - Vòng lặp: `for eval_task in range(task_id + 1)`
    - Gọi `evaluate_rainbow()` cho từng task (xem chi tiết ở 7.2)
    - Cập nhật `acc_matrix[eval_task, task_id]` với accuracy của task `eval_task` sau khi học task `task_id`
 
-3. **Tính toán metrics tổng hợp** (`engine.py:630-644`):
+2. **Tính toán metrics tổng hợp** (`engine.py:630-644`):
    - **Average accuracy**: Trung bình accuracy của tất cả task đã học
    - **Forgetting**: Nếu `task_id > 0`:
      - `previous_max = max(acc_matrix[:, :task_id], axis=1)` - accuracy tốt nhất trước đó của mỗi task
@@ -552,74 +543,24 @@ Quy trình huấn luyện được thực hiện trong hàm `train_and_evaluate_
    **3.1. Chuẩn bị dữ liệu**:
    - `samples.to(device)`, `targets.to(device)`
 
-   **3.2. Chọn chế độ routing prompt**:
-   
-   **a) Hard prompt selection** (`engine.py:515-534`):
-   - Điều kiện: `model.rainbow_prompt.hard_prompt_selection == True`
-   - **Bước 1 - Soft pass để dự đoán task**:
-     - Tạm thời đặt `hard_prompt_selection = False`
-     - Forward: `tmp_out = model(samples, task_id=task_id, train=False)`
-     - Lấy `pre_logits = tmp_out['pre_logits']` → `[B, embed_dim]`
-     - Dự đoán task: `pred_task_id = matcher.predict_task_id(pre_logits, device)`
-       - Module: `RainbowAttributeMatcher.predict_task_id()`
-       - Quá trình:
-         - Aggregate batch: `query = features.mean(dim=0)` → `[1, embed_dim]`
-         - Normalize: `query = F.normalize(query)`
-         - Lấy tất cả task embeddings: `task_embs = self.task_embeddings.weight` → `[num_tasks, embed_dim]`
-         - Normalize: `task_embs = F.normalize(task_embs, dim=-1)`
-         - Cosine similarity: `sims = matmul(query, task_embs.t())` → `[num_tasks]`
-         - Chọn task có similarity cao nhất: `pred_task_id = argmax(sims)`
-     - Khôi phục flag: `hard_prompt_selection = prev_flag`
-     - Cập nhật thống kê: `task_match_total += 1`, nếu `pred_task_id == task_id` thì `task_match_correct += 1`
-   
-   - **Bước 2 - Hard pass với task đã dự đoán**:
-     - Lấy task embedding: `task_embedding = matcher.get_task_embedding(pred_task_id, device)`
+   **3.2. Routing prompt (chế độ thống nhất)**:
+   - Rainbow Prompt hiện tại chỉ dùng **một chế độ routing thống nhất**:
+     - Lấy task embedding: `task_embedding = matcher.get_task_embedding(task_id, device)`
      - Cập nhật: `model.rainbow_set_task_embedding(task_embedding)`
-     - Forward: `output = model(samples, task_id=pred_task_id, train=False)`
-   
-   **b) Soft prompt selection (mặc định)** (`engine.py:536-539`):
-   - Lấy task embedding: `task_embedding = matcher.get_task_embedding(task_id, device)`
-   - Cập nhật: `model.rainbow_set_task_embedding(task_embedding)`
-   - Forward: `output = model(samples, task_id=task_id, train=False)`
+     - Forward: `output = model(samples, task_id=task_id, train=False)`
 
    **3.3. Forward pass với Rainbow Prompt ở chế độ inference**:
    
    **a) VisionTransformer.forward()** → `forward_features()`:
    - Tương tự training, nhưng `train=False`
    
-   **b) RainbowPromptModule.forward()** (`prompt.py:248-266`):
+   **b) RainbowPromptModule.forward()** (`prompt.py:248-281`):
    - **Điều kiện**: `self.training_mode == False`
-   - **Chọn phương thức**:
-     - Nếu `hard_prompt_selection == True`: gọi `_prepare_single_task_inference_prompt(task_id, layer_idx, batch_size, device)`
-     - Nếu `hard_prompt_selection == False`: gọi `_prepare_inference_prompt(layer_idx, batch_size, device)`
-   
-   **c) _prepare_single_task_inference_prompt()** (`prompt.py:227-246`):
-   - **Mục đích**: Sử dụng prompt của một task cụ thể (hard routing)
-   - **Quá trình**:
-     - Lấy từ storage: `stored = self.storage.get(task_id, layer_idx)`
-       - Module: `RainbowPromptStorage.get()`
-       - Nếu chưa có trong cache, load từ file `task_{task_id:03d}.pt`
-       - Trả về `{"prompt": Tensor[prompt_length, embed_dim], "gate": Tensor[]}`
-     - Lấy prompt và gate: `prompt_tensor = stored["prompt"]`, `gate_value = stored["gate"]`
-     - Format: `formatted_prompt = self._format_prompt(prompt_tensor, gate_value, batch_size)`
-     - Đầu ra: `[B, 2, prompt_length, num_heads, head_dim]`
-   
-   **d) _prepare_inference_prompt()** (`prompt.py:186-225`):
-   - **Mục đích**: Ghép prompt từ tất cả task đã học (soft routing)
-   - **Quá trình**:
-     - **Lazy load prompts** (`prompt.py:195-207`):
-       - Nếu cache rỗng, quét thư mục `save_dir` tìm file `task_*.pt`
-       - Load từng file vào cache: `self.storage.load_task(task_idx, device)`
-     - **Thu thập prompts** (`prompt.py:209-216`):
-       - Duyệt qua `self.storage._cache` theo thứ tự task_id tăng dần
-       - Lấy prompt của layer hiện tại: `prompts.append(data["prompt"].to(device))`
-       - Mỗi prompt có shape `[prompt_length, embed_dim]`
-     - **Ghép prompts** (`prompt.py:222-223`):
-       - Concatenate: `prompt_tensor = torch.cat(prompts, dim=0)` → `[T*prompt_length, embed_dim]`
-       - T là số task đã học
-     - **Format**: `formatted_prompt = self._format_prompt(prompt_tensor, gate_value=1.0, batch_size)`
-       - Shape: `[B, 2, T*prompt_length, num_heads, head_dim]`
-     - **Cơ chế soft routing**: ViT attention sẽ tự động chọn prompt phù hợp thông qua self-attention weights
+   - Gọi trực tiếp `_prepare_inference_prompt(layer_idx, batch_size, device)`
+   - `_prepare_inference_prompt` sẽ:
+     - Ưu tiên lấy prompt và gate mới nhất của task hiện tại từ `RainbowPromptStorage` trong bộ nhớ.
+     - Nếu chưa có trong storage, fallback sang `_latest_layer_cache[layer_idx]` (prompt vừa được tạo trong epoch cuối của tác vụ).
+     - Trả về prefix prompt dạng `[B, 2, prompt_length, num_heads, head_dim]` cho mỗi layer.
 
    **3.4. Tính toán metrics**:
    - Lấy logits: `logits_current = logits[:, offset:offset+task_classes]`

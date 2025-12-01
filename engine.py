@@ -477,10 +477,6 @@ def evaluate_rainbow(
     model.eval()
     model.rainbow_prompt.set_training(False)
 
-    # We still use the ground-truth task_id for class masking and metrics,
-    # but prompt selection itself can be driven by RainbowAttributeMatcher
-    # (hard routing) instead of this external task_id.
-
     offset = _class_offset(class_mask, task_id)
     task_classes = _task_num_classes(class_mask, task_id)
 
@@ -502,16 +498,8 @@ def evaluate_rainbow(
         samples = samples.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
 
-        # Set task embedding for task conditioning in RainbowEvolution
-        # Note: With similarity-based selection (when hard_prompt_selection=True),
-        # the prompt is selected automatically based on sample features, but task
-        # embedding is still used for task conditioning during evolution
-        task_embedding = matcher.get_task_embedding(task_id, device)
-        model.rainbow_set_task_embedding(task_embedding)
-        
-        # Forward pass: similarity-based selection happens automatically inside
-        # RainbowPromptModule._prepare_single_task_inference_prompt() when
-        # hard_prompt_selection=True (DualPrompt E-Prompt style)
+        # Forward pass: RainbowPromptModule will use the globally latest
+        # prompts for this layer (single global RainbowPrompt per layer).
         output = model(samples, task_id=task_id, train=False)
         logits = output['logits']
         logits_current = logits[:, offset: offset + task_classes]
@@ -568,11 +556,6 @@ def evaluate_rainbow_till_now(
     total_samples = 0
     total_correct_top1 = 0
     total_correct_top5 = 0
-
-    # Load prompts for all tasks seen so far so that inference can expose
-    # all RainbowPrompts simultaneously and rely on self-attention for
-    # soft routing across tasks.
-    model.rainbow_load_all_tasks(task_id, device)
 
     for eval_task in range(task_id + 1):
         stats = evaluate_rainbow(

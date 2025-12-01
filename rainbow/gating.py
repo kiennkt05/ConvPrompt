@@ -39,10 +39,15 @@ class ProbabilisticGate(nn.Module):
             raise IndexError(f"Layer index {layer_idx} out of bounds for {self.num_layers} layers")
 
         logits = self.logits[layer_idx]
+
+        # Compute training progress independently of the temperature override so
+        # that hardening still follows the epoch schedule even when a custom
+        # temperature is provided.
+        progress = min(max(epoch, 0) / max(max_epochs, 1), 1.0)
+
         if temperature is not None:
             tau = temperature
         else:
-            progress = min(max(epoch, 0) / max(max_epochs, 1), 1.0)
             tau = self.tau_start + (self.tau_end - self.tau_start) * progress
 
         use_hard = training and progress >= self.harden_epoch_ratio

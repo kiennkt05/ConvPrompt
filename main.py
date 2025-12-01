@@ -227,6 +227,15 @@ def parse_legacy_args():
     elif config == 'cub_slca':
         from configs.cub_slca import get_args_parser
         config_parser = subparser.add_parser('cub_slca', help='Split-CUB SLCA configs')
+    elif config == 'cifar100_dualprompt':
+        from configs.cifar100_dualprompt import get_args_parser
+        config_parser = subparser.add_parser('cifar100_dualprompt', help='Split-CIFAR100 DualPrompt configs')
+    elif config == 'imr_dualprompt':
+        from configs.imr_dualprompt import get_args_parser
+        config_parser = subparser.add_parser('imr_dualprompt', help='Split-ImageNet-R DualPrompt configs')
+    elif config == 'cub_dualprompt':
+        from configs.cub_dualprompt import get_args_parser
+        config_parser = subparser.add_parser('cub_dualprompt', help='Split-CUB DualPrompt configs')
     else:
         raise NotImplementedError
         
