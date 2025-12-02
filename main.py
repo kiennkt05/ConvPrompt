@@ -47,6 +47,24 @@ def parse_rainbow_args():
     parser.add_argument('--epochs', type=int, default=None)
     parser.add_argument('--print_freq', type=int, default=None)
     parser.add_argument('--data_path', '--data-path', dest='data_path', type=str, default=None)
+    
+    # Pixel prompt arguments (defaults match LGSP/train.py)
+    parser.add_argument('--pixel_prompt', type=str, default='NO', choices=['NO', 'YES'])
+    parser.add_argument('--pool_size', type=int, default=24)  # LGSP/train.py default=24
+    parser.add_argument('--prompt_hid_dim', type=int, default=3)  # LGSP/train.py default=3
+    parser.add_argument('--first_kernel_size', type=int, default=3)  # LGSP/train.py default=3
+    parser.add_argument('--second_kernel_size', type=int, default=5)  # LGSP/train.py default=5
+    parser.add_argument('--Dropout_Prompt', type=float, default=0.1)  # LGSP/train.py default=0.1
+    parser.add_argument('--lr_local', type=float, default=2e-4)  # LGSP/train.py default=2e-4
+    
+    # Frequency mask arguments (defaults match LGSP/train.py)
+    parser.add_argument('--Frequency_mask', type=bool, default=False)
+    parser.add_argument('--num_r', type=int, default=100)  # LGSP/train.py default=100
+    parser.add_argument('--temperature', type=float, default=0.1)  # LGSP/train.py default=0.1
+    parser.add_argument('--lr_Frequency_mask', type=float, default=0.03)  # LGSP/train.py default=0.03
+    
+    # Adaptive weighting arguments (defaults match LGSP/train.py)
+    parser.add_argument('--adaptive_weighting', type=bool, default=False)
 
     known_args, unknown = parser.parse_known_args()
     if unknown:
@@ -138,13 +156,6 @@ def main_rainbow(args):
         args=args,
     )
     model.to(device)
-
-    if getattr(args, 'freeze', None):
-        for name, param in model.named_parameters():
-            if any(name.startswith(prefix) for prefix in args.freeze):
-                if 'norm' in name:
-                    continue
-                param.requires_grad = False
 
     matcher = RainbowAttributeMatcher(
         num_tasks=args.num_tasks,

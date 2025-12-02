@@ -31,7 +31,6 @@ class RainbowPromptModule(nn.Module):
         enable_feature_level: bool = True,
         enable_alignment: bool = True,
         use_adaptive_gating: bool = True,
-        use_paper_evolution: bool = False,
     ) -> None:
         super().__init__()
 
@@ -45,7 +44,6 @@ class RainbowPromptModule(nn.Module):
         self.head_dim = embed_dim // num_heads
         self.use_task_conditioning = use_task_conditioning
         self.use_adaptive_gating = use_adaptive_gating
-        self.use_paper_evolution = use_paper_evolution
 
         self.evolutions = nn.ModuleList(
             [
@@ -59,7 +57,6 @@ class RainbowPromptModule(nn.Module):
                     enable_task_level=enable_task_level,
                     enable_feature_level=enable_feature_level,
                     enable_alignment=enable_alignment,
-                    use_paper_evolution=use_paper_evolution,
                 )
                 for _ in range(num_layers)
             ]
@@ -77,18 +74,6 @@ class RainbowPromptModule(nn.Module):
 
         self._latest_layer_cache: Dict[int, Dict[str, torch.Tensor]] = {}
         self._aux_losses: Dict[str, torch.Tensor] = {}
-
-        # For DualPrompt-style similarity-based selection
-        # Embedding matcher to project sample features (like EPrompt)
-        self.use_prompt_embed_matcher = True
-        if self.use_prompt_embed_matcher:
-            self.prompt_embed_matcher = nn.Sequential(
-                nn.Linear(embed_dim, embed_dim // 2),
-                nn.ReLU(),
-                nn.Linear(embed_dim // 2, embed_dim // 4)
-            )
-        else:
-            self.prompt_embed_matcher = None
 
         self._gate_config = dict(
             tau_start=gate_tau_start,
@@ -137,12 +122,7 @@ class RainbowPromptModule(nn.Module):
         return torch.stack([p for p in prompts], dim=0)
 
     def _format_prompt(self, prompt: torch.Tensor, gate_value: torch.Tensor, batch_size: int) -> torch.Tensor:
-        """Format a (possibly multi-task) prompt for PreT_Attention.
-
-        The first dimension of `prompt` is treated as the *effective* prompt length,
-        which allows us to concatenate prompts from multiple tasks at inference time
-        (soft routing), while still supporting single-task prompts during training.
-        """
+        """Format a prompt for PreT_Attention."""
         prompt_length = prompt.shape[0]
         prompt = prompt.view(prompt_length, self.num_heads, self.head_dim)
         key_prompt = prompt
@@ -219,28 +199,18 @@ class RainbowPromptModule(nn.Module):
 
         return self._format_prompt(prompt_tensor, gate_value, batch_size)
 
-    def _l2_normalize(self, x: torch.Tensor, dim: Optional[int] = None, epsilon: float = 1e-12) -> torch.Tensor:
-        """L2 normalize a tensor (like EPrompt's l2_normalize)."""
-        square_sum = torch.sum(x ** 2, dim=dim, keepdim=True)
-        x_inv_norm = torch.rsqrt(torch.maximum(square_sum, torch.tensor(epsilon, device=x.device)))
-        return x * x_inv_norm
-
     def forward(
         self,
         task_id: int,
         layer_idx: int,
         batch_size: int,
         device: torch.device,
-        x_embed: Optional[torch.Tensor] = None,
-        cls_features: Optional[torch.Tensor] = None,
     ) -> Optional[torch.Tensor]:
         if self.training_mode:
-            # During training we only expose the current task's prompt;
-            # routing is trivial because there is exactly one prompt per layer.
+            # During training, generate the prompt for the current task.
             return self._prepare_training_prompt(layer_idx, batch_size)
 
-        # Inference-time routing: use the prompts corresponding to the evaluated
-        # task (`task_id`) so that prompts and task embeddings stay consistent.
+        # During inference, use the globally latest prompt for this layer.
         return self._prepare_inference_prompt(task_id, layer_idx, batch_size, device)
 
     def auxiliary_losses(self) -> Dict[str, torch.Tensor]:

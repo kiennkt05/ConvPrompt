@@ -382,6 +382,7 @@ class VisionTransformer(nn.Module):
         self.no_embed_class = no_embed_class
         self.grad_checkpointing = False
         self.use_multihead=True
+        self.args = args  # Store args for pixel prompt and frequency mask
         print('Using multihead: ', self.use_multihead)
 
         self.patch_embed = embed_layer(
@@ -465,7 +466,6 @@ class VisionTransformer(nn.Module):
                 "enable_feature_level": True,
                 "enable_alignment": True,
                 "use_adaptive_gating": True,
-                "use_paper_evolution": False,
                 "lambda_sparse": 0.0,
                 "lambda_match": 0.0,
             }
@@ -488,13 +488,49 @@ class VisionTransformer(nn.Module):
                 enable_feature_level=rainbow_defaults["enable_feature_level"],
                 enable_alignment=rainbow_defaults["enable_alignment"],
                 use_adaptive_gating=rainbow_defaults["use_adaptive_gating"],
-                use_paper_evolution=rainbow_defaults["use_paper_evolution"],
             )
             self.lambda_sparse = rainbow_defaults.get("lambda_sparse", 0.0)
             self.lambda_match = rainbow_defaults.get("lambda_match", 0.0)
         else:
             self.lambda_sparse = 0.0
             self.lambda_match = 0.0
+        
+        # Pixel prompt initialization (defaults match LGSP)
+        self.prompt_dropout = torch.nn.Dropout(getattr(args, 'Dropout_Prompt', 0.0) if args else 0.0)
+        self.first_kernel_size = getattr(args, 'first_kernel_size', 3) if args else 3
+        self.second_kernel_size = getattr(args, 'second_kernel_size', 3) if args else 3
+        
+        def build_prompt_module():
+            prompt_hid_dim = getattr(args, 'prompt_hid_dim', 64) if args else 64
+            return nn.Sequential(
+                nn.Conv2d(3, prompt_hid_dim, self.first_kernel_size, stride=1, padding=int((self.first_kernel_size - 1) / 2)),
+                nn.ReLU(),
+                nn.Conv2d(prompt_hid_dim, 3, self.second_kernel_size, stride=1, padding=int((self.second_kernel_size - 1) / 2))
+            )
+
+        self.prompt_generators = nn.ModuleList()
+
+        if args and getattr(args, 'pixel_prompt', 'NO') == "YES":
+            pool_size = getattr(args, 'pool_size', 10)  # LGSP default: 10 (getattr fallback)
+            self.prompt_generators = nn.ModuleList(
+                build_prompt_module() for _ in range(pool_size)
+            )
+            self.num_prompt_generators = pool_size
+        else:
+            self.num_prompt_generators = 0
+
+        # Frequency mask initialization (defaults match LGSP)
+        if args and getattr(args, 'Frequency_mask', False):
+            max_radius = torch.sqrt(torch.tensor((img_size / 2) ** 2 + (img_size / 2) ** 2)).item()
+            num_r = getattr(args, 'num_r', 10)  # LGSP default: 10 (getattr fallback)
+            # Register as buffer so it moves to correct device automatically
+            self.register_buffer('radii', torch.linspace(0, max_radius, steps=num_r))
+            weights_init = torch.normal(mean=0, std=10, size=(num_r,))
+            self.weights = nn.Parameter(weights_init)
+
+            if getattr(args, 'adaptive_weighting', False):
+                self.alpha = nn.Parameter(torch.tensor(0.5, requires_grad=True))
+                self.beta = nn.Parameter(torch.tensor(0.5, requires_grad=True))
         
         if self.use_rainbow_prompt:
             attn_layer = PreT_Attention
@@ -579,6 +615,35 @@ class VisionTransformer(nn.Module):
 
 
     def forward_features(self, x, task_id=-1, cls_features=None, train=False):
+        # Apply pixel_prompt and frequency_mask preprocessing
+        pixel_prompt_enabled = self.args and getattr(self.args, 'pixel_prompt', 'NO') == 'YES'
+        frequency_mask_enabled = self.args and getattr(self.args, 'Frequency_mask', False)
+        adaptive_weighting = self.args and getattr(self.args, 'adaptive_weighting', False)
+        
+        if adaptive_weighting:
+            input1 = None
+            input2 = None
+            if pixel_prompt_enabled:
+                res = self.get_prompts(x, task_id=task_id)  
+                prompts = res['prompts']
+                input1 = x + prompts * 1
+            if frequency_mask_enabled:
+                input2 = self.get_Frequency_mask(x)
+            
+            if input1 is not None and input2 is not None:
+                x = self.alpha * input1 + self.beta * input2
+            elif input1 is not None:
+                x = input1
+            elif input2 is not None:
+                x = input2
+        else:
+            if pixel_prompt_enabled:
+                res = self.get_prompts(x, task_id=task_id)  
+                prompts = res['prompts']
+                x = x + prompts * 1
+            if frequency_mask_enabled:
+                x = self.get_Frequency_mask(x)
+        
         x = self.patch_embed(x)
 
         if self.cls_token is not None:
@@ -595,8 +660,6 @@ class VisionTransformer(nn.Module):
                     layer_idx=i,
                     batch_size=x.shape[0],
                     device=x.device,
-                    x_embed=x,  # Pass current layer embeddings for similarity matching
-                    cls_features=x[:, 0] if x.shape[1] > 0 else None,  # CLS token features
                 )
                 x = block(x, prompt=prompt_tokens)
             res["rainbow_aux"] = self.rainbow_prompt.auxiliary_losses()
@@ -745,6 +808,95 @@ class VisionTransformer(nn.Module):
         if embedding is not None:
             embedding = embedding.to(next(self.parameters()).device)
         self.rainbow_prompt.update_task_embedding(embedding)
+
+    # Define a function to calculate cosine similarity, focusing more on local similarity.
+    def cosine_similarity(self, a, b):
+        # Normalize the vectors
+        a_norm = F.normalize(a, dim=1)  # [batch_size, channels, h, w]
+        b_norm = F.normalize(b, dim=1)  # [batch_size, channels, h, w]
+        # Calculate the dot product
+        return torch.sum(a_norm * b_norm, dim=1, keepdim=True)  # [batch_size, 1, h, w]
+    
+    def get_prompts(self, x, task_id=-1):
+        res = {}  # Initialize res as an empty dictionary
+        prompts_list = []
+        for prompt_net in self.prompt_generators:
+            prompts_list.append(self.prompt_dropout(prompt_net(x)))
+
+        self.num_prompt_generators = len(prompts_list)
+
+        # Early return if no prompt generators are available
+        if len(prompts_list) == 0:
+            res['prompts'] = torch.zeros_like(x)
+            return res
+
+        # Use point-wise convolution to increase the channel dimension
+        # Feature normalization, such as BatchNorm or GroupNorm, to reduce redundant information
+        # Perform softmax on the branches
+        similarities_list = [self.cosine_similarity(x, prompt) for prompt in prompts_list]  # Each element is [batch_size, 1, h, w]
+
+        # Concatenate all similarities and perform softmax normalization
+        similarities = torch.cat(similarities_list, dim=1)  # [batch_size, 20, h, w]
+        weights = F.softmax(similarities, dim=1)  # [batch_size, 20, h, w]
+        
+        # Stack prompts and perform weighted sum
+        prompts = torch.stack(prompts_list, dim=1)  # [batch_size, 10, channels, h, w]
+        weighted_prompt = torch.sum(weights.unsqueeze(2) * prompts, dim=1)  # [batch_size, channels, h, w]
+        prompts = weighted_prompt
+
+        res['prompts'] = prompts
+        return res
+    
+    def get_Frequency_mask(self, input):
+        # Perform Fourier transform on the h and w dimensions
+        fft_im = torch.fft.fftn(input, dim=(-2, -1))  # 2D Fourier transform
+        fft_im_center = torch.fft.fftshift(fft_im, dim=(-2, -1))  # Shift the zero frequency to the center
+
+        # Build a grid to calculate the distance from each point to the center of the spectrum
+        Batch_size, channels, h, w = input.shape
+        y, x = torch.meshgrid(torch.arange(h), torch.arange(w), indexing='ij')
+        center_y, center_x = h // 2, w // 2  # Center of the spectrum
+        distances = torch.sqrt((y - center_y) ** 2 + (x - center_x) ** 2)  # Distance matrix
+        distances = distances.to(input.device)  # Ensure the device is consistent
+
+        # Create a ring mask, allow a certain tolerance range
+        beta = 4.0
+        ring_masks = []  # Store the mask of each ring
+        # Ensure radii tensor is on the same device as distances
+        radii = self.radii.to(input.device)
+        for i, radius in enumerate(radii):
+            if i == 0:
+                inner_radius = torch.tensor(0.0, device=input.device)  # The first ring starts from the center
+            else:
+                inner_radius = radii[i - 1] + 1e-6  # Ensure no overlap
+
+            # Outer radius mask
+            outer_mask = torch.sigmoid(-beta * (distances - radius))
+            # Inner radius mask
+            inner_mask = torch.sigmoid(-beta * (distances - inner_radius))
+            # Ring mask
+            ring_mask = outer_mask - inner_mask
+            ring_masks.append(ring_mask.float())  # Convert to float, for subsequent operations
+
+        # Stack the masks into a tensor of shape [10, h, w]
+        ring_masks = torch.stack(ring_masks, dim=0).to(input.device)  # [10, h, w]
+
+        # Weight each ring
+        temperature = getattr(self.args, 'temperature', 1.0) if self.args else 1.0
+        weights_normalized = torch.softmax(self.weights * temperature, dim=0)  # Normalize the weights
+        weighted_ring_masks = weights_normalized[:, None, None] * ring_masks  # Weighted mask
+        # Sum the weighted masks, get the overall frequency mask
+        final_mask = weighted_ring_masks.sum(dim=0)  # [h, w]
+
+        # Apply the frequency mask
+        fft_selected = fft_im_center * final_mask[None, None, :, :]  # Broadcast to [Batch_size, 3, h, w]
+
+        # Use the residual operation
+        fft_residual = fft_im_center + fft_selected  # Original frequency + weighted ring
+        ifft_residual = torch.fft.ifftn(torch.fft.ifftshift(fft_residual, dim=(-2, -1)), dim=(-2, -1))
+        ifft_residual = torch.abs(ifft_residual)  # [Batch_size, 3, h, w]
+        output = input + (ifft_residual - input) * 0.1
+        return output
 
 
 def init_weights_vit_timm(module: nn.Module, name: str = ''):

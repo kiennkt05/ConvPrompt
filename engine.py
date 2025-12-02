@@ -217,6 +217,8 @@ def evaluate_till_now(model: torch.nn.Module, data_loader,
         backward = np.mean((acc_matrix[:, task_id] - diagonal)[:task_id])
 
         result_str += "\tForgetting: {:.4f}\tBackward: {:.4f}".format(forgetting, backward)
+        test_stats['Forgetting'] = forgetting
+        test_stats['Backward'] = backward
     print(result_str)
     logging.info(result_str)
 
@@ -351,21 +353,69 @@ def _task_num_classes(class_mask, task_id):
 
 
 def build_rainbow_optimizer(args, model, matcher):
-    params = [p for p in model.parameters() if p.requires_grad]
-    params += [p for p in matcher.parameters() if p.requires_grad]
+    optimizer_params = []
+    
+    # Pixel prompt parameters (if enabled)
+    if getattr(args, 'pixel_prompt', 'NO') == "YES":
+        prompt_branch_params = []
+        for prompt_net in model.prompt_generators:
+            prompt_branch_params.extend(list(prompt_net.parameters()))
+
+        params_Mask = [
+            p
+            for p in prompt_branch_params
+            if p.requires_grad
+        ]
+        if params_Mask:
+            optimizer_params.append({'params': params_Mask, 'lr': getattr(args, 'lr_local', 2e-4)})  # LGSP default: 2e-4
+
+    # Frequency mask parameters (if enabled)
+    if getattr(args, 'Frequency_mask', False):
+        params_Frequency_mask = [model.weights]
+        optimizer_params.append({'params': params_Frequency_mask, 'lr': getattr(args, 'lr_Frequency_mask', 0.03)})
+
+    # Adaptive weighting parameters (if enabled)
+    if getattr(args, 'adaptive_weighting', False):
+        params_adaptive = [model.alpha, model.beta]
+        optimizer_params.append({'params': params_adaptive, 'lr': 0.1})
+    
+    # Rainbow prompt parameters (base prompts for current session)
+    base_lr = args.optimizer.get('lr', 1e-3)  # Use consistent learning rate for joint training
+    for layer_idx in range(len(model.blocks)):
+        for prompt in model.rainbow_prompt.base_prompts[layer_idx]:
+            if prompt.requires_grad:
+                optimizer_params.append({'params': [prompt], 'lr': base_lr})
+    
+    # Rainbow evolution parameters (W_evolution)
+    optimizer_params.append({'params': model.rainbow_prompt.evolutions.parameters(), 'lr': base_lr})
+    
+    # Rainbow gate parameters (G_t / δ_tl) - if adaptive gating is used
+    if model.rainbow_prompt.current_gate is not None:
+        optimizer_params.append({'params': model.rainbow_prompt.current_gate.parameters(), 'lr': base_lr})
+
+    # Matcher parameters (e_t - task embedding)
+    optimizer_params.append({'params': [p for p in matcher.parameters() if p.requires_grad], 'lr': base_lr})
+
+    # Classifier head (ϕ) - trained jointly with prompt parameters
+    # According to Rainbow paper: classifier is optimized together with prompts via CE + regularizers
+    # Joint optimization: min_{Θ_t} ∑ CE(z_i, y_i) + λ_s L_sparse + λ_m L_match
+    # where Θ_t = {p_t, e_t, G_t, W_evolution, ϕ} (ϕ is classifier)
+    head_params = [p for p in model.head.parameters() if p.requires_grad]
+    if head_params:
+        # Use same learning rate as prompt parameters for joint training
+        optimizer_params.append({'params': head_params, 'lr': base_lr})
 
     opt_cfg = args.optimizer
     opt_name = opt_cfg.get('name', 'adamw').lower()
-    lr = opt_cfg.get('lr', 1e-4)
     weight_decay = opt_cfg.get('weight_decay', 0.0)
 
     if opt_name == 'adamw':
-        optimizer = torch.optim.AdamW(params, lr=lr, weight_decay=weight_decay)
+        optimizer = torch.optim.AdamW(optimizer_params, weight_decay=weight_decay)
     elif opt_name == 'adam':
-        optimizer = torch.optim.Adam(params, lr=lr, weight_decay=weight_decay)
+        optimizer = torch.optim.Adam(optimizer_params, weight_decay=weight_decay)
     elif opt_name == 'sgd':
         momentum = opt_cfg.get('momentum', 0.9)
-        optimizer = torch.optim.SGD(params, lr=lr, weight_decay=weight_decay, momentum=momentum)
+        optimizer = torch.optim.SGD(optimizer_params, weight_decay=weight_decay, momentum=momentum)
     else:
         raise ValueError(f"Unsupported optimizer: {opt_name}")
 
@@ -473,12 +523,18 @@ def evaluate_rainbow(
     task_id: int,
     class_mask,
     args,
+    current_training_step: int = None,
 ):
     model.eval()
     model.rainbow_prompt.set_training(False)
 
-    offset = _class_offset(class_mask, task_id)
-    task_classes = _task_num_classes(class_mask, task_id)
+    # Calculate total classes seen so far (up to and including current_training_step)
+    # This matches ConvPrompt's behavior when task_inc=False: predict from all seen classes
+    # When evaluating old tasks, we use the current training step to determine how many classes
+    # the model has learned so far, not just the eval task's classes
+    if current_training_step is None:
+        current_training_step = task_id
+    total_seen_classes = _class_offset(class_mask, current_training_step + 1) if class_mask else None
 
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('Loss', utils.SmoothedValue(window_size=1, fmt='{value:.4f}'))
@@ -502,12 +558,18 @@ def evaluate_rainbow(
         # prompts for this layer (single global RainbowPrompt per layer).
         output = model(samples, task_id=task_id, train=False)
         logits = output['logits']
-        logits_current = logits[:, offset: offset + task_classes]
-        adjusted_targets = targets - offset
+        
+        # Use all logits for classes seen so far (matching ConvPrompt's task_inc=False behavior)
+        # This allows the model to predict from all classes it has learned, not just the current task's classes
+        if total_seen_classes is not None:
+            logits_eval = logits[:, :total_seen_classes]
+        else:
+            logits_eval = logits
+        
+        # Targets are already in the global class space, use them as-is
+        loss = criterion(logits_eval, targets)
 
-        loss = criterion(logits_current, adjusted_targets)
-
-        acc1, acc5 = accuracy(logits_current, adjusted_targets, topk=(1, 5))
+        acc1, acc5 = accuracy(logits_eval, targets, topk=(1, 5))
         batch_size = targets.size(0)
         total += batch_size
         correct_top1 += acc1.item() / 100.0 * batch_size
@@ -566,6 +628,7 @@ def evaluate_rainbow_till_now(
             eval_task,
             class_mask,
             args,
+            current_training_step=task_id,  # Pass current training step so old tasks predict from all seen classes
         )
         acc_matrix[eval_task, task_id] = stats['acc1']
         stat_matrix[0, eval_task] = stats['acc1']
@@ -604,11 +667,11 @@ def evaluate_rainbow_till_now(
 
     return {
         'avg_acc1': final_acc1,
-        'avg_acc5': avg_stat[1],
-        'avg_loss': avg_stat[2],
+        # 'avg_acc5': avg_stat[1],
+        # 'avg_loss': avg_stat[2],
         'forgetting': forgetting,
-        'backward': backward,
-        'summary': summary_str,
+        # 'backward': backward,
+        # 'summary': summary_str,
     }
 
 
@@ -623,6 +686,7 @@ def train_and_evaluate_rainbow(
 ):
     acc_matrix = np.zeros((args.num_tasks, args.num_tasks))
 
+    acc, forgetting = [], []
     for task_id in range(args.num_tasks):
         if task_id > 0 and hasattr(model.head, 'update'):
             model.head.update(len(class_mask[task_id]))
@@ -664,6 +728,8 @@ def train_and_evaluate_rainbow(
             acc_matrix=acc_matrix,
             args=args,
         )
+        acc.append(summary_stats['avg_acc1'])
+        forgetting.append(summary_stats['forgetting'])
 
         if getattr(args, 'output_dir', None) and utils.is_main_process():
             ckpt_dir = Path(args.output_dir) / 'checkpoints'
@@ -675,4 +741,11 @@ def train_and_evaluate_rainbow(
             }
             torch.save(checkpoint, ckpt_dir / f'task_{task_id + 1}.pth')
 
+    print("\n\n")
+    print("="*20 + "Final Results" + "="*20)
+    print("Average Accuracy:\n", acc)
+    print("Average Forgetting:\n", forgetting)
+    print("="*50)
+    print("\n\n")
+    
     return acc_matrix

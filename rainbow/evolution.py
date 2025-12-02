@@ -23,7 +23,6 @@ class RainbowEvolution(nn.Module):
         enable_task_level: bool = True,
         enable_feature_level: bool = True,
         enable_alignment: bool = True,
-        use_paper_evolution: bool = False,
     ) -> None:
         super().__init__()
         self.embed_dim = embed_dim
@@ -35,7 +34,6 @@ class RainbowEvolution(nn.Module):
         self.enable_task_level = enable_task_level
         self.enable_feature_level = enable_feature_level
         self.enable_alignment = enable_alignment
-        self.use_paper_evolution = use_paper_evolution
 
         self.task_proj = nn.Linear(embed_dim, proj_dim) if use_task_conditioning else None
         self.query_proj = nn.Linear(embed_dim, proj_dim)
@@ -139,45 +137,6 @@ class RainbowEvolution(nn.Module):
                 task_weights = task_attn
 
         task_weights = task_weights / task_weights.sum().clamp(min=1e-6)
-
-        if not self.use_paper_evolution:
-            weighted_values = torch.einsum("p,pld->ld", task_weights, values)
-            weighted_keys = torch.einsum("p,pld->ld", task_weights, keys)
-            weighted_prompts = torch.einsum("p,pld->ld", task_weights, conditioned_prompts)
-
-            if self.enable_feature_level:
-                # Paper: Feature-level attention (Q^T K / sqrt(d_k))
-                # Q: [prompt_len, proj_dim] -> transpose -> [proj_dim, prompt_len]
-                # K: [prompt_len, proj_dim] -> transpose -> [proj_dim, prompt_len]
-                # Q^T @ K: [proj_dim, prompt_len] @ [prompt_len, proj_dim] = [proj_dim, proj_dim]
-                feature_logits = torch.matmul(query.transpose(-1, -2), weighted_keys) / math.sqrt(self.proj_dim)  # [proj_dim, proj_dim]
-                feature_attn = torch.softmax(feature_logits, dim=-1)  # [proj_dim, proj_dim]
-                # Apply attention to values: feature_attn @ V^T
-                # V: [prompt_len, proj_dim] -> transpose -> [proj_dim, prompt_len]
-                # feature_attn @ V^T: [proj_dim, proj_dim] @ [proj_dim, prompt_len] = [proj_dim, prompt_len]
-                # Transpose back: [prompt_len, proj_dim]
-                evolved_proj = torch.matmul(feature_attn, weighted_values.transpose(-1, -2)).transpose(-1, -2)  # [prompt_len, proj_dim]
-            else:
-                feature_attn = None
-                evolved_proj = weighted_values
-
-            evolved_embeds = self.output_proj(evolved_proj)
-            evolved_embeds = self.layer_norm_in(weighted_prompts + evolved_embeds)
-
-            if self.enable_alignment:
-                aligned = self.layer_norm_out(evolved_embeds + self.alignment(evolved_embeds))
-            else:
-                aligned = self.layer_norm_out(evolved_embeds)
-
-            aligned_prompts = torch.stack([aligned for _ in range(num_prompts)], dim=0)
-
-            return {
-                "rainbow_prompt": aligned,
-                "aligned_prompts": aligned_prompts,
-                "task_weights": task_weights.detach(),
-                "feature_attn": feature_attn.detach() if feature_attn is not None else None,
-            }
-
         expanded_weights = task_weights.view(num_prompts, 1, 1)
         weighted_values = expanded_weights * values
         weighted_keys = expanded_weights * keys
