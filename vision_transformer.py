@@ -496,12 +496,14 @@ class VisionTransformer(nn.Module):
             self.lambda_match = 0.0
         
         # Pixel prompt initialization (defaults match LGSP)
-        self.prompt_dropout = torch.nn.Dropout(args.Dropout_Prompt)
-        self.first_kernel_size = args.first_kernel_size
-        self.second_kernel_size = args.second_kernel_size
+        # Use getattr with defaults for legacy configs that don't have LGSP attributes
+        Dropout_Prompt = getattr(args, 'Dropout_Prompt', 0.1)
+        self.prompt_dropout = torch.nn.Dropout(Dropout_Prompt)
+        self.first_kernel_size = getattr(args, 'first_kernel_size', 3)
+        self.second_kernel_size = getattr(args, 'second_kernel_size', 5)
         
         def build_prompt_module():
-            prompt_hid_dim = args.prompt_hid_dim
+            prompt_hid_dim = getattr(args, 'prompt_hid_dim', 3)
             return nn.Sequential(
                 nn.Conv2d(3, prompt_hid_dim, self.first_kernel_size, stride=1, padding=int((self.first_kernel_size - 1) / 2)),
                 nn.ReLU(),
@@ -510,7 +512,8 @@ class VisionTransformer(nn.Module):
 
         self.prompt_generators = nn.ModuleList()
 
-        if args.pixel_prompt:
+        pixel_prompt = getattr(args, 'pixel_prompt', 'NO')
+        if pixel_prompt == 'YES':
             self.prompt_generators = nn.ModuleList(
                 build_prompt_module() for _ in range(pool_size)
             )
@@ -519,15 +522,17 @@ class VisionTransformer(nn.Module):
             self.num_prompt_generators = 0
 
         # Frequency mask initialization (defaults match LGSP)
-        if args.Frequency_mask:
+        Frequency_mask = getattr(args, 'Frequency_mask', False)
+        if Frequency_mask:
             max_radius = torch.sqrt(torch.tensor((img_size / 2) ** 2 + (img_size / 2) ** 2)).item()
-            num_r = args.num_r
+            num_r = getattr(args, 'num_r', 100)
             # Register as buffer so it moves to correct device automatically
             self.register_buffer('radii', torch.linspace(0, max_radius, steps=num_r))
             weights_init = torch.normal(mean=0, std=10, size=(num_r,))
             self.weights = nn.Parameter(weights_init)
 
-            if args.adaptive_weighting:
+            adaptive_weighting = getattr(args, 'adaptive_weighting', False)
+            if adaptive_weighting:
                 self.alpha = nn.Parameter(torch.tensor(0.5, requires_grad=True))
                 self.beta = nn.Parameter(torch.tensor(0.5, requires_grad=True))
         
@@ -615,14 +620,14 @@ class VisionTransformer(nn.Module):
 
     def forward_features(self, x, task_id=-1, cls_features=None, train=False):
         # Apply pixel_prompt and frequency_mask preprocessing
-        pixel_prompt_enabled = self.args.pixel_prompt
-        frequency_mask_enabled = self.args.Frequency_mask
-        adaptive_weighting = self.args.adaptive_weighting
+        pixel_prompt = getattr(self.args, 'pixel_prompt', 'NO')
+        frequency_mask_enabled = getattr(self.args, 'Frequency_mask', False)
+        adaptive_weighting = getattr(self.args, 'adaptive_weighting', False)
         
         if adaptive_weighting:
             input1 = None
             input2 = None
-            if pixel_prompt_enabled:
+            if pixel_prompt == 'YES':
                 res = self.get_prompts(x, task_id=task_id)  
                 prompts = res['prompts']
                 input1 = x + prompts * 1
@@ -636,7 +641,7 @@ class VisionTransformer(nn.Module):
             elif input2 is not None:
                 x = input2
         else:
-            if pixel_prompt_enabled:
+            if pixel_prompt == 'YES':
                 res = self.get_prompts(x, task_id=task_id)  
                 prompts = res['prompts']
                 x = x + prompts * 1

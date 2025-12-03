@@ -356,7 +356,7 @@ def build_rainbow_optimizer(args, model, matcher):
     optimizer_params = []
     
     # Pixel prompt parameters (if enabled)
-    if args.pixel_prompt:
+    if getattr(args, 'pixel_prompt', 'NO') == "YES":
         prompt_branch_params = []
         for prompt_net in model.prompt_generators:
             prompt_branch_params.extend(list(prompt_net.parameters()))
@@ -367,15 +367,15 @@ def build_rainbow_optimizer(args, model, matcher):
             if p.requires_grad
         ]
         if params_Mask:
-            optimizer_params.append({'params': params_Mask, 'lr': args.lr_local})  # LGSP default: 2e-4
+            optimizer_params.append({'params': params_Mask, 'lr': getattr(args, 'lr_local', 2e-4)})  # LGSP default: 2e-4
 
     # Frequency mask parameters (if enabled)
-    if args.Frequency_mask:
+    if getattr(args, 'Frequency_mask', False):
         params_Frequency_mask = [model.weights]
-        optimizer_params.append({'params': params_Frequency_mask, 'lr': args.lr_Frequency_mask})
+        optimizer_params.append({'params': params_Frequency_mask, 'lr': getattr(args, 'lr_Frequency_mask', 0.03)})
 
     # Adaptive weighting parameters (if enabled)
-    if args.adaptive_weighting:
+    if getattr(args, 'adaptive_weighting', False):
         params_adaptive = [model.alpha, model.beta]
         optimizer_params.append({'params': params_adaptive, 'lr': 0.1})
     
@@ -399,7 +399,7 @@ def build_rainbow_optimizer(args, model, matcher):
     # Classifier head (ϕ) - only train current task's head
     # In continual learning, we explicitly train only the last (current) head
     # to avoid any potential interference with frozen old task heads
-    head_lr_multiplier = args.rainbow.head_lr_multiplier
+    head_lr_multiplier = args.rainbow.get('head_lr_multiplier', 2.0)
     head_lr = base_lr * head_lr_multiplier
 
     if hasattr(model.head, 'heads') and len(model.head.heads) > 0:
@@ -415,7 +415,7 @@ def build_rainbow_optimizer(args, model, matcher):
             optimizer_params.append({'params': head_params, 'lr': head_lr})
 
     opt_cfg = args.optimizer
-    opt_name = opt_cfg.name.lower()
+    opt_name = opt_cfg.get('name', '').lower()
     weight_decay = opt_cfg.get('weight_decay', 0.0)
 
     if opt_name == 'adamw':
@@ -423,17 +423,17 @@ def build_rainbow_optimizer(args, model, matcher):
     elif opt_name == 'adam':
         optimizer = torch.optim.Adam(optimizer_params, weight_decay=weight_decay)
     elif opt_name == 'sgd':
-        momentum = opt_cfg.momentum
+        momentum = opt_cfg.get('momentum', 0.9)
         optimizer = torch.optim.SGD(optimizer_params, weight_decay=weight_decay, momentum=momentum)
     else:
         raise ValueError(f"Unsupported optimizer: {opt_name}")
 
     scheduler = None
-    sched_cfg = args.scheduler
+    sched_cfg = getattr(args, 'scheduler', None)
     if sched_cfg:
-        sched_name = sched_cfg.name.lower()
+        sched_name = sched_cfg.get('name', '').lower()
         if sched_name == 'cosine':
-            eta_min = sched_cfg.min_lr
+            eta_min = sched_cfg.get('min_lr', 0.0)
             scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=eta_min)
         elif sched_name == 'constant':
             scheduler = None
@@ -503,7 +503,7 @@ def train_one_epoch_rainbow(
 
         total_loss.backward()
 
-        if args.clip_grad:
+        if getattr(args, 'clip_grad', None):
             torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip_grad)
 
         optimizer.step()
@@ -537,6 +537,7 @@ def evaluate_rainbow(
     model.eval()
     model.rainbow_prompt.set_training(False)
 
+
     # Calculate total classes seen so far (up to and including current_training_step)
     # This matches ConvPrompt's behavior when task_inc=False: predict from all seen classes
     # When evaluating old tasks, we use the current training step to determine how many classes
@@ -563,8 +564,16 @@ def evaluate_rainbow(
         samples = samples.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
 
-        # Forward pass: RainbowPromptModule will use the globally latest
-        # prompts for this layer (single global RainbowPrompt per layer).
+        # Set task embedding for task conditioning in RainbowEvolution
+        # Note: With similarity-based selection (when hard_prompt_selection=True),
+        # the prompt is selected automatically based on sample features, but task
+        # embedding is still used for task conditioning during evolution
+        task_embedding = matcher.get_task_embedding(task_id, device)
+        model.rainbow_set_task_embedding(task_embedding)
+        
+        # Forward pass: similarity-based selection happens automatically inside
+        # RainbowPromptModule._prepare_single_task_inference_prompt() when
+        # hard_prompt_selection=True (DualPrompt E-Prompt style)
         output = model(samples, task_id=task_id, train=False)
         logits = output['logits']
         
@@ -740,7 +749,7 @@ def train_and_evaluate_rainbow(
         acc.append(summary_stats['avg_acc1'])
         forgetting.append(summary_stats['forgetting'])
 
-        if args.output_dir and utils.is_main_process():
+        if getattr(args, 'output_dir', None) and utils.is_main_process():
             ckpt_dir = Path(args.output_dir) / 'checkpoints'
             ckpt_dir.mkdir(parents=True, exist_ok=True)
             checkpoint = {
