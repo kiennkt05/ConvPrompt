@@ -51,6 +51,7 @@ rainbow:
   enable_feature_level: true
   enable_alignment: true
   use_adaptive_gating: true
+  head_lr_multiplier: 2.0  # Learning rate multiplier for classifier head (default: 2.0)
 
 # logging
 print_freq: 10

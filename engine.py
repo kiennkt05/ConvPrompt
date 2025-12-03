@@ -356,7 +356,7 @@ def build_rainbow_optimizer(args, model, matcher):
     optimizer_params = []
     
     # Pixel prompt parameters (if enabled)
-    if getattr(args, 'pixel_prompt', 'NO') == "YES":
+    if args.pixel_prompt:
         prompt_branch_params = []
         for prompt_net in model.prompt_generators:
             prompt_branch_params.extend(list(prompt_net.parameters()))
@@ -367,15 +367,15 @@ def build_rainbow_optimizer(args, model, matcher):
             if p.requires_grad
         ]
         if params_Mask:
-            optimizer_params.append({'params': params_Mask, 'lr': getattr(args, 'lr_local', 2e-4)})  # LGSP default: 2e-4
+            optimizer_params.append({'params': params_Mask, 'lr': args.lr_local})  # LGSP default: 2e-4
 
     # Frequency mask parameters (if enabled)
-    if getattr(args, 'Frequency_mask', False):
+    if args.Frequency_mask:
         params_Frequency_mask = [model.weights]
-        optimizer_params.append({'params': params_Frequency_mask, 'lr': getattr(args, 'lr_Frequency_mask', 0.03)})
+        optimizer_params.append({'params': params_Frequency_mask, 'lr': args.lr_Frequency_mask})
 
     # Adaptive weighting parameters (if enabled)
-    if getattr(args, 'adaptive_weighting', False):
+    if args.adaptive_weighting:
         params_adaptive = [model.alpha, model.beta]
         optimizer_params.append({'params': params_adaptive, 'lr': 0.1})
     
@@ -396,17 +396,26 @@ def build_rainbow_optimizer(args, model, matcher):
     # Matcher parameters (e_t - task embedding)
     optimizer_params.append({'params': [p for p in matcher.parameters() if p.requires_grad], 'lr': base_lr})
 
-    # Classifier head (ϕ) - trained jointly with prompt parameters
-    # According to Rainbow paper: classifier is optimized together with prompts via CE + regularizers
-    # Joint optimization: min_{Θ_t} ∑ CE(z_i, y_i) + λ_s L_sparse + λ_m L_match
-    # where Θ_t = {p_t, e_t, G_t, W_evolution, ϕ} (ϕ is classifier)
-    head_params = [p for p in model.head.parameters() if p.requires_grad]
-    if head_params:
-        # Use same learning rate as prompt parameters for joint training
-        optimizer_params.append({'params': head_params, 'lr': base_lr})
+    # Classifier head (ϕ) - only train current task's head
+    # In continual learning, we explicitly train only the last (current) head
+    # to avoid any potential interference with frozen old task heads
+    head_lr_multiplier = args.rainbow.head_lr_multiplier
+    head_lr = base_lr * head_lr_multiplier
+
+    if hasattr(model.head, 'heads') and len(model.head.heads) > 0:
+        # Multi-head setup: explicitly use only the last (current task) head
+        current_head = model.head.heads[-1]
+        head_params = [p for p in current_head.parameters() if p.requires_grad]
+        if head_params:
+            optimizer_params.append({'params': head_params, 'lr': head_lr})
+    else:
+        # Fallback for single-head or other head types
+        head_params = [p for p in model.head.parameters() if p.requires_grad]
+        if head_params:
+            optimizer_params.append({'params': head_params, 'lr': head_lr})
 
     opt_cfg = args.optimizer
-    opt_name = opt_cfg.get('name', 'adamw').lower()
+    opt_name = opt_cfg.name.lower()
     weight_decay = opt_cfg.get('weight_decay', 0.0)
 
     if opt_name == 'adamw':
@@ -414,17 +423,17 @@ def build_rainbow_optimizer(args, model, matcher):
     elif opt_name == 'adam':
         optimizer = torch.optim.Adam(optimizer_params, weight_decay=weight_decay)
     elif opt_name == 'sgd':
-        momentum = opt_cfg.get('momentum', 0.9)
+        momentum = opt_cfg.momentum
         optimizer = torch.optim.SGD(optimizer_params, weight_decay=weight_decay, momentum=momentum)
     else:
         raise ValueError(f"Unsupported optimizer: {opt_name}")
 
     scheduler = None
-    sched_cfg = getattr(args, 'scheduler', None)
+    sched_cfg = args.scheduler
     if sched_cfg:
-        sched_name = sched_cfg.get('name', '').lower()
+        sched_name = sched_cfg.name.lower()
         if sched_name == 'cosine':
-            eta_min = sched_cfg.get('min_lr', 0.0)
+            eta_min = sched_cfg.min_lr
             scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=eta_min)
         elif sched_name == 'constant':
             scheduler = None
@@ -494,7 +503,7 @@ def train_one_epoch_rainbow(
 
         total_loss.backward()
 
-        if getattr(args, 'clip_grad', None):
+        if args.clip_grad:
             torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip_grad)
 
         optimizer.step()
@@ -731,7 +740,7 @@ def train_and_evaluate_rainbow(
         acc.append(summary_stats['avg_acc1'])
         forgetting.append(summary_stats['forgetting'])
 
-        if getattr(args, 'output_dir', None) and utils.is_main_process():
+        if args.output_dir and utils.is_main_process():
             ckpt_dir = Path(args.output_dir) / 'checkpoints'
             ckpt_dir.mkdir(parents=True, exist_ok=True)
             checkpoint = {

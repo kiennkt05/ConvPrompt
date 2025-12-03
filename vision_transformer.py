@@ -496,12 +496,12 @@ class VisionTransformer(nn.Module):
             self.lambda_match = 0.0
         
         # Pixel prompt initialization (defaults match LGSP)
-        self.prompt_dropout = torch.nn.Dropout(getattr(args, 'Dropout_Prompt', 0.0) if args else 0.0)
-        self.first_kernel_size = getattr(args, 'first_kernel_size', 3) if args else 3
-        self.second_kernel_size = getattr(args, 'second_kernel_size', 3) if args else 3
+        self.prompt_dropout = torch.nn.Dropout(args.Dropout_Prompt)
+        self.first_kernel_size = args.first_kernel_size
+        self.second_kernel_size = args.second_kernel_size
         
         def build_prompt_module():
-            prompt_hid_dim = getattr(args, 'prompt_hid_dim', 64) if args else 64
+            prompt_hid_dim = args.prompt_hid_dim
             return nn.Sequential(
                 nn.Conv2d(3, prompt_hid_dim, self.first_kernel_size, stride=1, padding=int((self.first_kernel_size - 1) / 2)),
                 nn.ReLU(),
@@ -510,8 +510,7 @@ class VisionTransformer(nn.Module):
 
         self.prompt_generators = nn.ModuleList()
 
-        if args and getattr(args, 'pixel_prompt', 'NO') == "YES":
-            pool_size = getattr(args, 'pool_size', 10)  # LGSP default: 10 (getattr fallback)
+        if args.pixel_prompt:
             self.prompt_generators = nn.ModuleList(
                 build_prompt_module() for _ in range(pool_size)
             )
@@ -520,15 +519,15 @@ class VisionTransformer(nn.Module):
             self.num_prompt_generators = 0
 
         # Frequency mask initialization (defaults match LGSP)
-        if args and getattr(args, 'Frequency_mask', False):
+        if args.Frequency_mask:
             max_radius = torch.sqrt(torch.tensor((img_size / 2) ** 2 + (img_size / 2) ** 2)).item()
-            num_r = getattr(args, 'num_r', 10)  # LGSP default: 10 (getattr fallback)
+            num_r = args.num_r
             # Register as buffer so it moves to correct device automatically
             self.register_buffer('radii', torch.linspace(0, max_radius, steps=num_r))
             weights_init = torch.normal(mean=0, std=10, size=(num_r,))
             self.weights = nn.Parameter(weights_init)
 
-            if getattr(args, 'adaptive_weighting', False):
+            if args.adaptive_weighting:
                 self.alpha = nn.Parameter(torch.tensor(0.5, requires_grad=True))
                 self.beta = nn.Parameter(torch.tensor(0.5, requires_grad=True))
         
@@ -616,9 +615,9 @@ class VisionTransformer(nn.Module):
 
     def forward_features(self, x, task_id=-1, cls_features=None, train=False):
         # Apply pixel_prompt and frequency_mask preprocessing
-        pixel_prompt_enabled = self.args and getattr(self.args, 'pixel_prompt', 'NO') == 'YES'
-        frequency_mask_enabled = self.args and getattr(self.args, 'Frequency_mask', False)
-        adaptive_weighting = self.args and getattr(self.args, 'adaptive_weighting', False)
+        pixel_prompt_enabled = self.args.pixel_prompt
+        frequency_mask_enabled = self.args.Frequency_mask
+        adaptive_weighting = self.args.adaptive_weighting
         
         if adaptive_weighting:
             input1 = None
@@ -882,7 +881,7 @@ class VisionTransformer(nn.Module):
         ring_masks = torch.stack(ring_masks, dim=0).to(input.device)  # [10, h, w]
 
         # Weight each ring
-        temperature = getattr(self.args, 'temperature', 1.0) if self.args else 1.0
+        temperature = self.args.temperature
         weights_normalized = torch.softmax(self.weights * temperature, dim=0)  # Normalize the weights
         weighted_ring_masks = weights_normalized[:, None, None] * ring_masks  # Weighted mask
         # Sum the weighted masks, get the overall frequency mask
