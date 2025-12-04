@@ -512,26 +512,48 @@ class VisionTransformer(nn.Module):
 
         self.prompt_generators = nn.ModuleList()
 
-        pixel_prompt = getattr(args, 'pixel_prompt', 'NO')
+        # Check args.rainbow first (for Rainbow configs), then fall back to top-level (for legacy configs)
+        if hasattr(args, 'rainbow') and isinstance(args.rainbow, dict):
+            pixel_prompt = args.rainbow.get('pixel_prompt', getattr(args, 'pixel_prompt', 'NO'))
+            # Get pool_size from rainbow config or top-level args
+            actual_pool_size = pool_size if pool_size is not None else args.rainbow.get('pool_size', getattr(args, 'pool_size', 24))
+        else:
+            pixel_prompt = getattr(args, 'pixel_prompt', 'NO')
+            # Get pool_size from top-level args if not provided
+            actual_pool_size = pool_size if pool_size is not None else getattr(args, 'pool_size', 24)
         if pixel_prompt == 'YES':
             self.prompt_generators = nn.ModuleList(
-                build_prompt_module() for _ in range(pool_size)
+                build_prompt_module() for _ in range(actual_pool_size)
             )
-            self.num_prompt_generators = pool_size
+            self.num_prompt_generators = actual_pool_size
         else:
             self.num_prompt_generators = 0
 
         # Frequency mask initialization (defaults match LGSP)
-        Frequency_mask = getattr(args, 'Frequency_mask', False)
+        # Check args.rainbow first (for Rainbow configs), then fall back to top-level (for legacy configs)
+        if hasattr(args, 'rainbow') and isinstance(args.rainbow, dict):
+            Frequency_mask = args.rainbow.get('Frequency_mask', getattr(args, 'Frequency_mask', False))
+        else:
+            Frequency_mask = getattr(args, 'Frequency_mask', False)
         if Frequency_mask:
-            max_radius = torch.sqrt(torch.tensor((img_size / 2) ** 2 + (img_size / 2) ** 2)).item()
+            # Handle img_size as either int or tuple
+            if isinstance(img_size, (tuple, list)):
+                # If tuple, use the first dimension (assuming square or use max)
+                img_size_val = img_size[0] if len(img_size) > 0 else 224
+            else:
+                img_size_val = img_size
+            max_radius = torch.sqrt(torch.tensor((img_size_val / 2) ** 2 + (img_size_val / 2) ** 2)).item()
             num_r = getattr(args, 'num_r', 100)
             # Register as buffer so it moves to correct device automatically
             self.register_buffer('radii', torch.linspace(0, max_radius, steps=num_r))
             weights_init = torch.normal(mean=0, std=10, size=(num_r,))
             self.weights = nn.Parameter(weights_init)
 
-            adaptive_weighting = getattr(args, 'adaptive_weighting', False)
+            # Check args.rainbow first (for Rainbow configs), then fall back to top-level (for legacy configs)
+            if hasattr(args, 'rainbow') and isinstance(args.rainbow, dict):
+                adaptive_weighting = args.rainbow.get('adaptive_weighting', getattr(args, 'adaptive_weighting', False))
+            else:
+                adaptive_weighting = getattr(args, 'adaptive_weighting', False)
             if adaptive_weighting:
                 self.alpha = nn.Parameter(torch.tensor(0.5, requires_grad=True))
                 self.beta = nn.Parameter(torch.tensor(0.5, requires_grad=True))
@@ -620,9 +642,15 @@ class VisionTransformer(nn.Module):
 
     def forward_features(self, x, task_id=-1, cls_features=None, train=False):
         # Apply pixel_prompt and frequency_mask preprocessing
-        pixel_prompt = getattr(self.args, 'pixel_prompt', 'NO')
-        frequency_mask_enabled = getattr(self.args, 'Frequency_mask', False)
-        adaptive_weighting = getattr(self.args, 'adaptive_weighting', False)
+        # Check args.rainbow first (for Rainbow configs), then fall back to top-level (for legacy configs)
+        if hasattr(self.args, 'rainbow') and isinstance(self.args.rainbow, dict):
+            pixel_prompt = self.args.rainbow.get('pixel_prompt', getattr(self.args, 'pixel_prompt', 'NO'))
+            frequency_mask_enabled = self.args.rainbow.get('Frequency_mask', getattr(self.args, 'Frequency_mask', False))
+            adaptive_weighting = self.args.rainbow.get('adaptive_weighting', getattr(self.args, 'adaptive_weighting', False))
+        else:
+            pixel_prompt = getattr(self.args, 'pixel_prompt', 'NO')
+            frequency_mask_enabled = getattr(self.args, 'Frequency_mask', False)
+            adaptive_weighting = getattr(self.args, 'adaptive_weighting', False)
         
         if adaptive_weighting:
             input1 = None

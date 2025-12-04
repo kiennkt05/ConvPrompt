@@ -356,7 +356,12 @@ def build_rainbow_optimizer(args, model, matcher):
     optimizer_params = []
     
     # Pixel prompt parameters (if enabled)
-    if getattr(args, 'pixel_prompt', 'NO') == "YES":
+    # Check args.rainbow first (for Rainbow configs), then fall back to top-level (for legacy configs)
+    if hasattr(args, 'rainbow') and isinstance(args.rainbow, dict):
+        pixel_prompt = args.rainbow.get('pixel_prompt', getattr(args, 'pixel_prompt', 'NO'))
+    else:
+        pixel_prompt = getattr(args, 'pixel_prompt', 'NO')
+    if pixel_prompt == "YES":
         prompt_branch_params = []
         for prompt_net in model.prompt_generators:
             prompt_branch_params.extend(list(prompt_net.parameters()))
@@ -370,12 +375,26 @@ def build_rainbow_optimizer(args, model, matcher):
             optimizer_params.append({'params': params_Mask, 'lr': getattr(args, 'lr_local', 2e-4)})  # LGSP default: 2e-4
 
     # Frequency mask parameters (if enabled)
-    if getattr(args, 'Frequency_mask', False):
+    if hasattr(args, 'rainbow') and isinstance(args.rainbow, dict):
+        frequency_mask_enabled = args.rainbow.get('Frequency_mask', getattr(args, 'Frequency_mask', False))
+    else:
+        frequency_mask_enabled = getattr(args, 'Frequency_mask', False)
+    if frequency_mask_enabled:
+        if not hasattr(model, 'weights'):
+            raise AttributeError("Frequency_mask is enabled but model.weights was not created during initialization. "
+                               "This may indicate a mismatch between config and initialization code.")
         params_Frequency_mask = [model.weights]
         optimizer_params.append({'params': params_Frequency_mask, 'lr': getattr(args, 'lr_Frequency_mask', 0.03)})
 
     # Adaptive weighting parameters (if enabled)
-    if getattr(args, 'adaptive_weighting', False):
+    if hasattr(args, 'rainbow') and isinstance(args.rainbow, dict):
+        adaptive_weighting = args.rainbow.get('adaptive_weighting', getattr(args, 'adaptive_weighting', False))
+    else:
+        adaptive_weighting = getattr(args, 'adaptive_weighting', False)
+    if adaptive_weighting:
+        if not (hasattr(model, 'alpha') and hasattr(model, 'beta')):
+            raise AttributeError("adaptive_weighting is enabled but model.alpha/beta were not created during initialization. "
+                               "This may indicate a mismatch between config and initialization code.")
         params_adaptive = [model.alpha, model.beta]
         optimizer_params.append({'params': params_adaptive, 'lr': 0.1})
     
