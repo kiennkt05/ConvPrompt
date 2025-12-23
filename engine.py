@@ -491,11 +491,21 @@ def train_one_epoch_rainbow(
     offset = _class_offset(class_mask, task_id)
     task_classes = _task_num_classes(class_mask, task_id)
 
+    # Gradient accumulation: accumulate gradients over multiple batches before updating
+    gradient_accumulation_steps = getattr(args, 'gradient_accumulation_steps', 1)
+    effective_batch_size = args.batch_size * gradient_accumulation_steps
+    
+    if gradient_accumulation_steps > 1:
+        print(f"Using gradient accumulation: batch_size={args.batch_size}, "
+              f"accumulation_steps={gradient_accumulation_steps}, "
+              f"effective_batch_size={effective_batch_size}")
+
+    optimizer.zero_grad()  # Zero gradients at the start of accumulation cycle
+    
+    accumulation_step = 0
     for samples, targets in metric_logger.log_every(data_loader, args.print_freq, header):
         samples = samples.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
-
-        optimizer.zero_grad()
 
         task_embedding = matcher.get_task_embedding(task_id, device)
         model.rainbow_set_task_embedding(task_embedding)
@@ -522,10 +532,14 @@ def train_one_epoch_rainbow(
 
         total_loss.backward()
 
-        if getattr(args, 'clip_grad', None):
-            torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip_grad)
+        accumulation_step += 1
 
-        optimizer.step()
+        if accumulation_step % gradient_accumulation_steps == 0:
+            if getattr(args, 'clip_grad', None):
+                torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip_grad)
+
+            optimizer.step()
+            optimizer.zero_grad()  # Zero gradients for next accumulation cycle
 
         with torch.no_grad():
             preds = logits_current.argmax(dim=1)
@@ -538,6 +552,13 @@ def train_one_epoch_rainbow(
             Sparsity=sparsity_loss.item(),
             Acc=acc.item() if torch.is_tensor(acc) else acc,
         )
+    
+    # Handle remaining gradients if the last batch doesn't complete an accumulation cycle
+    if accumulation_step % gradient_accumulation_steps != 0:
+        if getattr(args, 'clip_grad', None):
+            torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip_grad)
+        optimizer.step()
+        optimizer.zero_grad()
 
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
