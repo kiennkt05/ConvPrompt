@@ -31,6 +31,10 @@ class RainbowPromptModule(nn.Module):
         enable_feature_level: bool = True,
         enable_alignment: bool = True,
         use_adaptive_gating: bool = True,
+        top_k: int = 1,
+        embedding_key: str = 'cls',
+        use_hard_selection: bool = True,
+        use_prompt_embed_matcher: bool = False,
     ) -> None:
         super().__init__()
 
@@ -44,6 +48,10 @@ class RainbowPromptModule(nn.Module):
         self.head_dim = embed_dim // num_heads
         self.use_task_conditioning = use_task_conditioning
         self.use_adaptive_gating = use_adaptive_gating
+        self.top_k = top_k
+        self.embedding_key = embedding_key
+        self.use_hard_selection = use_hard_selection
+        self.use_prompt_embed_matcher = use_prompt_embed_matcher
 
         self.evolutions = nn.ModuleList(
             [
@@ -64,6 +72,16 @@ class RainbowPromptModule(nn.Module):
 
         self.base_prompts = nn.ModuleList([nn.ParameterList() for _ in range(num_layers)])
         self.storage = RainbowPromptStorage(save_dir)
+
+        # Optional prompt embedding matcher for feature projection (similar to EPrompt)
+        if self.use_prompt_embed_matcher:
+            self.prompt_embed_matcher = nn.Sequential(OrderedDict([
+                ('linear1', nn.Linear(embed_dim, embed_dim // 2)),
+                ('relu1', nn.ReLU()),
+                ('linear2', nn.Linear(embed_dim // 2, embed_dim // 4))
+            ]))
+        else:
+            self.prompt_embed_matcher = None
 
         self.current_task_id: Optional[int] = None
         self.current_gate: Optional[ProbabilisticGate] = None
@@ -121,6 +139,38 @@ class RainbowPromptModule(nn.Module):
             raise ValueError(f"No base prompts registered for layer {layer_idx}")
         return torch.stack([p for p in prompts], dim=0)
 
+    def l2_normalize(self, x: torch.Tensor, dim: Optional[int] = None, epsilon: float = 1e-12) -> torch.Tensor:
+        """Normalizes a given vector or matrix using L2 normalization."""
+        square_sum = torch.sum(x ** 2, dim=dim, keepdim=True)
+        x_inv_norm = torch.rsqrt(torch.maximum(square_sum, torch.tensor(epsilon, device=x.device)))
+        return x * x_inv_norm
+
+    def _extract_features(self, x_embed: torch.Tensor) -> torch.Tensor:
+        """Extract features from input embeddings based on embedding_key.
+        
+        Args:
+            x_embed: Tensor of shape [batch_size, seq_len, embed_dim]
+            
+        Returns:
+            Tensor of shape [batch_size, embed_dim] or [batch_size, embed_dim//4] if using matcher
+        """
+        if self.embedding_key == 'mean':
+            x_embed_mean = torch.mean(x_embed, dim=1)
+        elif self.embedding_key == 'max':
+            x_embed_mean = torch.max(x_embed, dim=1)[0]
+        elif self.embedding_key == 'mean_max':
+            x_embed_mean = torch.max(x_embed, dim=1)[0] + 2 * torch.mean(x_embed, dim=1)
+        elif self.embedding_key == 'cls':
+            # Assume CLS token is at position 0
+            x_embed_mean = x_embed[:, 0]
+        else:
+            raise NotImplementedError(f"Not supported embedding_key: {self.embedding_key}!")
+        
+        if self.use_prompt_embed_matcher and self.prompt_embed_matcher is not None:
+            x_embed_mean = self.prompt_embed_matcher(x_embed_mean)
+        
+        return x_embed_mean
+
     def _format_prompt(self, prompt: torch.Tensor, gate_value: torch.Tensor, batch_size: int) -> torch.Tensor:
         """Format a prompt for PreT_Attention."""
         prompt_length = prompt.shape[0]
@@ -177,27 +227,148 @@ class RainbowPromptModule(nn.Module):
         layer_idx: int,
         batch_size: int,
         device: torch.device,
+        x_embed: Optional[torch.Tensor] = None,
     ) -> Optional[torch.Tensor]:
-        """Prepare inference prompt using the globally latest prompt for this layer.
+        """Prepare inference prompt using hard selection from stored prompts.
 
-        At inference time we ignore per-task distinctions and always use the
-        most recently finalized RainbowPrompt for each layer in this run.
+        If use_hard_selection is True and x_embed is provided:
+        - Selects top_k prompts based on similarity matching
+        - Always adds the latest evolved rainbow_prompt (highest task_id) as an additional prompt
+        - Total prompts used: top_k + 1 (always, even if latest is already in top_k)
+        - Latest prompt is given extra weight (boosted) because it's explicitly chosen
+        - All selected prompts are combined using softmax-weighted averaging
+        
+        Otherwise, falls back to the latest prompt for the given task_id.
         """
-        # Prefer the most recent prompt stored in the in-memory cache.
-        stored = self.storage.get(task_id, layer_idx)
+        # If hard selection is disabled or x_embed is not provided, use fallback behavior
+        if not self.use_hard_selection or x_embed is None:
+            stored = self.storage.get(task_id, layer_idx)
+            if stored is None:
+                # Fallback to the latest prompt seen during training in this run.
+                cached = self._latest_layer_cache.get(layer_idx)
+                if cached is None:
+                    return None
+                prompt_tensor = cached["prompt"].to(device)
+                gate_value = cached["gate"].to(device)
+            else:
+                prompt_tensor = stored["prompt"].to(device)
+                gate_value = stored["gate"].to(device)
+            return self._format_prompt(prompt_tensor, gate_value, batch_size)
 
-        if stored is None:
-            # Fallback to the latest prompt seen during training in this run.
+        # Hard selection: retrieve all stored prompts and select top_k based on similarity
+        # Then add the latest prompt (highest task_id) as an additional prompt (total = top_k + 1)
+        all_prompts = self.storage.get_all_prompts(layer_idx)
+        
+        if not all_prompts:
+            # Fallback to latest cache if no stored prompts
             cached = self._latest_layer_cache.get(layer_idx)
             if cached is None:
                 return None
             prompt_tensor = cached["prompt"].to(device)
             gate_value = cached["gate"].to(device)
-        else:
-            prompt_tensor = stored["prompt"].to(device)
-            gate_value = stored["gate"].to(device)
+            return self._format_prompt(prompt_tensor, gate_value, batch_size)
 
-        return self._format_prompt(prompt_tensor, gate_value, batch_size)
+        # Identify the latest prompt (highest task_id)
+        latest_task_id = max(task_id for task_id, _ in all_prompts)
+        latest_prompt_idx = next(i for i, (tid, _) in enumerate(all_prompts) if tid == latest_task_id)
+
+        # Extract features from input
+        x_embed_mean = self._extract_features(x_embed)  # [batch_size, embed_dim or embed_dim//4]
+        
+        # Get all prompt keys and normalize
+        prompt_keys = []
+        prompts_list = []
+        gates_list = []
+        
+        for task_id_stored, stored_data in all_prompts:
+            prompt_key = stored_data["key"].to(device)  # [embed_dim]
+            prompt = stored_data["prompt"].to(device)  # [prompt_length, embed_dim]
+            gate = stored_data["gate"].to(device)
+            
+            # If using matcher, we need to project the prompt key too
+            if self.use_prompt_embed_matcher and self.prompt_embed_matcher is not None:
+                # For prompt keys, we need to handle the case where key is [embed_dim]
+                # but matcher expects [batch_size, embed_dim]. We'll project it once.
+                # Actually, prompt keys are stored as [embed_dim], so we need to project them
+                # But we only have one key per prompt, so we expand it
+                prompt_key_expanded = prompt_key.unsqueeze(0)  # [1, embed_dim]
+                prompt_key_proj = self.prompt_embed_matcher(prompt_key_expanded)  # [1, embed_dim//4]
+                prompt_key = prompt_key_proj.squeeze(0)  # [embed_dim//4]
+            
+            prompt_keys.append(prompt_key)
+            prompts_list.append(prompt)
+            gates_list.append(gate)
+        
+        if not prompt_keys:
+            return None
+        
+        # Stack prompt keys: [num_prompts, embed_dim or embed_dim//4]
+        prompt_keys_tensor = torch.stack(prompt_keys, dim=0)
+        
+        # Normalize for similarity computation
+        prompt_key_norm = self.l2_normalize(prompt_keys_tensor, dim=-1)  # [num_prompts, embed_dim or embed_dim//4]
+        x_embed_norm = self.l2_normalize(x_embed_mean, dim=-1)  # [batch_size, embed_dim or embed_dim//4]
+        
+        # Compute similarity: [batch_size, num_prompts]
+        similarity = torch.matmul(x_embed_norm, prompt_key_norm.t())  # [batch_size, num_prompts]
+        
+        # Select top_k prompts for each sample in batch (based on similarity)
+        if self.top_k >= len(all_prompts):
+            # Use all prompts if top_k >= number of stored prompts
+            top_k_indices = torch.arange(len(all_prompts), device=device).unsqueeze(0).expand(batch_size, -1)
+            top_k_similarities = similarity
+        else:
+            top_k_similarities, top_k_indices = torch.topk(similarity, k=self.top_k, dim=-1)  # [batch_size, top_k]
+        
+        # For each sample in batch, combine selected prompts + latest prompt (always added)
+        selected_prompts_list = []
+        selected_gates_list = []
+        
+        for b in range(batch_size):
+            # Get top_k indices for this sample
+            top_k_idx = top_k_indices[b]  # [top_k]
+            top_k_sim = top_k_similarities[b]  # [top_k]
+            
+            # Always add latest prompt as additional prompt (total = top_k + 1)
+            latest_idx_tensor = torch.tensor([latest_prompt_idx], dtype=torch.long, device=device)
+            latest_sim = similarity[b, latest_prompt_idx]
+            
+            # Combine: [top_k indices, latest_idx] - total = top_k + 1
+            all_selected_indices = torch.cat([top_k_idx, latest_idx_tensor])
+            all_selected_similarities = torch.cat([top_k_sim, latest_sim.unsqueeze(0)])
+            
+            # Give latest prompt extra weight (multiply its similarity by a factor > 1)
+            # This ensures it's weighted more because it's explicitly chosen
+            # latest_weight_boost = 2.0  # Boost latest prompt's weight
+            # all_selected_similarities[-1] = all_selected_similarities[-1] * latest_weight_boost
+            
+            # Compute softmax weights over all selected prompts (top_k + latest)
+            # Latest prompt will have higher weight due to the boost
+            sim_weights = F.softmax(all_selected_similarities, dim=-1)  # [top_k + 1]
+            
+            # Weighted combination of prompts
+            combined_prompt = torch.zeros_like(prompts_list[0])  # [prompt_length, embed_dim]
+            combined_gate = torch.zeros((), device=device)
+            
+            for i, idx in enumerate(all_selected_indices):
+                idx_int = idx.item()
+                weight = sim_weights[i]
+                combined_prompt += weight * prompts_list[idx_int]
+                combined_gate += weight * gates_list[idx_int]
+            
+            selected_prompts_list.append(combined_prompt)
+            selected_gates_list.append(combined_gate)
+        
+        # Stack prompts: [batch_size, prompt_length, embed_dim]
+        # But we need to format them individually since gates might differ per sample
+        # Actually, we can't easily batch different gates, so we'll use mean gate
+        mean_gate = torch.stack(selected_gates_list).mean()
+        
+        # Use mean prompt across batch (or we could keep per-sample, but formatting expects single prompt)
+        # For simplicity, use mean of selected prompts
+        mean_prompt = torch.stack(selected_prompts_list, dim=0).mean(dim=0)  # [prompt_length, embed_dim]
+        
+        return self._format_prompt(mean_prompt, mean_gate, batch_size)
 
     def forward(
         self,
@@ -205,13 +376,14 @@ class RainbowPromptModule(nn.Module):
         layer_idx: int,
         batch_size: int,
         device: torch.device,
+        x_embed: Optional[torch.Tensor] = None,
     ) -> Optional[torch.Tensor]:
         if self.training_mode:
             # During training, generate the prompt for the current task.
             return self._prepare_training_prompt(layer_idx, batch_size)
 
-        # During inference, use the globally latest prompt for this layer.
-        return self._prepare_inference_prompt(task_id, layer_idx, batch_size, device)
+        # During inference, use hard selection if enabled and x_embed is provided.
+        return self._prepare_inference_prompt(task_id, layer_idx, batch_size, device, x_embed=x_embed)
 
     def auxiliary_losses(self) -> Dict[str, torch.Tensor]:
         losses = {k: v for k, v in self._aux_losses.items()}

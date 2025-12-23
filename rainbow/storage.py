@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, List, Optional, Tuple
 
 import torch
 
@@ -20,37 +20,90 @@ class RainbowPromptStorage:
     def __init__(self, root: str | Path) -> None:
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
-        # Single global cache: we keep only the latest prompts per layer for
-        # the current run, independent of task id.
-        self._cache: Dict[int, Dict[str, torch.Tensor]] = {}
+        # Cache structure: layer_idx -> task_id -> {prompt, gate, key}
+        self._cache: Dict[int, Dict[int, Dict[str, torch.Tensor]]] = {}
+
+    @staticmethod
+    def _compute_prompt_key(prompt: torch.Tensor) -> torch.Tensor:
+        """Compute prompt key as mean of prompt tokens along prompt_length dimension.
+        
+        Args:
+            prompt: Tensor of shape [prompt_length, embed_dim]
+            
+        Returns:
+            Tensor of shape [embed_dim]
+        """
+        return prompt.mean(dim=0)
 
     def put(self, task_id: int, layer_idx: int, prompt: torch.Tensor, gate: torch.Tensor) -> None:
-        """Store the latest prompt/gate for a given layer, ignoring task_id.
+        """Store prompt/gate for a given task and layer, with computed prompt key.
 
-        The `task_id` argument is retained only for API compatibility; this
-        storage keeps a single global RainbowPrompt per layer.
+        Args:
+            task_id: Task identifier
+            layer_idx: Layer index
+            prompt: Prompt tensor of shape [prompt_length, embed_dim]
+            gate: Gate tensor (scalar or small tensor)
         """
-        _ = task_id  # unused
-        self._cache[layer_idx] = {
+        if layer_idx not in self._cache:
+            self._cache[layer_idx] = {}
+        
+        prompt_key = self._compute_prompt_key(prompt)
+        
+        self._cache[layer_idx][task_id] = {
             "prompt": prompt.detach().cpu().clone(),
             "gate": gate.detach().cpu().clone(),
+            "key": prompt_key.detach().cpu().clone(),
         }
 
     def get(self, task_id: int, layer_idx: int) -> Optional[Dict[str, torch.Tensor]]:
-        """Retrieve the latest global prompt/gate for a layer, ignoring task_id.
+        """Retrieve prompt/gate for a specific task and layer.
 
-        The `task_id` argument is retained only for API compatibility; prompts
-        are stored per-layer globally, corresponding to the most recently
-        finalized RainbowPrompt in this run.
+        Args:
+            task_id: Task identifier
+            layer_idx: Layer index
+            
+        Returns:
+            Dict with keys "prompt", "gate", "key", or None if not found
         """
-        _ = task_id  # unused
-        stored = self._cache.get(layer_idx)
+        layer_cache = self._cache.get(layer_idx)
+        if layer_cache is None:
+            return None
+        
+        stored = layer_cache.get(task_id)
         if stored is None:
             return None
+        
         return {
             "prompt": stored["prompt"].clone(),
             "gate": stored["gate"].clone(),
+            "key": stored["key"].clone(),
         }
+
+    def get_all_prompts(self, layer_idx: int) -> List[Tuple[int, Dict[str, torch.Tensor]]]:
+        """Retrieve all stored prompts for a layer, with their task_ids.
+
+        Args:
+            layer_idx: Layer index
+            
+        Returns:
+            List of (task_id, {prompt, gate, key}) tuples for all stored tasks
+        """
+        layer_cache = self._cache.get(layer_idx)
+        if layer_cache is None:
+            return []
+        
+        result = []
+        for task_id, stored in layer_cache.items():
+            result.append((
+                task_id,
+                {
+                    "prompt": stored["prompt"].clone(),
+                    "gate": stored["gate"].clone(),
+                    "key": stored["key"].clone(),
+                }
+            ))
+        
+        return result
 
     def save_task(self, task_id: int) -> None:
         """No-op for compatibility.

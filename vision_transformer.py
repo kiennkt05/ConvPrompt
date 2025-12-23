@@ -488,6 +488,10 @@ class VisionTransformer(nn.Module):
                 enable_feature_level=rainbow_defaults["enable_feature_level"],
                 enable_alignment=rainbow_defaults["enable_alignment"],
                 use_adaptive_gating=rainbow_defaults["use_adaptive_gating"],
+                top_k=rainbow_defaults.get("top_k", 1),
+                embedding_key=rainbow_defaults.get("embedding_key", "cls"),
+                use_hard_selection=rainbow_defaults.get("use_hard_selection", True),
+                use_prompt_embed_matcher=rainbow_defaults.get("use_prompt_embed_matcher", False),
             )
             self.lambda_sparse = rainbow_defaults.get("lambda_sparse", 0.0)
             self.lambda_match = rainbow_defaults.get("lambda_match", 0.0)
@@ -687,11 +691,14 @@ class VisionTransformer(nn.Module):
             res = {}
             self.rainbow_prompt.set_training(train)
             for i, block in enumerate(self.blocks):
+                # Pass x_embed for similarity computation during inference (hard selection)
+                x_embed_for_selection = x if not train else None
                 prompt_tokens = self.rainbow_prompt(
                     task_id=task_id,
                     layer_idx=i,
                     batch_size=x.shape[0],
                     device=x.device,
+                    x_embed=x_embed_for_selection,
                 )
                 x = block(x, prompt=prompt_tokens)
             res["rainbow_aux"] = self.rainbow_prompt.auxiliary_losses()

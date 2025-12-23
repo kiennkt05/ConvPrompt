@@ -67,7 +67,7 @@ def parse_rainbow_args():
     parser.add_argument('--adaptive_weighting', type=bool, default=False)
     
     parser.add_argument('--gradient_accumulation_steps', type=int, default=1)
-    
+
     known_args, unknown = parser.parse_known_args()
     if unknown:
         print(f"Warning: Unrecognized arguments ignored: {unknown}")
@@ -111,7 +111,7 @@ def parse_rainbow_args():
         'use_prefix_tune_for_e_prompt': True,
         'g_prompt_length': 5,
         'g_prompt_layer_idx': [],
-        'gradient_accumulation_steps': 1,
+        'gradient_accumulation_steps': 1,  # Gradient accumulation to simulate larger batch size
     }
     for key, value in fallback_defaults.items():
         config_dict.setdefault(key, value)

@@ -354,6 +354,11 @@ def _task_num_classes(class_mask, task_id):
 
 def build_rainbow_optimizer(args, model, matcher):
     optimizer_params = []
+
+    # Scale learning rate with effective batch size for gradient accumulation
+    # This helps match the optimization dynamics of true large batch training
+    gradient_accumulation_steps = getattr(args, 'gradient_accumulation_steps', 1)
+    effective_batch_size = args.batch_size * gradient_accumulation_steps
     
     # Pixel prompt parameters (if enabled)
     # Check args.rainbow first (for Rainbow configs), then fall back to top-level (for legacy configs)
@@ -499,6 +504,7 @@ def train_one_epoch_rainbow(
         print(f"Using gradient accumulation: batch_size={args.batch_size}, "
               f"accumulation_steps={gradient_accumulation_steps}, "
               f"effective_batch_size={effective_batch_size}")
+        print(f"Natural gradient accumulation (no loss scaling)")
 
     optimizer.zero_grad()  # Zero gradients at the start of accumulation cycle
     
@@ -530,16 +536,18 @@ def train_one_epoch_rainbow(
             match_loss = matcher.match_loss(output['pre_logits'], task_embedding)
             total_loss = total_loss + args.lambda_match * match_loss
 
+        # Natural gradient accumulation (gradients sum up)
         total_loss.backward()
 
         accumulation_step += 1
 
+        # Update weights only after accumulating enough gradients
         if accumulation_step % gradient_accumulation_steps == 0:
             if getattr(args, 'clip_grad', None):
                 torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip_grad)
 
             optimizer.step()
-            optimizer.zero_grad()  # Zero gradients for next accumulation cycle
+            optimizer.zero_grad()
 
         with torch.no_grad():
             preds = logits_current.argmax(dim=1)
@@ -552,6 +560,7 @@ def train_one_epoch_rainbow(
             Sparsity=sparsity_loss.item(),
             Acc=acc.item() if torch.is_tensor(acc) else acc,
         )
+
     
     # Handle remaining gradients if the last batch doesn't complete an accumulation cycle
     if accumulation_step % gradient_accumulation_steps != 0:
@@ -559,7 +568,7 @@ def train_one_epoch_rainbow(
             torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip_grad)
         optimizer.step()
         optimizer.zero_grad()
-
+    
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 
