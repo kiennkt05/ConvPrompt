@@ -461,7 +461,6 @@ def build_rainbow_optimizer(args, model, matcher):
 
     return optimizer, scheduler
 
-
 def train_one_epoch_rainbow(
     model: torch.nn.Module,
     matcher,
@@ -485,25 +484,24 @@ def train_one_epoch_rainbow(
     metric_logger.add_meter('Match', utils.SmoothedValue(window_size=1, fmt='{value:.4f}'))
     metric_logger.add_meter('Sparsity', utils.SmoothedValue(window_size=1, fmt='{value:.4f}'))
     metric_logger.add_meter('Acc', utils.SmoothedValue(window_size=1, fmt='{value:.2f}'))
-
-    header = f'Rainbow Train Task[{task_id + 1}/{args.num_tasks}] Epoch[{epoch + 1}/{max_epochs}]'
+    # Meters for time and data loading time
+    metric_logger.add_meter('time', utils.SmoothedValue(window_size=10, fmt='{value:.4f}'))
+    metric_logger.add_meter('data', utils.SmoothedValue(window_size=10, fmt='{value:.4f}'))
 
     offset = _class_offset(class_mask, task_id)
     task_classes = _task_num_classes(class_mask, task_id)
 
-    # Gradient accumulation: accumulate gradients over multiple batches before updating
+    # Gradient accumulation parameters
     gradient_accumulation_steps = getattr(args, 'gradient_accumulation_steps', 1)
-    effective_batch_size = args.batch_size * gradient_accumulation_steps
-    
-    if gradient_accumulation_steps > 1:
-        print(f"Using gradient accumulation: batch_size={args.batch_size}, "
-              f"accumulation_steps={gradient_accumulation_steps}, "
-              f"effective_batch_size={effective_batch_size}")
-
-    optimizer.zero_grad()  # Zero gradients at the start of accumulation cycle
+    optimizer.zero_grad() 
     
     accumulation_step = 0
-    for samples, targets in metric_logger.log_every(data_loader, args.print_freq, header):
+    end = time.time()
+    
+    # Iterate without log_every to suppress batch-wise output
+    for samples, targets in data_loader:
+        data_time = time.time() - end
+        
         samples = samples.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
 
@@ -539,26 +537,44 @@ def train_one_epoch_rainbow(
                 torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip_grad)
 
             optimizer.step()
-            optimizer.zero_grad()  # Zero gradients for next accumulation cycle
+            optimizer.zero_grad()
 
         with torch.no_grad():
             preds = logits_current.argmax(dim=1)
             acc = (preds == adjusted_targets).float().mean() * 100.0
 
+        batch_time = time.time() - end
+        
         metric_logger.update(
             Loss=total_loss.item(),
             CE=ce_loss.item(),
             Match=match_loss.item(),
             Sparsity=sparsity_loss.item(),
             Acc=acc.item() if torch.is_tensor(acc) else acc,
+            time=batch_time,
+            data=data_time
         )
+        end = time.time()
     
-    # Handle remaining gradients if the last batch doesn't complete an accumulation cycle
+    # Handle remaining gradients
     if accumulation_step % gradient_accumulation_steps != 0:
         if getattr(args, 'clip_grad', None):
             torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip_grad)
         optimizer.step()
         optimizer.zero_grad()
+
+    # Synchronize and print summary
+    metric_logger.synchronize_between_processes()
+    
+    print(f"Rainbow Train Task[{task_id + 1}/{args.num_tasks}] Epoch[{epoch + 1}/{max_epochs}] "
+          f"Loss: {metric_logger.Loss.global_avg:.4f} "
+          f"CE: {metric_logger.CE.global_avg:.4f} "
+          f"Match: {metric_logger.Match.global_avg:.4f} "
+          f"Sparsity: {metric_logger.Sparsity.global_avg:.4f} "
+          f"Acc: {metric_logger.Acc.global_avg:.2f} "
+          f"time: {metric_logger.time.global_avg:.4f} "
+          f"data: {metric_logger.data.global_avg:.4f} "
+          f"max mem: {torch.cuda.max_memory_allocated() / 1024.0 / 1024.0:.0f}")
 
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
@@ -577,11 +593,6 @@ def evaluate_rainbow(
     model.eval()
     model.rainbow_prompt.set_training(False)
 
-
-    # Calculate total classes seen so far (up to and including current_training_step)
-    # This matches ConvPrompt's behavior when task_inc=False: predict from all seen classes
-    # When evaluating old tasks, we use the current training step to determine how many classes
-    # the model has learned so far, not just the eval task's classes
     if current_training_step is None:
         current_training_step = task_id
     total_seen_classes = _class_offset(class_mask, current_training_step + 1) if class_mask else None
@@ -597,34 +608,22 @@ def evaluate_rainbow(
     correct_top1 = 0
     correct_top5 = 0
 
-    header = f'Rainbow Eval Task[{task_id + 1}/{args.num_tasks}]'
-    start_eval_time = time.time()
-
-    for samples, targets in metric_logger.log_every(data_loader, args.print_freq, header):
+    # Iterate without log_every to suppress batch-wise output
+    for samples, targets in data_loader:
         samples = samples.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
 
-        # Set task embedding for task conditioning in RainbowEvolution
-        # Note: With similarity-based selection (when hard_prompt_selection=True),
-        # the prompt is selected automatically based on sample features, but task
-        # embedding is still used for task conditioning during evolution
         task_embedding = matcher.get_task_embedding(task_id, device)
         model.rainbow_set_task_embedding(task_embedding)
         
-        # Forward pass: similarity-based selection happens automatically inside
-        # RainbowPromptModule._prepare_single_task_inference_prompt() when
-        # hard_prompt_selection=True (DualPrompt E-Prompt style)
         output = model(samples, task_id=task_id, train=False)
         logits = output['logits']
         
-        # Use all logits for classes seen so far (matching ConvPrompt's task_inc=False behavior)
-        # This allows the model to predict from all classes it has learned, not just the current task's classes
         if total_seen_classes is not None:
             logits_eval = logits[:, :total_seen_classes]
         else:
             logits_eval = logits
         
-        # Targets are already in the global class space, use them as-is
         loss = criterion(logits_eval, targets)
 
         acc1, acc5 = accuracy(logits_eval, targets, topk=(1, 5))
@@ -640,15 +639,11 @@ def evaluate_rainbow(
     avg_acc1 = metric_logger.meters['Acc@1'].global_avg
     avg_acc5 = metric_logger.meters['Acc@5'].global_avg
 
-    # Synchronize metrics across distributed workers and log summary
     metric_logger.synchronize_between_processes()
-    print('* [Rainbow] Acc@1 {top1.global_avg:.3f} Acc@5 {top5.global_avg:.3f} loss {losses.global_avg:.3f}'
-          .format(top1=metric_logger.meters['Acc@1'], top5=metric_logger.meters['Acc@5'], losses=metric_logger.meters['Loss']))
-    logging.info('* [Rainbow] Acc@1 {top1.global_avg:.3f} Acc@5 {top5.global_avg:.3f} loss {losses.global_avg:.3f}'
-          .format(top1=metric_logger.meters['Acc@1'], top5=metric_logger.meters['Acc@5'], losses=metric_logger.meters['Loss']))
-
-    end_eval_time = time.time()
-    print(f"[Rainbow] Batchwise eval time for task {task_id + 1} = {(end_eval_time - start_eval_time) / len(data_loader):.4f}")
+    
+    # Concise single-line output per eval task
+    print(f"Rainbow Eval Task[{task_id + 1}/{args.num_tasks}] "
+          f"Acc@1 {avg_acc1:.3f} Acc@5 {avg_acc5:.3f} Loss {metric_logger.meters['Loss'].global_avg:.3f}")
 
     return {
         'loss': metric_logger.meters['Loss'].global_avg,
@@ -686,7 +681,7 @@ def evaluate_rainbow_till_now(
             eval_task,
             class_mask,
             args,
-            current_training_step=task_id,  # Pass current training step so old tasks predict from all seen classes
+            current_training_step=task_id, 
         )
         acc_matrix[eval_task, task_id] = stats['acc1']
         stat_matrix[0, eval_task] = stats['acc1']
@@ -701,8 +696,6 @@ def evaluate_rainbow_till_now(
 
     final_acc1 = 100.0 * total_correct_top1 / max(total_samples, 1)
     final_acc5 = 100.0 * total_correct_top5 / max(total_samples, 1)
-
-
 
     forgetting = 0.0
     backward = 0.0
@@ -725,11 +718,7 @@ def evaluate_rainbow_till_now(
 
     return {
         'avg_acc1': final_acc1,
-        # 'avg_acc5': avg_stat[1],
-        # 'avg_loss': avg_stat[2],
         'forgetting': forgetting,
-        # 'backward': backward,
-        # 'summary': summary_str,
     }
 
 
@@ -754,7 +743,6 @@ def train_and_evaluate_rainbow(
         optimizer, scheduler = build_rainbow_optimizer(args, model, matcher)
 
         for epoch in range(args.epochs):
-            logging.info('Rainbow training task %d epoch %d/%d', task_id + 1, epoch + 1, args.epochs)
             train_stats = train_one_epoch_rainbow(
                 model=model,
                 matcher=matcher,
