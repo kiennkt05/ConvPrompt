@@ -16,8 +16,16 @@ from torchvision import datasets, transforms
 from timm.data import create_transform
 
 from continual_datasets.continual_datasets import *
+from continual_datasets.video_datasets import UCF101, ActivityNet
 
 import utils
+
+def _unwrap_to_base_dataset(dataset):
+    while isinstance(dataset, Subset):
+        dataset = dataset.dataset
+    return dataset
+
+
 
 class Lambda(transforms.Lambda):
     def __init__(self, lambd, nb_classes):
@@ -30,14 +38,20 @@ class Lambda(transforms.Lambda):
 def target_transform(x, nb_classes):
     return x + nb_classes
 
+def collate_video(batch):
+    """
+    Returns (B, S, C, H, W) videos and (B,) labels — no flattening.
+    Segment averaging happens inside evaluate() after the forward pass.
+    """
+    videos, labels = zip(*batch)
+    return torch.stack(videos, dim=0), torch.as_tensor(labels, dtype=torch.long)
+
 def build_continual_dataloader(args):
     dataloader = list()
     class_mask = list() if args.task_inc or args.train_mask else None
 
     transform_train = build_transform(True, args)
     transform_val = build_transform(False, args)
-    print("Train transforms: ", transform_train)
-    print("Test transforms: ", transform_val)
 
     if args.dataset.startswith('Split-'):
         dataset_train, dataset_val, dataset_feat_train = get_dataset(args.dataset.replace('Split-',''), transform_train, transform_val, args)
@@ -86,26 +100,48 @@ def build_continual_dataloader(args):
         else:
             sampler_train = torch.utils.data.RandomSampler(dataset_train)
             sampler_val = torch.utils.data.SequentialSampler(dataset_val)
+
+        base_train = _unwrap_to_base_dataset(dataset_train)
+        video_collate = (
+            collate_video if (isinstance(base_train, ActivityNet) or isinstance(base_train, UCF101)) else None
+        )
+
+        # Flattening (B, S, C, H, W) -> (B*S, C, H, W) multiplies per-step activations by S; keep the
+        # effective frame batch near args.batch_size by loading fewer videos per step.
+        train_bs = args.batch_size
+        val_bs = args.batch_size
+        if video_collate is not None:
+            n_seg = getattr(base_train, "num_segments", 1) or 1
+            train_bs = max(1, args.batch_size // n_seg)
+            val_bs = max(1, args.batch_size // n_seg)
+            if utils.is_main_process() and train_bs != args.batch_size:
+                print(
+                    f"DataLoader batch_size {args.batch_size} -> {train_bs} videos/step "
+                    f"(num_segments={n_seg}) so flattened inputs are ~{train_bs * n_seg} frames/step."
+                )
         
         data_loader_train = torch.utils.data.DataLoader(
             dataset_train, sampler=sampler_train,
-            batch_size=args.batch_size,
+            batch_size=train_bs,
             num_workers=args.num_workers,
             pin_memory=args.pin_mem,
+            collate_fn=video_collate,
         )
 
         data_loader_val = torch.utils.data.DataLoader(
             dataset_val, sampler=sampler_val,
-            batch_size=args.batch_size,
+            batch_size=val_bs,
             num_workers=args.num_workers,
             pin_memory=args.pin_mem,
+            collate_fn=video_collate,
         )
 
         data_loader_feat_train = torch.utils.data.DataLoader(
             dataset_feat_train, sampler=sampler_train,
-            batch_size=args.batch_size,
+            batch_size=val_bs,
             num_workers=args.num_workers,
             pin_memory=args.pin_mem,
+            collate_fn=video_collate,
         )
         # print("Dataloader len: ", len(data_loader_val))
         # for batch_number, batch in enumerate(data_loader_val):
@@ -171,6 +207,14 @@ def get_dataset(dataset, transform_train, transform_val, args,):
         dataset_train = Imagenet_R(args.data_path, train=True, download=True, transform=transform_train).data
         dataset_val = Imagenet_R(args.data_path, train=False, download=True, transform=transform_val).data
         dataset_feat_train = Imagenet_R(args.data_path, train=True, download=True, transform=transform_val).data
+
+    elif dataset == 'UCF101':
+        dataset_train = UCF101(args.data_path, train=True, num_tasks = args.num_tasks, transform=transform_train)
+        dataset_val   = UCF101(args.data_path, train=False, num_tasks = args.num_tasks, transform=transform_val)
+
+    elif dataset == 'ActivityNet':
+        dataset_train = ActivityNet(args.data_path, train=True, num_tasks = args.num_tasks, transform=transform_train)
+        dataset_val   = ActivityNet(args.data_path, train=False, num_tasks = args.num_tasks, transform=transform_val)
     
     else:
         raise ValueError('Dataset {} not found.'.format(dataset))
@@ -178,41 +222,66 @@ def get_dataset(dataset, transform_train, transform_val, args,):
     return dataset_train, dataset_val, dataset_feat_train
 
 def split_single_dataset(dataset_train, dataset_val, args, dataset_feat_train=None,):
-    nb_classes = len(dataset_val.classes)
-    assert nb_classes % args.num_tasks == 0
-    classes_per_task = nb_classes // args.num_tasks
+    if (
+        hasattr(dataset_train, "task_ids")
+        and hasattr(dataset_val, "task_ids")
+        and hasattr(dataset_train, "class_mask")
+        and len(dataset_train.task_ids) == len(dataset_train.targets)
+        and len(dataset_val.task_ids) == len(dataset_val.targets)
+    ):
+        split_datasets = []
+        mask = [list(task_scope) for task_scope in dataset_train.class_mask]
 
-    labels = [i for i in range(nb_classes)]
+        for task_id in range(args.num_tasks):
+            train_split_indices = [i for i, t_id in enumerate(dataset_train.task_ids) if t_id == task_id]
+            test_split_indices = [i for i, t_id in enumerate(dataset_val.task_ids) if t_id == task_id]
+            subset_train = Subset(dataset_train, train_split_indices)
+            subset_val = Subset(dataset_val, test_split_indices)
+            split_datasets.append([subset_train, subset_val])
+
+        return split_datasets, mask
+
+    nb_classes = len(dataset_val.classes)
     
-    split_datasets = list()
-    mask = list()
+    # Handle uneven splits (e.g. UCF-101: 101 classes with 10 or 20 tasks).
+    # Remainder classes are absorbed into the FIRST task.
+    # Even splits (CIFAR-100, ImageNet-R, ActivityNet) are unaffected.
+    remainder        = nb_classes % args.num_tasks
+    base_per_task    = nb_classes // args.num_tasks
+    first_task_size  = base_per_task + remainder   # e.g. 11 for 10-task, 6 for 20-task
+
+    labels = list(range(nb_classes))
+
+    split_datasets = []
+    mask = []
 
     if args.shuffle:
         random.shuffle(labels)
 
-    for _ in range(args.num_tasks):
-        train_split_indices = []
-        test_split_indices = []
-        feat_split_indices = []
-        
-        scope = labels[:classes_per_task]
-        labels = labels[classes_per_task:]
+    for task_id in range(args.num_tasks):
+        test_split_indices  = []
+
+        # First task gets the extra remainder classes; all others get base_per_task
+        chunk = first_task_size if task_id == 0 else base_per_task
+        scope  = labels[:chunk]
+        labels = labels[chunk:]
 
         mask.append(scope)
 
-        for k in range(len(dataset_train.targets)):
-            if int(dataset_train.targets[k]) in scope:
+        scope_set = set(scope)
+
+        for k, target in enumerate(dataset_train.targets):
+            if int(target) in scope_set:
                 train_split_indices.append(k)
-                feat_split_indices.append(k)
                 
         for h in range(len(dataset_val.targets)):
             if int(dataset_val.targets[h]) in scope:
                 test_split_indices.append(h)
         
-        subset_train, subset_val =  Subset(dataset_train, train_split_indices), Subset(dataset_val, test_split_indices)
-
+        subset_train = Subset(dataset_train, train_split_indices)
+        subset_val = Subset(dataset_val, test_split_indices)
         split_datasets.append([subset_train, subset_val])
-    
+
     return split_datasets, mask
 
             # T.ColorJitter(brightness=.5, hue=.3),

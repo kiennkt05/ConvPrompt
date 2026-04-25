@@ -191,6 +191,12 @@ if __name__ == '__main__':
     elif config == 'cub_slca':
         from configs.cub_slca import get_args_parser
         config_parser = subparser.add_parser('cub_slca', help='Split-CUB SLCA configs')
+    elif config == 'ucf101_convprompt':
+        from configs.ucf101_convprompt import get_args_parser
+        config_parser = subparser.add_parser('ucf101_convprompt', help='UCF101 ConvPrompt configs')
+    elif config == 'activitynet_convprompt':
+        from configs.activitynet_convprompt import get_args_parser
+        config_parser = subparser.add_parser('activitynet_convprompt', help='ActivityNet ConvPrompt configs')
     else:
         raise NotImplementedError
         

@@ -14,6 +14,10 @@ def get_dataset_name(args=None):
         return "cifar100"
     elif args.dataset == "Split-CUB200":
         return "cub"
+    elif args.dataset == "Split-UCF101":
+        return "ucf101"
+    elif args.dataset == "Split-ActivityNet":
+        return "activitynet"
 
 def getUnion(list1, list2):
     return list(set(list1) | set(list2))

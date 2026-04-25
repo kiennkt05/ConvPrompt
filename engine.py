@@ -59,6 +59,9 @@ def train_one_epoch(model: torch.nn.Module,
     if args.distributed and utils.get_world_size() > 1:
         data_loader.sampler.set_epoch(epoch)
 
+    gradient_accumulation_steps = getattr(args, 'gradient_accumulation_steps', 1)
+    optimizer.zero_grad()
+
     metric_logger = utils.MetricLogger(delimiter="  ")
     
     # metric_logger.add_meter('Lr_head', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
@@ -74,12 +77,25 @@ def train_one_epoch(model: torch.nn.Module,
     header = f'Train: Epoch[{epoch+1:{int(math.log10(args.epochs))+1}}/{args.epochs}]'
     
 
-    for input, target in metric_logger.log_every(data_loader, args.print_freq, header):
+    for step, (input, target) in enumerate(metric_logger.log_every(data_loader, args.print_freq)):
         input = input.to(device, non_blocking=True)
         target = target.to(device, non_blocking=True)
 
-        output = model(input, task_id=task_id, train=set_training_mode)
+        # Detect multi-segment inputs and flatten for the ViT backbone
+        is_multiseg = (input.ndim == 5)
+        if is_multiseg:
+            B, S, C, H, W = input.shape
+            flat_input = input.reshape(B * S, C, H, W)
+        else:
+            flat_input = input
+            B = input.shape[0]
+
+        output = model(flat_input, task_id=task_id, train=set_training_mode)
         logits = output['logits']
+
+        # TSN consensus: average logits over segments before loss
+        if is_multiseg:
+            logits = logits.reshape(B, S, -1).mean(dim=1)
 
         # Masking and computing loss
         known_classes = task_id*len(class_mask[0])
@@ -103,11 +119,12 @@ def train_one_epoch(model: torch.nn.Module,
             print("Loss is {}, stopping training".format(loss.item()))
             sys.exit(1)
 
-        optimizer.zero_grad()
-        loss.backward() 
-        if args.use_clip_grad:
+        loss = loss / gradient_accumulation_steps
+        loss.backward()
+        if (step + 1) % gradient_accumulation_steps == 0 or (step + 1) == len(data_loader):
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
-        optimizer.step()
+            optimizer.step()
+            optimizer.zero_grad()
         
         
         torch.cuda.synchronize()
@@ -118,8 +135,8 @@ def train_one_epoch(model: torch.nn.Module,
         else:
             metric_logger.update(Lr=optimizer.param_groups[0]["lr"])
         
-        metric_logger.meters['Acc@1'].update(acc1.item(), n=input.shape[0])
-        metric_logger.meters['Acc@5'].update(acc5.item(), n=input.shape[0])
+        metric_logger.meters['Acc@1'].update(acc1.item(), n=B)
+        metric_logger.meters['Acc@5'].update(acc5.item(), n=B)
         
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
@@ -149,10 +166,30 @@ def evaluate(model: torch.nn.Module, data_loader,
             input = input.to(device, non_blocking=True)
             target = target.to(device, non_blocking=True)
 
+            # -----------------------------------------------------------
+            # 1. Detect multi-segment inputs and flatten for the ViT
+            # -----------------------------------------------------------
+            is_multiseg = (input.ndim == 5)
+            if is_multiseg:
+                B, S, C, H, W = input.shape
+                flat_input = input.reshape(B * S, C, H, W)
+            else:
+                flat_input = input
+                B = input.shape[0]
+            # -----------------------------------------------------------
+
             # compute output
 
-            output = model(input, task_id=task_id)
+            output = model(flat_input, task_id=task_id)
             logits = output['logits']
+
+            # -----------------------------------------------------------
+            # 2. Average the logits over the temporal segments (TSN consensus)
+            # -----------------------------------------------------------
+            if is_multiseg:
+                # Reshape from (B*S, nb_classes) -> (B, S, nb_classes) and mean across S
+                logits = logits.reshape(B, S, -1).mean(dim=1)
+            # -----------------------------------------------------------
 
             if args.task_inc and class_mask is not None:
                 #adding mask to output logits
@@ -170,8 +207,8 @@ def evaluate(model: torch.nn.Module, data_loader,
             acc1, acc5 = accuracy(logits, target, topk=(1, 5))
 
             metric_logger.meters['Loss'].update(loss.item())
-            metric_logger.meters['Acc@1'].update(acc1.item(), n=input.shape[0])
-            metric_logger.meters['Acc@5'].update(acc5.item(), n=input.shape[0])
+            metric_logger.meters['Acc@1'].update(acc1.item(), n=B)
+            metric_logger.meters['Acc@5'].update(acc5.item(), n=B)
 
     end_eval_time = time.time()
     # gather the stats from all processes
