@@ -1,0 +1,810 @@
+{
+    "Surfing": [
+        "Long, aerodynamic surfboard with a pointed nose and fins",
+        "Ocean waves with white foam or breaking crests",
+        "Person in a low-center-of-gravity crouching or standing stance",
+        "Polyurethane or epoxy board material with vibrant colors/patterns",
+        "Flexible leash connecting the surfer's ankle to the board",
+        "Attire consisting of a neoprene wetsuit or nylon boardshorts"
+    ],
+    "SalsaSpin": [
+        "Two dancers in a close or open-hand hold connection",
+        "Flared or circular skirt showing centrifugal motion and fabric ripples",
+        "Blurred limbs or clothing indicating rapid rotational movement",
+        "Partner's arm raised high to facilitate the turn under the hand",
+        "Heeled dance shoes or smooth-soled leather footwear",
+        "Synchronized body alignment with focused eye contact"
+    ],
+    "PlayingTabla": [
+        "Pair of asymmetrical hand drums consisting of a wooden 'Dayan' and metal 'Bayan'",
+        "Black circular spots (syahi) in the center of the goat-skin drumheads",
+        "Fingers and palms positioned in contact with the drum surface",
+        "Person seated in a cross-legged position on the floor",
+        "Braided leather straps (gajra) running down the sides of the drums",
+        "Thick fabric or twine rings (biri) supporting the base of each drum"
+    ],
+    "PoleVault": [
+        "Long, cylindrical, flexible fiberglass or carbon fiber pole",
+        "Athlete suspended in mid-air in an inverted or horizontal position",
+        "High horizontal crossbar supported by two vertical uprights",
+        "Large, thick foam landing mat (pit) directly below the bar",
+        "Taut muscles and arched back as the athlete clears the obstacle",
+        "Specialized spiked track shoes and form-fitting athletic singlet"
+    ],
+    "YoYo": [
+        "Two equal-sized circular discs connected by a central axle",
+        "Thin cotton or synthetic string wound around the axle or extended",
+        "Human hand with string looped around the middle finger",
+        "Blurring of the circular object indicating high-speed rotation or 'sleeping'",
+        "Brightly colored plastic or machined aluminum body components",
+        "The string forming a V-shape or complex geometric 'cradle' pattern"
+    ],
+    "Mixing": [
+        "Deep stainless steel, glass, or ceramic mixing bowl",
+        "Whisk, spatula, or wooden spoon held by a hand",
+        "Viscous batter, liquid, or dry flour inside the container",
+        "Circular or folding motion visible in the substance texture",
+        "Splashes or residue on the interior walls of the bowl",
+        "Countertop setting with surrounding ingredients or measuring tools"
+    ],
+    "ApplyEyeMakeup": [
+        "Small applicator tool such as a mascara wand, brush, or pencil",
+        "Extreme close-up of a human eye and surrounding eyelid",
+        "Elongated eyelashes coated in dark pigment",
+        "Small handheld or mounted mirror reflecting the eye",
+        "Pigmented powders or creams on the eyelid surface",
+        "Steady hand positioning with fingers braced against the cheek"
+    ],
+    "VolleyballSpiking": [
+        "Spherical ball with a paneled leather or synthetic surface",
+        "Player jumping vertically with one arm cocked back behind the head",
+        "Taut net with white top banding and vertical antennae",
+        "Hardwood indoor court or outdoor sand environment",
+        "Extended arm making contact with the top half of the ball",
+        "Opposing players' hands reaching upward in a 'block' formation"
+    ],
+    "LongJump": [
+        "Rectangular pit filled with leveled, fine-grained sand",
+        "Athlete in mid-flight with legs extended forward and arms back",
+        "White wooden takeoff board at the end of a synthetic track lane",
+        "Sand particles being displaced or kicked up upon impact",
+        "Official measuring tape or markers alongside the sand pit",
+        "Athletic uniform with a visible bib number"
+    ],
+    "FieldHockeyPenalty": [
+        "Stick with a flat striking side and a curved/hooked head",
+        "Small, hard, spherical ball with a dimpled white surface",
+        "Player in a bent-over or lunging stance at the edge of a striking circle",
+        "Rectangular goal cage with heavy netting and wooden backboards",
+        "Defenders wearing protective clear or black face masks",
+        "Short-grass or synthetic turf field with distinct white boundary lines"
+    ],
+    "Rafting": [
+        "Multi-chambered inflatable rubber or PVC boat with side tubes",
+        "Turbulent whitewater with waves, splashes, and air bubbles",
+        "Multiple occupants holding T-grip paddles in active rowing motions",
+        "Brightly colored personal flotation devices (PFDs) and plastic helmets",
+        "Safety grab-ropes running along the outer perimeter of the raft",
+        "Steep rocky riverbanks or canyon walls in the background"
+    ],
+    "Hammering": [
+        "Metal hammer head with a flat striking face and a curved claw",
+        "Hand gripping a wooden, fiberglass, or rubberized handle",
+        "Metal nail partially embedded in a wooden or flat surface",
+        "Arm in a raised, cocked position or mid-swing motion blur",
+        "Point of impact between the hammer face and the nail head",
+        "Surface debris such as wood shavings or dust around the target"
+    ],
+    "PushUps": [
+        "Body suspended in a horizontal plank position parallel to the floor",
+        "Palms placed flat on the ground, aligned with the shoulders",
+        "Elbows either fully extended or bent at a 90-degree angle",
+        "Toes tucked and in contact with the floor to support the lower body",
+        "Straight spinal alignment from the crown of the head to the heels",
+        "Tense musculature in the pectorals, deltoids, and triceps"
+    ],
+    "HandstandWalking": [
+        "Person in an inverted vertical position with feet pointing upward",
+        "Hands serving as the primary point of contact with the ground",
+        "Alternating hand placement indicating a forward stepping motion",
+        "Taut core and shoulder muscles to maintain vertical balance",
+        "Legs slightly staggered or bent to manage center of gravity",
+        "Blood rushing to the face or visible facial strain from inversion"
+    ],
+    "BlowingCandles": [
+        "Human face with pursed lips and puffed-out cheeks",
+        "Cylindrical wax candles with small flickering orange and yellow flames",
+        "Cylindrical cake or cupcake serving as the base for the candles",
+        "Thin trails of white smoke rising from a recently extinguished wick",
+        "Melted wax droplets accumulated on the sides of the candles",
+        "Close-up perspective focusing on the interaction between breath and flame"
+    ],
+    "GolfSwing": [
+        "Long-shafted club with a weighted metal or composite head",
+        "Interlocked or overlapping two-handed grip on the club handle",
+        "Small, white, dimpled ball resting on a wooden tee or grass",
+        "Rotation of the torso and hips following a circular arc path",
+        "Motion blur of the club head during the downswing or follow-through",
+        "Cleared patch of grass (divot) indicating the point of contact"
+    ],
+    "PlayingGuitar": [
+        "Wooden or solid-body instrument with a long, fretted neck",
+        "Six thin metal or nylon strings spanning from the bridge to the headstock",
+        "One hand pressing strings against the frets on the fingerboard",
+        "Opposite hand plucking or strumming strings near the soundhole or pickups",
+        "Shoulder strap draped over the player to support the instrument weight",
+        "Specific hand shapes forming chords or individual finger-picking patterns"
+    ],
+    "BandMarching": [
+        "Large group of individuals in identical, formal military-style uniforms",
+        "Array of polished brass instruments like trumpets, trombones, and tubas",
+        "Percussion section with snare drums or large bass drums strapped to torsos",
+        "Synchronized high-step or glide-step leg movements",
+        "Strict linear or geometric formation on a field or street",
+        "Plumed hats or shakos worn by the performers"
+    ],
+    "BrushingTeeth": [
+        "Handheld toothbrush with a head of nylon bristles",
+        "White, frothy toothpaste foam around the lips and interior of the mouth",
+        "Hand gripping the brush handle and moving it in circular or linear paths",
+        "Open mouth revealing rows of teeth and gums",
+        "Bathroom setting featuring a porcelain sink or a reflective mirror",
+        "Thin stream of water or a rinsed toothbrush head"
+    ],
+    "PlayingFlute": [
+        "Long, narrow, silver or nickel-plated cylindrical tube held horizontally",
+        "Mechanical keys and pads arranged along the length of the instrument",
+        "Player's lips positioned against an oval embouchure hole near the end",
+        "Arms raised to one side to support the instrument parallel to the floor",
+        "Fingers positioned precisely over key mechanisms to alter pitch",
+        "Focused facial expression with concentrated breath control"
+    ],
+    "FrontCrawl": [
+        "Swimmer in a prone, face-down position in a body of water",
+        "Alternating overhead arm strokes with one arm reaching forward into the water",
+        "Flutter kick motion of the legs creating a wake of white splashes",
+        "Watertight swim goggles and a streamlined silicone swim cap",
+        "Head rotated to the side to inhale while the body remains submerged",
+        "Visible lane lines or bubbles generated by underwater propulsion"
+    ],
+    "Archery": [
+        "Recurve or compound bow with a taut string and central riser",
+        "Long, thin arrow with fletching and a pointed metal tip",
+        "Archer in a side-profile stance with one arm extended toward a target",
+        "Bowstring pulled back to the archer’s face at a specific anchor point",
+        "Circular target with concentric colored rings: yellow, red, blue, black, and white",
+        "Finger tab or mechanical release aid attached to the drawing hand"
+    ],
+    "BenchPress": [
+        "Weightlifter lying supine on a padded horizontal bench",
+        "Long steel barbell held with a wide, symmetrical two-handed grip",
+        "Heavy circular weighted plates secured to the ends of the bar with collars",
+        "Barbell positioned directly above the chest or being pressed upward",
+        "Vertical steel rack or power cage supporting the weight at head-level",
+        "Visible muscular contraction in the pectorals, anterior deltoids, and triceps"
+    ],
+    "Punch": [
+        "Arm fully extended or in a forward-moving strike trajectory",
+        "Clenched fist, often reinforced with cloth wraps or a padded glove",
+        "Body weight shifted forward onto the lead foot with the torso rotated",
+        "Impact point against a target such as a heavy bag or opponent",
+        "Taut arm and shoulder muscles indicating high-velocity force",
+        "Opposite hand held near the face in a defensive guard position"
+    ],
+    "HorseRiding": [
+        "Rider seated on a leather saddle positioned over the horse's withers",
+        "Hand-held leather or synthetic reins connected to a bit in the horse's mouth",
+        "Rider's feet secured in metal stirrups hanging from the saddle",
+        "Protective equestrian helmet and tall, polished riding boots",
+        "Horse in a dynamic gait with one or more hooves lifted off the ground",
+        "Mane and tail showing movement or wind-driven texture"
+    ],
+    "CuttingInKitchen": [
+        "Sharp metal knife blade in direct contact with food on a flat surface",
+        "Wooden, plastic, or marble cutting board beneath the ingredients",
+        "Hand gripping the knife handle with the index finger or thumb for control",
+        "The 'claw' grip on the secondary hand holding the food item safely",
+        "Uniform slices, cubes, or minced fragments of vegetables, meat, or fruit",
+        "Reflection of overhead lighting on the flat side of the knife blade"
+    ],
+    "Billiards": [
+        "Long, tapered wooden cue stick held in a bridge-hand formation",
+        "Spherical resin balls including a white cue ball and colored object balls",
+        "Rectangular table with cushioned rails and six integrated pockets",
+        "Level playing surface covered in green, blue, or red baize (felt)",
+        "Player leaning low over the table with one eye aligned with the cue",
+        "Small cube of blue or green chalk used on the leather cue tip"
+    ],
+    "CricketBowling": [
+        "Hard, leather-stitched ball held in a specific seam-oriented grip",
+        "Bowler in a high-intensity running or leaping delivery stride",
+        "Straightened arm rotating vertically over the shoulder without bending the elbow",
+        "Three vertical wooden stumps topped with two small wooden bails",
+        "Grass or synthetic pitch with a white-painted bowling crease line",
+        "Player wearing white or vibrant team-colored athletic apparel"
+    ],
+    "Diving": [
+        "Individual in mid-air in a tucked, piked, or straight body position",
+        "Rigid platform or flexible springboard extending over a deep pool",
+        "Toes pointed and arms reaching toward the water for a streamlined entry",
+        "Body oriented vertically or in a controlled rotation relative to the surface",
+        "Tight, aerodynamic swimwear and wet skin with glistening highlights",
+        "Narrow, vertical splash or 'rip entry' at the point of water contact"
+    ],
+    "Haircut": [
+        "Person seated in a specialized chair, draped in a protective nylon cape",
+        "Metal scissors, electric clippers, or a straight razor held by a stylist",
+        "Handheld comb used to lift and partition sections of hair",
+        "Loose strands of hair falling onto the cape or the salon floor",
+        "Fine mist of water from a spray bottle applied to the scalp",
+        "Reflective wall-mounted mirror showing the back or side of the head"
+    ],
+    "BoxingSpeedBag": [
+        "Small, teardrop-shaped leather bag suspended from a circular platform",
+        "Fists moving in a rapid, rhythmic circular motion striking the bag",
+        "Metal swivel at the top allowing the bag to rebound rapidly in any direction",
+        "Visual blurring of the bag and hands due to high-speed oscillation",
+        "Padded hand wraps or lightweight bag gloves covering the knuckles",
+        "Rhythmic impact sounds visually represented by the bag hitting the platform"
+    ],
+    "HorseRace": [
+        "Multiple horses in a full gallop gait with all four hooves occasionally off the ground",
+        "Jockeys wearing brightly colored, patterned silk shirts (silks) and white breeches",
+        "Numbered fabric cloths positioned under the saddles",
+        "Dirt or turf track surface with visible clods of earth being kicked upward",
+        "Jockeys in a high, forward-leaning 'monkey crouch' aerodynamic stance",
+        "Inner and outer track railings or fences defining the course"
+    ],
+    "StillRings": [
+        "Two circular wooden or composite rings suspended by long, vertical straps",
+        "Gymnast's hands heavily coated in white carbonate chalk",
+        "Upper body held in a 'static' position such as the Iron Cross or Maltese",
+        "Visible muscular strain and vascularity in the shoulders, chest, and arms",
+        "Long gymnastic trousers and sleeveless leotard",
+        "Safety mats positioned directly beneath the apparatus"
+    ],
+    "HighJump": [
+        "Athlete in mid-air with a severely arched back passing over a bar (Fosbury Flop)",
+        "Thin, horizontal crossbar supported by two slender vertical uprights",
+        "Large, thick foam landing 'pit' or cushion",
+        "Single-foot takeoff from a synthetic track surface",
+        "Lightweight athletic singlet and spiked track shoes",
+        "The bar vibrating or falling if contact is made by the jumper"
+    ],
+    "Biking": [
+        "Two-wheeled frame with a front fork, handlebars, and a triangular chassis",
+        "Person seated on a narrow saddle with feet on rotating pedals",
+        "Thin or knobby rubber tires with spinning wire spokes",
+        "Mechanical drive chain connecting the pedals to the rear wheel hub",
+        "Rider wearing a hard-shell safety helmet and aerodynamic eyewear",
+        "Blurred background or foreground indicating forward velocity"
+    ],
+    "IceDancing": [
+        "Two skaters in close physical contact or synchronized side-by-side positioning",
+        "Smooth, reflective ice surface with visible blade etchings and frost",
+        "Elaborate, flowing costumes with sequins, mesh, or decorative fabric",
+        "Thin metal skate blades attached to leather boots",
+        "Intricate footwork sequences including twizzles, edges, and lifts",
+        "Absence of high-amplitude acrobatic throws common in pair skating"
+    ],
+    "Skijet": [
+        "Small, motorized personal watercraft (PWC) with a fiberglass hull",
+        "Large plume of water or 'rooster tail' ejected from the rear jet nozzle",
+        "Rider gripping handlebars while seated or standing in a foot tray",
+        "V-shaped wake trailing behind the craft in open water",
+        "Rider wearing a neoprene life vest and often a wetsuit",
+        "Spray and mist surrounding the hull due to high-speed impact with waves"
+    ],
+    "WritingOnBoard": [
+        "Hand holding a piece of cylindrical chalk or a felt-tip marker",
+        "Flat, expansive surface colored green, black, or white",
+        "Alphanumeric characters, mathematical equations, or diagrams on the surface",
+        "Chalk dust or dry-erase ink residue near the writing tip",
+        "Rectangular felt eraser or cloth held in the secondary hand or resting on a ledge",
+        "Hand positioned in a pinch grip to control the writing instrument"
+    ],
+    "HulaHoop": [
+        "Large, lightweight plastic ring encircling a person's torso or limbs",
+        "Person performing a rhythmic, oscillating hip or waist motion",
+        "Hoop maintained in a horizontal or tilted plane through centrifugal force",
+        "Blurring of the hoop's edges indicating rapid rotational speed",
+        "Hoop decorated with holographic tape, vibrant colors, or LED lights",
+        "Athletic or form-fitting clothing to prevent the hoop from snagging"
+    ],
+    "ThrowDiscus": [
+        "Heavy, lenticular (lens-shaped) disc made of wood or metal",
+        "Athlete captured in a high-speed rotational 'spin' within a concrete circle",
+        "Throwing arm extended fully away from the body to maximize leverage",
+        "High-walled protective chain-link cage or netting surrounding the circle",
+        "Powdery white chalk on the athlete's hands and the rim of the discus",
+        "Focused, intense facial expression and tensed core musculature"
+    ],
+    "ParallelBars": [
+        "Two horizontal, flexible wooden or fiberglass rails set at the same height",
+        "Gymnast supporting their entire body weight on their palms or forearms",
+        "Body swinging between the bars in a handstand or a 'peach' transition",
+        "Adjustable metal vertical supports holding the bars in place",
+        "Plumes of white chalk dust being released during hand transitions",
+        "Long gymnastic pants and a competition leotard"
+    ],
+    "PlayingDaf": [
+        "Large, circular wooden frame drum with a thin, translucent goatskin or synthetic head",
+        "Dozens of small metal rings or jingles attached to the interior of the frame",
+        "One hand gripping the frame at the bottom while the other taps the head or shakes the rings",
+        "Instrument held vertically or at a slight tilt in front of the performer's torso",
+        "Fingertips and palms making contact with the edge and center of the drumhead",
+        "Vibrating motion of the metal rings against the frame and skin"
+    ],
+    "WallPushups": [
+        "Person standing upright and leaning forward at an acute angle toward a vertical wall",
+        "Palms placed flat against the wall surface at shoulder height and width",
+        "Elbows transitioning between a fully extended and a deeply bent position",
+        "Heels slightly lifted off the floor as the body weight shifts forward",
+        "Straight line maintained from the head through the spine to the ankles",
+        "Flat, vertical surface such as a drywall or brick wall serving as the resistance point"
+    ],
+    "Swing": [
+        "Rectangular seat made of wood, flexible rubber, or molded plastic",
+        "Two parallel chains or thick ropes connecting the seat to a high horizontal bar",
+        "Arc-like trajectory of the seat moving forward and backward",
+        "Person seated with hands gripping the chains and legs 'pumping' in a rhythmic motion",
+        "Large metal A-frame or a sturdy tree branch supporting the apparatus",
+        "Blurred background indicating the velocity of the pendulum motion"
+    ],
+    "HammerThrow": [
+        "Spherical metal ball (the 'head') attached to a long, thin steel wire",
+        "Triangular or circular grip handle at the opposite end of the wire",
+        "Athlete performing high-speed centrifugal rotations within a concrete throwing circle",
+        "High-walled protective mesh cage surrounding the back and sides of the circle",
+        "Wire stretched taut due to the extreme speed and weight of the rotating ball",
+        "Athletic gloves or taped fingers on the hands to manage the handle grip"
+    ],
+    "BalanceBeam": [
+        "Long, narrow horizontal bar measuring 10 centimeters (4 inches) in width",
+        "Suede or synthetic anti-slip covering over a wooden or composite core",
+        "Gymnast performing leaps, flips, or turns with feet aligned in a single file",
+        "Heavy metal supports holding the beam at a height of 1.25 meters above the floor",
+        "White gymnastic chalk visible on the surface of the beam and the athlete's feet",
+        "Deep padded safety mats covering the floor area surrounding the apparatus"
+    ],
+    "Typing": [
+        "Rectangular keyboard peripheral with rows of labeled plastic or mechanical keys",
+        "Human fingers positioned over the 'home row' (ASDF and JKL;)",
+        "Rapid downward tapping motion of individual fingers on specific keys",
+        "Wrist positioning hovering slightly above the desk or resting on a padded support",
+        "Flat-panel monitor or laptop screen displaying alphanumeric characters in real-time",
+        "Small LED lights on the keyboard indicating 'Caps Lock' or power status"
+    ],
+    "BreastStroke": [
+        "Swimmer's head emerging from the water to inhale, then submerging for the glide",
+        "Symmetrical, heart-shaped arm pull pushing water outward and backward",
+        "Simultaneous 'frog kick' where legs draw up, turn out, and thrust back",
+        "Body remaining in a prone, horizontal position just below the water surface",
+        "White water turbulence and bubbles generated by the inward sweep of the arms",
+        "Fluid, rhythmic cycle of pull, breathe, kick, and glide"
+    ],
+    "TennisSwing": [
+        "Oval-headed racket with a tight mesh of intersecting synthetic strings",
+        "Fluorescent yellow felt-covered ball at the point of contact or in flight",
+        "Player in a wide, balanced stance with the torso rotating toward the net",
+        "The 'follow-through' where the racket finishes high over the opposite shoulder",
+        "Grip on the racket handle showing tensed forearm and wrist muscles",
+        "Court surface showing white boundary lines and a central mesh net"
+    ],
+    "HandstandPushups": [
+        "Person in a completely inverted vertical position, often with heels against a wall",
+        "Arms bending to lower the crown of the head toward the floor or a platform",
+        "Triceps and shoulder muscles visibly tensed under the full body weight",
+        "Legs extended straight upward or slightly tucked for balance",
+        "Hands spread wide on the floor with fingers splayed for stability",
+        "Visible facial flushing due to the downward blood flow during the inversion"
+    ],
+    "SkyDiving": [
+        "Person in a horizontal 'belly-to-earth' spread-eagle freefall position",
+        "Nylon jumpsuit, protective goggles, and a hard-shell or leather helmet",
+        "Backpack-style rig containing the main and reserve parachutes",
+        "Altimeter gauge strapped to the wrist for monitoring altitude",
+        "Expansive aerial vista of clouds, landscape, or coastline far below",
+        "Wind-distorted clothing and skin folds due to high-velocity terminal speed"
+    ],
+    "Knitting": [
+        "Two long, slender needles with pointed tips made of metal, wood, or plastic",
+        "Interlocking loops of yarn or thread forming a flexible fabric web",
+        "Ball or skein of yarn connected to the working piece by a single strand",
+        "Hands positioned with fingers manipulating yarn over the needle points",
+        "Textured patterns such as ribbing, cables, or garter stitches visible on the fabric",
+        "Metal or plastic stitch markers clipped onto specific loops"
+    ],
+    "RopeClimbing": [
+        "Thick, vertical twisted-fiber or braided synthetic rope suspended from a height",
+        "Person positioned mid-air with hands gripping the rope one above the other",
+        "Legs wrapped around the rope in a 'J-hook' or 'S-wrap' configuration for friction",
+        "White carbonate chalk residue on the climber's hands and the rope surface",
+        "Taut arm and core muscles indicating vertical pull and stabilization",
+        "Downward perspective showing the distance from the floor or ground"
+    ],
+    "Skiing": [
+        "Pair of long, narrow composite boards attached to specialized boots via bindings",
+        "Two handheld metal poles with circular baskets near the bottom tips",
+        "Snow-covered terrain featuring groomed trails or powdery inclines",
+        "Person in a forward-leaning 'athletic' stance or a deep aerodynamic tuck",
+        "Insulated winter apparel including goggles, a helmet, and waterproof gloves",
+        "Carved tracks or 'plumes' of snow displaced by the edges of the skis"
+    ],
+    "BasketballDunk": [
+        "Player suspended in mid-air with one or both hands above a circular metal rim",
+        "Spherical orange ball with a pebbled surface and black channeled seams",
+        "Transparent glass or acrylic backboard with a white rectangular target box",
+        "White nylon mesh net hanging from the rim, often vibrating from contact",
+        "Athlete’s arm fully extended with visible muscular tension in the shoulder",
+        "Hardwood court floor with painted boundary lines visible far below the player"
+    ],
+    "BabyCrawling": [
+        "Infant positioned on hands and knees on a flat indoor surface",
+        "Weight distributed across four points of contact with the floor",
+        "Reciprocal movement where the opposite hand and knee move forward simultaneously",
+        "Head lifted and eyes directed forward toward a target or destination",
+        "Clothing such as a one-piece romper or a visible diaper",
+        "Low-angle camera perspective at the baby's eye level"
+    ],
+    "Rowing": [
+        "Long, extremely narrow racing shell or scull floating on flat water",
+        "Oars with flat, symmetrical blades extending laterally into the water",
+        "Rowers seated on sliding units facing the stern (rear) of the boat",
+        "Metal frames (riggers) projecting from the sides of the boat to hold the oarlocks",
+        "V-shaped wake and circular 'puddles' left by the oar blades in the water",
+        "Synchronized body movement with backs leaning forward and backward in rhythm"
+    ],
+    "Nunchucks": [
+        "Two symmetrical cylindrical sticks made of wood, metal, or high-density foam",
+        "Short connecting link consisting of a metal chain or a braided rope",
+        "Motion blur indicating rapid orbital or figure-eight rotational paths",
+        "One stick gripped firmly in a hand while the other swings freely",
+        "Person in a wide-based martial arts stance with a focused gaze",
+        "Metal swivels at the ends of the sticks to allow friction-less rotation"
+    ],
+    "TableTennisShot": [
+        "Small, circular wooden paddle with red and black textured rubber faces",
+        "Lightweight, hollow white or orange plastic ball in close proximity to the paddle",
+        "Green or blue rectangular table with a white center line and perimeter lines",
+        "Low mesh net stretched across the center of the table surface",
+        "Player in a low-center-of-gravity stance with knees bent and arm mid-swing",
+        "Rapid blurring of the ball indicating high-velocity travel or heavy topspin"
+    ],
+    "TrampolineJumping": [
+        "Circular or rectangular black elastic mat (the bed) secured by perimeter springs",
+        "Person positioned high in the air with legs in a tuck, pike, or split position",
+        "Depression in the mat surface at the moment of impact and rebound",
+        "Safety netting enclosure or thick padded covers over the metal frame and springs",
+        "Upward-pointing toes and streamlined body alignment during the ascent",
+        "Loose clothing or hair showing upward movement due to vertical momentum"
+    ],
+    "Bowling": [
+        "High-gloss wooden or synthetic lane featuring a 'foul line' and 'arrows'",
+        "Ten white, necked plastic-coated pins arranged in a triangular formation",
+        "Heavy resin or plastic ball with three finger holes rolling toward the pins",
+        "Player in a deep lunge follow-through with the trailing leg swung to the side",
+        "Narrow gutters running parallel to both sides of the lane",
+        "Specialized shoes with a sliding sole on one foot and a traction sole on the other"
+    ],
+    "Basketball": [
+        "Spherical orange ball with a pebbled surface and black rubber ribs",
+        "Rectangular backboard made of transparent tempered glass or steel",
+        "Circular orange metal rim with a white nylon net hanging below",
+        "Player in a mid-motion dribble with one hand atop the ball",
+        "Polished hardwood court with white or yellow painted boundary lines",
+        "Uniform consisting of a sleeveless jersey and loose-fitting mesh shorts"
+    ],
+    "Drumming": [
+        "Circular acoustic drums including a snare, tom-toms, and a large bass drum",
+        "Thin, metallic cymbals (hi-hat, ride, crash) mounted on chrome stands",
+        "Wooden or carbon-fiber drumsticks held in a matched or traditional grip",
+        "Foot positioned on a mechanical kick-drum pedal or hi-hat controller",
+        "Performer seated on a tripod stool (throne) behind the percussion array",
+        "Rapid blurring of sticks and hands during rhythmic striking movements"
+    ],
+    "SkateBoarding": [
+        "Flat wooden or composite deck with black abrasive grip tape on top",
+        "Two metal assemblies (trucks) holding four small polyurethane wheels",
+        "Person in a crouched stance with feet positioned over the bolts or the kicktail",
+        "Scuff marks on the underside of the deck indicating grinds or slides",
+        "Flat-soled suede or canvas shoes with high-grip rubber outsoles",
+        "Background featuring concrete park elements like half-pipes, rails, or stairs"
+    ],
+    "Lunges": [
+        "One leg extended forward with the knee bent at a 90-degree angle",
+        "Trailing leg extended backward with the knee hovering just above the floor",
+        "Torso maintained in an upright, vertical position over the hips",
+        "Weight balanced on the front foot and the toes of the rear foot",
+        "Hands placed on hips or holding dumbbells at the sides",
+        "Tensed musculature in the quadriceps, glutes, and hamstrings"
+    ],
+    "BaseballPitch": [
+        "Pitcher positioned on a raised dirt mound with a white rubber slab",
+        "Hand gripping a white leather ball with 108 raised red cotton stitches",
+        "Large leather glove (mitt) worn on the non-throwing hand",
+        "Body in a high-leg-kick windup or a powerful forward-leaning delivery",
+        "White or gray pinstriped uniform with a structured baseball cap",
+        "Follow-through motion with the throwing arm crossing the body"
+    ],
+    "Kayaking": [
+        "Narrow, pointed boat (hull) with an enclosed cockpit for the paddler",
+        "Double-bladed paddle with curved blades at both ends of a central shaft",
+        "Rider wearing a bulky personal flotation device (PFD) and a spray skirt",
+        "Seated position with legs extended forward inside the craft",
+        "Water surface showing a V-shaped bow wave and lateral paddle ripples",
+        "Polyethylene or carbon-fiber hull material in high-visibility colors"
+    ],
+    "CliffDiving": [
+        "Individual leaping from a high, jagged rocky precipice or outcrop",
+        "Body in a vertical, streamlined, or tucked position mid-air",
+        "Large body of deep blue or green water located directly below the diver",
+        "Height-induced perspective showing the distance between the ledge and sea level",
+        "Minimalist swimwear such as trunks or a competitive swimsuit",
+        "White splash (entry) or ripples visible on the water's surface from previous dives"
+    ],
+    "FrisbeeCatch": [
+        "Circular plastic disc (flying saucer) with concentric ridges on the top surface",
+        "Hand with fingers extended or curved around the rim to grasp the disc",
+        "Person in a running, leaping, or lunging stance to intercept the flight path",
+        "Disc positioned mid-air or just making contact with the fingertips",
+        "Outdoor setting such as a grass park, beach, or open field",
+        "High-velocity rotation of the disc indicated by visual blurring of its logos"
+    ],
+    "RockClimbingIndoor": [
+        "Vertical or overhanging wall with a textured, multi-colored surface",
+        "Array of synthetic, bolt-on 'holds' in various shapes and sizes",
+        "Climber wearing a waist harness connected to a dynamic safety rope",
+        "Small chalk bag clipped to the back of the climber's waist",
+        "Tight-fitting rubber-soled climbing shoes for maximum friction",
+        "Automatic belay device or a partner managing the rope at the base"
+    ],
+    "SoccerJuggling": [
+        "Spherical ball featuring a classic black-and-white hexagonal panel pattern",
+        "Player using the instep, thigh, or forehead to bounce the ball upward",
+        "Ball maintained in the air without touching the ground or using hands",
+        "Rhythmic, alternating movement of the legs to provide consistent lift",
+        "Player wearing cleated shoes and moisture-wicking athletic kit",
+        "Turf or grass field background with focus on the ball-to-body contact"
+    ],
+    "Shotput": [
+        "Heavy spherical metal ball (the shot) made of iron, brass, or steel",
+        "Shot held tucked tightly between the neck and the jawline",
+        "Athlete positioned inside a 2.135-meter diameter concrete circle",
+        "Curved white wooden toe board at the front of the circle",
+        "Explosive pushing motion of the arm (putting) rather than a throw",
+        "Tensed neck and shoulder muscles during the glide or rotational phase"
+    ],
+    "PlayingPiano": [
+        "Horizontal or vertical array of 88 alternating black and white keys",
+        "Polished wood or ebony cabinet housing a soundboard and strings",
+        "Three brass foot pedals located at the base of the instrument",
+        "Hands with fingers curved and positioned over the keyboard",
+        "Person seated on a rectangular wooden or padded piano bench",
+        "Music stand holding printed sheet music or a digital tablet"
+    ],
+    "JavelinThrow": [
+        "Long, slender spear-like shaft with a pointed metal tip and cord grip",
+        "Athlete in a high-speed run-up featuring cross-over footwork",
+        "Throwing arm extended fully behind the body before release",
+        "Javelin oriented at an upward angle relative to the ground",
+        "Open grass field marked with white sector lines",
+        "Specific athletic footwear with multiple metal spikes for traction"
+    ],
+    "MilitaryParade": [
+        "Large blocks of personnel in identical formal dress uniforms",
+        "Synchronized marching gait such as the goose-step or rhythmic arm swing",
+        "Carriage of ceremonial weapons, including rifles with fixed bayonets",
+        "Display of military banners, national flags, and regimental colors",
+        "Polished metallic insignia, medals, and decorative shoulder epaulettes",
+        "Urban street or ceremonial plaza setting with organized formations"
+    ],
+    "BoxingPunchingBag": [
+        "Large cylindrical heavy bag suspended from a steel ceiling chain",
+        "Outer shell made of thick, stitched leather, vinyl, or synthetic canvas",
+        "Visible indentation or compression at the point of glove impact",
+        "Rhythmic swaying or pendulum motion of the bag after a strike",
+        "Person wearing padded boxing gloves and protective hand wraps",
+        "Sweat-glistening skin and focused athletic movement around the bag"
+    ],
+    "SumoWrestling": [
+        "Extremely large-statured athletes wearing thick silk loincloths (mawashi)",
+        "Raised circular ring (dohyo) constructed of packed clay and sand",
+        "Ritualistic salt throwing and heavy leg stomps (shiko) before the match",
+        "Crouched 'tachiai' stance with knuckles touching the ground",
+        "Traditional oiled topknot hairstyle (chonmage) on the wrestlers",
+        "Referee (gyoji) wearing ornate, historical silk robes and holding a fan"
+    ],
+    "SoccerPenalty": [
+        "Spherical ball placed precisely on a circular white spot on the turf",
+        "Goalkeeper positioned on the white goal line between two vertical posts",
+        "Rectangular goal frame with a deep, hanging white mesh net",
+        "Single player taking a short, calculated run-up to strike the ball",
+        "Referee standing to the side with a whistle ready to signal the start",
+        "Grass or synthetic pitch with clear white box markings"
+    ],
+    "PommelHorse": [
+        "Rectangular leather-covered body supported by two heavy metal legs",
+        "Two symmetrical plastic or wooden handles (pommels) fixed to the top",
+        "Gymnast supporting their entire weight on their hands via the handles",
+        "Continuous circular or scissoring movements of the legs in the air",
+        "Layer of white gymnastic chalk on the handles and the athlete's palms",
+        "Safety mats covering the floor area beneath the apparatus"
+    ],
+    "WalkingWithDog": [
+        "Person holding a nylon, leather, or retractable leash",
+        "Dog wearing a fitted collar or a chest-wrap harness",
+        "Tension in the leash indicating the connection between human and animal",
+        "Casual outdoor attire such as sneakers, jackets, or athletic wear",
+        "Side-by-side movement along a sidewalk, park path, or nature trail",
+        "Animal showing diverse breed traits like fur texture, ear shape, and tail carriage"
+    ],
+    "CleanAndJerk": [
+        "Barbell loaded with large, color-coded rubberized bumper plates",
+        "Initial phase (clean) where the bar is pulled rapidly to the shoulders",
+        "Second phase (jerk) where the bar is pressed overhead in a split stance",
+        "Arms fully locked out above the head at the peak of the lift",
+        "Athlete wearing a thick leather belt and specialized weightlifting shoes",
+        "Vertical orientation of the body with feet coming back together for the hold"
+    ],
+    "ApplyLipstick": [
+        "Cylindrical or bullet-shaped cosmetic applicator held in the hand",
+        "Pigmented wax or cream stick making contact with the vermillion border of the lips",
+        "Human face with slightly parted lips or a stationary 'pout' expression",
+        "Handheld compact or wall-mounted mirror reflecting the mouth area",
+        "Glossy, matte, or satin finish appearing on the skin surface",
+        "Steady hand positioning with the pinky finger often braced against the chin for stability"
+    ],
+    "PlayingViolin": [
+        "Hourglass-shaped wooden body with two symmetrical f-shaped sound holes",
+        "Four strings stretched over a bridge and connected to a scroll with tuning pegs",
+        "Instrument rested on the left shoulder and held in place by the jaw and chin rest",
+        "Long wooden bow with white horsehair being drawn horizontally across the strings",
+        "Fingers of the left hand pressing strings onto the dark ebony fingerboard",
+        "Right hand holding the bow at the 'frog' using a specific curved finger grip"
+    ],
+    "JumpingJack": [
+        "Person in mid-air or mid-motion with arms and legs spread wide in an X-shape",
+        "Alternative position with feet together and arms resting at the sides",
+        "Hands often meeting or clapping at the highest point above the head",
+        "Dynamic motion blur indicating rapid vertical and lateral limb movement",
+        "Athletic attire such as t-shirts, leggings, and cushioned sneakers",
+        "Symmetrical limb placement relative to the vertical axis of the body"
+    ],
+    "Fencing": [
+        "Long, slender, flexible steel weapon such as a foil, épée, or sabre",
+        "Protective white uniform including a reinforced jacket, breeches, and a plastron",
+        "Mesh wire mask covering the entire face with a padded bib at the neck",
+        "One arm extended forward for a lunge, while the other is held back for balance",
+        "Conductive metallic vest (lamé) or specific target area markings on the torso",
+        "Padded glove worn on the weapon hand with a long cuff covering the sleeve"
+    ],
+    "PullUps": [
+        "Horizontal steel bar held with an overhand (pronated) or underhand (supinated) grip",
+        "Body suspended vertically with arms transitioning from fully extended to deeply bent",
+        "Chin positioned above the level of the bar at the peak of the vertical ascent",
+        "Visible contraction in the latissimus dorsi, biceps, and trapezius muscles",
+        "Legs often crossed at the ankles or held straight together to prevent swinging",
+        "Hands frequently coated in white carbonate gym chalk for increased friction"
+    ],
+    "JugglingBalls": [
+        "Multiple spherical beanbags or plastic balls suspended simultaneously in the air",
+        "Arced trajectories forming a 'cascade', 'fountain', or 'shower' pattern",
+        "Hands positioned at waist level, performing alternating catching and throwing motions",
+        "Motion blur of the balls indicating high-frequency rotational movement",
+        "Eyes focused on the 'apex' or highest point of the balls' collective flight paths",
+        "Balls typically featuring high-contrast colors such as red, yellow, and blue"
+    ],
+    "BodyWeightSquats": [
+        "Feet positioned shoulder-width apart and planted flat on the floor surface",
+        "Hips lowered toward the ground as if sitting in an invisible chair",
+        "Thighs reaching a position parallel to or below the level of the knees",
+        "Arms extended forward or hands clasped at the chest to maintain center of gravity",
+        "Straight spinal alignment with the chest lifted and eyes directed forward",
+        "Tensed musculature in the quadriceps, glutes, and hamstrings during the ascent"
+    ],
+    "PizzaTossing": [
+        "Circular disc of pale, elastic dough suspended and spinning in the air",
+        "Centrifugal force causing the dough to flatten and expand into a wider circle",
+        "One or two hands positioned underneath the dough to provide upward rotational thrust",
+        "Baker wearing a white apron or flour-dusted clothing",
+        "Motion blur highlighting the rapid spinning of the dough disc on its vertical axis",
+        "Surface texture of the dough showing slight undulations, bubbles, or flour residue"
+    ],
+    "HeadMassage": [
+        "Fingers splayed and pressed into the scalp or temples of another person",
+        "Gentle manipulation of the skin in circular or rhythmic kneading patterns",
+        "Recipient with closed eyes and a relaxed, neutral facial expression",
+        "Potential use of a multi-tined wire scalp massager with protective tips",
+        "Hands partially obscured by the recipient's hair during the tactile interaction",
+        "Presence of essential oils creating a slight sheen on the hands or hairline"
+    ],
+    "PlayingDhol": [
+        "Large, double-sided wooden barrel drum suspended from the neck by a thick strap",
+        "Two distinct types of sticks: a thick, curved 'dagga' and a thin, straight 'tilli'",
+        "Braided colorful ropes or tassels crisscrossing the exterior of the drum's body",
+        "Animal skin or synthetic drumheads stretched tightly over both circular ends",
+        "Player standing in a wide stance, striking both ends of the drum simultaneously",
+        "Vibrant, traditional South Asian attire such as a kurta, vest, or turban"
+    ],
+    "ShavingBeard": [
+        "Manual or electric razor held against the cheek, chin, or neck",
+        "White shaving foam or transparent gel applied to the lower half of the face",
+        "Handheld or wall-mounted mirror reflecting the face and jawline",
+        "Skin visible in cleared 'tracks' amidst the remaining shaving cream",
+        "Fine hair particles or lather residue accumulated on the razor blade",
+        "Water droplets or a running faucet in a porcelain bathroom sink"
+    ],
+    "MoppingFloor": [
+        "Long handle made of wood or metal gripped by one or two hands",
+        "Mop head consisting of absorbent cotton strings, a microfiber pad, or a sponge",
+        "Plastic bucket containing soapy water, often featuring a mechanical wringer",
+        "Visible sheen or reflection on a wet tile, linoleum, or hardwood surface",
+        "Overlapping arc-shaped or linear strokes left by the damp mop head",
+        "Ergonomic stance with the torso slightly leaning over the mop handle"
+    ],
+    "FloorGymnastics": [
+        "Square, blue or tan spring-loaded floor mat with a carpeted surface",
+        "Athlete in mid-air performing a flip, twist, or tucked rotation",
+        "Pointed toes and locked knees maintained to ensure a streamlined aesthetic",
+        "Form-fitting leotard or athletic singlet showing muscle definition",
+        "Puff of white carbonate chalk dust from the hands or feet during impact",
+        "White boundary lines defining the 12x12 meter competitive area"
+    ],
+    "BlowDryHair": [
+        "Handheld electrical appliance with a nozzle and a rear air intake vent",
+        "Single hand directing the concentrated airflow toward damp or dry hair strands",
+        "Strands of hair fluttering or lifting due to high-velocity air pressure",
+        "Round or paddle-style hairbrush being used to provide tension to the hair",
+        "Visible power cord extending from the handle to a wall outlet",
+        "Faint heat distortion or steam rising from the hair surface"
+    ],
+    "JumpRope": [
+        "Thin PVC, leather, or beaded rope forming a continuous vertical arc",
+        "Cylindrical handles held at hip level with elbows tucked near the torso",
+        "Athlete suspended several inches off the ground in a rhythmic hop",
+        "Motion blur of the rope at its highest and lowest orbital points",
+        "Cushioned athletic shoes striking the ground in a repetitive, alternating pattern",
+        "Taut rope forming a U-shape under the feet and an arch over the head"
+    ],
+    "PlayingCello": [
+        "Large, hollow wooden body with symmetrical f-shaped sound holes",
+        "Metal endpin extending from the base to rest firmly on the floor",
+        "Performer seated with the instrument body held between the knees",
+        "Thick wooden bow being drawn horizontally across four metal strings",
+        "Left hand positioned on the long ebony fingerboard to stop the strings",
+        "Spacious scroll at the top of the neck featuring four large tuning pegs"
+    ],
+    "PlayingSitar": [
+        "Extremely long, wide wooden neck with prominent curved metal frets",
+        "Large, rounded resonator (tumba) constructed from a seasoned gourd",
+        "Player seated cross-legged on the floor with the instrument tilted diagonally",
+        "Right index finger wearing a wire plectrum (mizrab) to pluck the strings",
+        "Multiple main and sympathetic strings running parallel down the length of the neck",
+        "Elaborate bone or ivory-style floral carvings and decorative inlay work"
+    ],
+    "TaiChi": [
+        "Person in a slow, continuous, and fluid movement sequence",
+        "Weight shifted between legs in a deep, stable 'horse stance' or 'bow stance'",
+        "Arms held in rounded, circular patterns as if encircling an invisible sphere",
+        "Loose-fitting, lightweight silk or cotton clothing (uniform)",
+        "Flat-soled canvas shoes or barefoot contact with the ground surface",
+        "Focused, meditative facial expression with a perfectly vertical spine"
+    ],
+    "UnevenBars": [
+        "Two horizontal fiberglass rails positioned at different vertical heights",
+        "Gymnast transitioning between the bars using a 'release' or 'catch' move",
+        "Metal tension cables and vertical uprights stabilizing the apparatus",
+        "Leather hand grips (dowels) worn on the palms to prevent friction burns",
+        "Thick white chalk coating on the bars and the gymnast's hands",
+        "Body rotating around the bar in a 'giant' or 'clear hip' circle"
+    ],
+    "CricketShot": [
+        "Flat-fronted wooden bat made of willow with a cylindrical cane handle",
+        "Impact between the bat face and a small, hard, red or white leather ball",
+        "Batter wearing protective leg pads, gloves, and a grilled metal helmet",
+        "Dynamic follow-through with the bat raised high over the shoulder",
+        "Bent knees and body weight transferred onto the front or back foot",
+        "Grass pitch featuring a central dirt strip and white crease markings"
+    ]
+}
