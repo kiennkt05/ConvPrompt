@@ -48,6 +48,10 @@ def main(args):
 
     data_loader, class_mask = build_continual_dataloader(args)
     print("NB CLasses: ", args.nb_classes)
+    # Multi-head first block must match task-0 class count (pkl splits: e.g. 11 vs 101//10).
+    args.first_task_num_classes = (
+        len(class_mask[0]) if class_mask is not None and len(class_mask) > 0 else None
+    )
 
     print(f"Creating model: {args.model}")
     model = create_model(

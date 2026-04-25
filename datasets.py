@@ -211,11 +211,12 @@ def get_dataset(dataset, transform_train, transform_val, args,):
     elif dataset == 'UCF101':
         dataset_train = UCF101(args.data_path, train=True, num_tasks = args.num_tasks, transform=transform_train)
         dataset_val   = UCF101(args.data_path, train=False, num_tasks = args.num_tasks, transform=transform_val)
+        dataset_feat_train = None
 
     elif dataset == 'ActivityNet':
         dataset_train = ActivityNet(args.data_path, train=True, num_tasks = args.num_tasks, transform=transform_train)
         dataset_val   = ActivityNet(args.data_path, train=False, num_tasks = args.num_tasks, transform=transform_val)
-    
+        dataset_feat_train = None
     else:
         raise ValueError('Dataset {} not found.'.format(dataset))
     
@@ -229,6 +230,7 @@ def split_single_dataset(dataset_train, dataset_val, args, dataset_feat_train=No
         and len(dataset_train.task_ids) == len(dataset_train.targets)
         and len(dataset_val.task_ids) == len(dataset_val.targets)
     ):
+        print("Applying task splits from .pkl file")
         split_datasets = []
         mask = [list(task_scope) for task_scope in dataset_train.class_mask]
 

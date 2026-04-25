@@ -476,7 +476,12 @@ class VisionTransformer(nn.Module):
         if not self.use_multihead:
             self.head = nn.Linear(self.embed_dim, num_classes) if num_classes > 0 else nn.Identity()
         else:
-            self.head = SimpleContinualLinear(embed_dim, (int)(self.num_classes/self.num_tasks))
+            first_head_dim = int(self.num_classes / self.num_tasks)
+            if args is not None:
+                fts = getattr(args, "first_task_num_classes", None)
+                if fts is not None:
+                    first_head_dim = int(fts)
+            self.head = SimpleContinualLinear(embed_dim, first_head_dim)
         
 
         if weight_init != 'skip':

@@ -35,6 +35,22 @@ import logging
 from attribute_matching import num_new_prompts
 from timm.scheduler import create_scheduler
 
+
+def _task_logit_slice(class_mask, task_id):
+    """Column range in concatenated multi-head logits for this task."""
+    start = sum(len(class_mask[j]) for j in range(task_id))
+    end = start + len(class_mask[task_id])
+    return start, end
+
+
+def _global_to_task_local(target, class_mask, task_id, nb_classes, device):
+    """Map dataset global class ids to 0..K-1 for CrossEntropy on the task head."""
+    g2l = torch.full((nb_classes,), -100, dtype=torch.long, device=device)
+    for local_i, g in enumerate(class_mask[task_id]):
+        g2l[g] = local_i
+    return g2l[target]
+
+
 def train_one_epoch(model: torch.nn.Module, 
                     criterion, data_loader: Iterable, 
                     device: torch.device, epoch: int, max_norm: float = 0,
@@ -97,11 +113,13 @@ def train_one_epoch(model: torch.nn.Module,
         if is_multiseg:
             logits = logits.reshape(B, S, -1).mean(dim=1)
 
-        # Masking and computing loss
-        known_classes = task_id*len(class_mask[0])
-        cur_targets = torch.where(target-known_classes>=0,target-known_classes,-100)
-        loss = criterion(logits[:, known_classes:], cur_targets) # base criterion (CrossEntropyLoss)
-
+        # Multi-head outputs are task-local columns; targets are global class ids from the dataset.
+        start, end = _task_logit_slice(class_mask, task_id)
+        task_logits = logits[:, start:end]
+        cur_targets = _global_to_task_local(
+            target, class_mask, task_id, args.nb_classes, device
+        )
+        loss = criterion(task_logits, cur_targets)
 
         if args.use_e_prompt or args.use_g_prompt:
             if task_id > 0:
@@ -113,7 +131,7 @@ def train_one_epoch(model: torch.nn.Module,
                 loss = loss + 0.01 * prompt_loss
 
 
-        acc1, acc5 = accuracy(logits, target, topk=(1, 5))
+        acc1, acc5 = accuracy(task_logits, cur_targets, topk=(1, 5))
 
         if not math.isfinite(loss.item()):
             print("Loss is {}, stopping training".format(loss.item()))
@@ -198,13 +216,24 @@ def evaluate(model: torch.nn.Module, data_loader,
                 logits_mask = torch.ones_like(logits, device=device) * float('-inf')
                 logits_mask = logits_mask.index_fill(1, mask, 0.0)
                 logits = logits + logits_mask
+                eval_logits = logits
+                eval_targets = target
+            elif class_mask is not None:
+                es, ee = _task_logit_slice(class_mask, task_id)
+                eval_logits = logits[:, es:ee]
+                eval_targets = _global_to_task_local(
+                    target, class_mask, task_id, args.nb_classes, device
+                )
+            else:
+                eval_logits = logits
+                eval_targets = target
 
-            loss = criterion(logits, target)
+            loss = criterion(eval_logits, eval_targets)
             # print('Loss')
-            predicts = torch.max(logits, dim=1)[1]
-            correct += (predicts == target).sum()
+            predicts = torch.max(eval_logits, dim=1)[1]
+            correct += (predicts == eval_targets).sum()
             total += len(target)
-            acc1, acc5 = accuracy(logits, target, topk=(1, 5))
+            acc1, acc5 = accuracy(eval_logits, eval_targets, topk=(1, 5))
 
             metric_logger.meters['Loss'].update(loss.item())
             metric_logger.meters['Acc@1'].update(acc1.item(), n=B)
