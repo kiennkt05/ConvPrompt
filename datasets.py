@@ -261,7 +261,9 @@ def split_single_dataset(dataset_train, dataset_val, args, dataset_feat_train=No
         random.shuffle(labels)
 
     for task_id in range(args.num_tasks):
+        train_split_indices = []
         test_split_indices  = []
+        feat_split_indices = []
 
         # First task gets the extra remainder classes; all others get base_per_task
         chunk = first_task_size if task_id == 0 else base_per_task
@@ -275,6 +277,7 @@ def split_single_dataset(dataset_train, dataset_val, args, dataset_feat_train=No
         for k, target in enumerate(dataset_train.targets):
             if int(target) in scope_set:
                 train_split_indices.append(k)
+                feat_split_indices.append(k)
                 
         for h in range(len(dataset_val.targets)):
             if int(dataset_val.targets[h]) in scope:

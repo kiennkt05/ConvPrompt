@@ -218,12 +218,6 @@ def evaluate(model: torch.nn.Module, data_loader,
                 logits = logits + logits_mask
                 eval_logits = logits
                 eval_targets = target
-            elif class_mask is not None:
-                es, ee = _task_logit_slice(class_mask, task_id)
-                eval_logits = logits[:, es:ee]
-                eval_targets = _global_to_task_local(
-                    target, class_mask, task_id, args.nb_classes, device
-                )
             else:
                 eval_logits = logits
                 eval_targets = target
@@ -296,11 +290,27 @@ def train_and_evaluate(model: torch.nn.Module,
     # create matrix to save end-of-task accuracies 
     acc_matrix = np.zeros((args.num_tasks, args.num_tasks))
     old_num_k = 0
+    path = args.output_dir + '_' + args.dataset
 
     for task_id in range(args.num_tasks):
 
         if task_id>0:
             model.head.update(len(class_mask[task_id]))
+
+        checkpoint_path = None
+        train_skipped = False
+        train_stats = {}
+        epoch = -1
+        if path is not None:
+            checkpoint_path = os.path.join(path, 'checkpoint/task{}_checkpoint.pth'.format(task_id+1))
+            if os.path.isfile(checkpoint_path):
+                logging.info('Found checkpoint for task %d at %s. Skipping training.', task_id + 1, checkpoint_path)
+                print(f"Found checkpoint for task {task_id + 1}. Skipping training.")
+                checkpoint = torch.load(checkpoint_path, map_location=device)
+                model.load_state_dict(checkpoint['model'])
+                if 'epoch' in checkpoint:
+                    epoch = checkpoint['epoch']
+                train_skipped = True
      
         # Create new optimizer for each task to clear optimizer status
         not_n_params = []
@@ -323,20 +333,21 @@ def train_and_evaluate(model: torch.nn.Module,
         else:
             network_params = [{'params': param_list, 'lr': args.lr, 'weight_decay': args.weight_decay}]
     
-        if not args.SLCA:
-            print("Using adam optimizer")
-            print("Reinitialising optimizer")
-            optimizer = optim.Adam(network_params, weight_decay=args.weight_decay)
-            if args.sched != 'constant':
-                # lr_scheduler, _ = create_scheduler(args, optimizer)
-                # Create cosine lr scheduler
-                lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=0)
-            elif args.sched == 'constant':
-                lr_scheduler = None
+        if not train_skipped:
+            if not args.SLCA:
+                print("Using adam optimizer")
+                print("Reinitialising optimizer")
+                optimizer = optim.Adam(network_params, weight_decay=args.weight_decay)
+                if args.sched != 'constant':
+                    # lr_scheduler, _ = create_scheduler(args, optimizer)
+                    # Create cosine lr scheduler
+                    lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=0)
+                elif args.sched == 'constant':
+                    lr_scheduler = None
 
-        else:
-            optimizer = optim.SGD(network_params, lr=args.lr, momentum=0.9, weight_decay=args.weight_decay)
-            lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=optimizer, milestones=milestones, gamma=lrate_decay)
+            else:
+                optimizer = optim.SGD(network_params, lr=args.lr, momentum=0.9, weight_decay=args.weight_decay)
+                lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=optimizer, milestones=milestones, gamma=lrate_decay)
         
 
         if args.use_e_prompt or args.use_g_prompt:
@@ -352,20 +363,21 @@ def train_and_evaluate(model: torch.nn.Module,
             old_prompt = None
         
         print("Task number: ", task_id)
-        
-        for epoch in range(args.epochs):     
-            logging.info('Training for task {} epoch {}/{}'.format(task_id, epoch, args.epochs))     
-            train_stats = train_one_epoch(model=model, criterion=criterion, 
-                                        data_loader=data_loader[task_id]['train'], 
-                                        optimizer=optimizer, 
-                                        device=device, epoch=epoch, max_norm=args.clip_grad,
-                                        old_prompt_matcher=old_prompt_matcher,
-                                        old_prompt=old_prompt,
-                                        set_training_mode=True, task_id=task_id, class_mask=class_mask, args=args,
-                                        old_num_k=old_num_k,)
-            
-            if lr_scheduler:
-                lr_scheduler.step()
+
+        if not train_skipped:
+            for epoch in range(args.epochs):     
+                logging.info('Training for task {} epoch {}/{}'.format(task_id, epoch, args.epochs))     
+                train_stats = train_one_epoch(model=model, criterion=criterion, 
+                                            data_loader=data_loader[task_id]['train'], 
+                                            optimizer=optimizer, 
+                                            device=device, epoch=epoch, max_norm=args.clip_grad,
+                                            old_prompt_matcher=old_prompt_matcher,
+                                            old_prompt=old_prompt,
+                                            set_training_mode=True, task_id=task_id, class_mask=class_mask, args=args,
+                                            old_num_k=old_num_k,)
+                
+                if lr_scheduler:
+                    lr_scheduler.step()
 
 
         if args.use_e_prompt or args.use_g_prompt:
@@ -378,12 +390,8 @@ def train_and_evaluate(model: torch.nn.Module,
         print(f"Eval time for task {task_id+1} = {eval_end_time - eval_start_time}")
 
         
-        if args.output_dir and utils.is_main_process():
-            path = args.output_dir+'_'+args.dataset
+        if args.output_dir and utils.is_main_process() and not train_skipped:
             Path(os.path.join(path, 'checkpoint')).mkdir(parents=True, exist_ok=True)
-            
-            
-            checkpoint_path = os.path.join(path, 'checkpoint/task{}_checkpoint.pth'.format(task_id+1))
             state_dict = {
                     'model': model.state_dict(),
                     'optimizer': optimizer.state_dict(),
