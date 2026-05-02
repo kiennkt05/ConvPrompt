@@ -26,6 +26,7 @@ from torch.nn import MSELoss
 
 from timm.utils import accuracy
 from timm.optim import create_optimizer
+from timm.scheduler import create_scheduler
 import copy
 import utils
 from torch.distributions.multivariate_normal import MultivariateNormal
@@ -106,7 +107,7 @@ def train_one_epoch(model: torch.nn.Module,
             flat_input = input
             B = input.shape[0]
 
-        output = model(flat_input, task_id=task_id, train=set_training_mode)
+        output = model(flat_input, task_id=task_id, learned_id=task_id, train=set_training_mode)
         logits = output['logits']
 
         # TSN consensus: average logits over segments before loss
@@ -165,7 +166,7 @@ def train_one_epoch(model: torch.nn.Module,
 
 @torch.no_grad()
 def evaluate(model: torch.nn.Module, data_loader, 
-            device, task_id=-1, class_mask=None, args=None,):
+            device, task_id=-1, cur_id=-1, class_mask=None, args=None,):
     
     criterion = torch.nn.CrossEntropyLoss()
 
@@ -198,7 +199,7 @@ def evaluate(model: torch.nn.Module, data_loader,
 
             # compute output
 
-            output = model(flat_input, task_id=task_id)
+            output = model(flat_input, task_id=task_id, learned_id=cur_id)
             logits = output['logits']
 
             # -----------------------------------------------------------
@@ -255,7 +256,7 @@ def evaluate_till_now(model: torch.nn.Module, data_loader,
     for i in range(task_id+1):
         logging.info('Evaluating task {}...'.format(i+1))
         test_stats, temp_total, temp_correct = evaluate(model=model, data_loader=data_loader[i]['val'], 
-                            device=device, task_id=i, class_mask=class_mask, args=args,)
+                            device=device, task_id=i, cur_id=task_id, class_mask=class_mask, args=args,)
 
         total += temp_total
         correct += temp_correct
@@ -294,6 +295,46 @@ def train_and_evaluate(model: torch.nn.Module,
 
     for task_id in range(args.num_tasks):
 
+        # Ensure pixel prompt generator exists for this task (before optimizer creation)
+        if args.lgsp == 'YES' and args.lgsp_type in ['LGSP', 'LSP']:
+            if hasattr(model_without_ddp, 'ensure_prompt_generator'):
+                model_without_ddp.ensure_prompt_generator(task_id)
+        
+        lgsp_params_set = set() # Store ids to exclude from general params
+        lgsp_groups = []
+
+        # LGSP Params separation and Optimizer creation
+        if args.lgsp == 'YES':
+            if args.lgsp_type in ['LGSP', 'LSP']:
+                prompt_branch_params = [p for n, p in model.named_parameters() if 'prompt_generators' in n and p.requires_grad]
+                if prompt_branch_params:
+                    lgsp_groups.append({'params': prompt_branch_params, 'lr': getattr(args, 'lr_local', 2e-4)})
+                    for p in prompt_branch_params: lgsp_params_set.add(id(p))
+                    
+            if args.lgsp_type in ['LGSP', 'GSP']:
+                freq_params = [p for n, p in model.named_parameters() if n == 'weights' and p.requires_grad]
+                if freq_params:
+                    lgsp_groups.append({'params': freq_params, 'lr': getattr(args, 'lr_Frequency_mask', 0.03)})
+                    for p in freq_params: lgsp_params_set.add(id(p))
+            
+            if args.lgsp_type == 'LGSP':
+                adapt_params = [p for n, p in model.named_parameters() if n in ('alpha', 'beta') and p.requires_grad]
+                if adapt_params:
+                    lgsp_groups.append({'params': adapt_params, 'lr': args.lr}) 
+                    for p in adapt_params: lgsp_params_set.add(id(p))
+
+        remaining_params = [p for n, p in model.named_parameters() if id(p) not in lgsp_params_set and p.requires_grad]
+        
+        network_params = [{'params': remaining_params}] # Uses default lr/wd from args inside create_optimizer
+        network_params.extend(lgsp_groups)
+        
+        # Create new optimizer for each task (or task 0) to ensure LGSP params are handled
+        if task_id == 0 or (task_id > 0 and args.reinit_optimizer):
+            optimizer = create_optimizer(args, network_params)
+            if args.sched != 'constant':
+                print(f"Re-creating scheduler for task {task_id}")
+                lr_scheduler, _ = create_scheduler(args, optimizer)
+                
         if task_id>0:
             model.head.update(len(class_mask[task_id]))
 

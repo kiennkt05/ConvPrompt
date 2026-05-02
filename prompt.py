@@ -131,6 +131,18 @@ class EPrompt(nn.Module):
             # only compatible with prompt, not prefix
             prompt_mean = torch.mean(self.prompt, dim=[0, 2])
             self.prompt_key = prompt_mean 
+
+        base_key = self.tensor_matrix(self.n_tasks, self.embed_dim, None)
+        setattr(self, f'base_key', base_key)
+
+    def tensor_matrix(self, a, b, c):
+        if c is None:
+            p = torch.nn.Parameter(torch.FloatTensor(a,b), requires_grad=True)
+            nn.init.uniform_(p)
+        else:
+            p = torch.nn.Parameter(torch.FloatTensor(a,b,c), requires_grad=True)
+            nn.init.uniform_(p)
+        return p
             
     def l2_normalize(self, x, dim=None, epsilon=1e-12):
         """Normalizes a given vector or matrix."""
@@ -203,8 +215,24 @@ class EPrompt(nn.Module):
         
         return torch.nn.Parameter(uu) 
 
-    def forward(self, x_embed, task_id=-1, prompt_mask=None, layer_num= -1, cls_features=None):
+    def forward(self, x_embed, task_id=-1, learned_id=-1, prompt_mask=None, layer_num= -1, cls_features=None, train=False):
+        base_key = getattr(self, f'base_key')
         out = dict()
+
+        if train:
+            self.task_id = learned_id
+            if self.task_id == 0:
+                base_key_set = base_key[self.task_id]
+            else:
+                base_key_set = base_key[self.task_id]
+
+            key_norm = self.l2_normalize(base_key_set, dim=-1) 
+            embed_norm = self.l2_normalize(cls_features, dim=-1)
+
+            similarity = torch.matmul(key_norm, embed_norm.t()) 
+            similarity = torch.sum(similarity) / embed_norm.shape[0]
+            out['sim_loss'] = similarity
+
         if self.prompt_pool:
             if self.embedding_key == 'mean':
                 x_embed_mean = torch.mean(x_embed, dim=1)

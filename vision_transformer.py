@@ -384,6 +384,8 @@ class VisionTransformer(nn.Module):
         self.use_multihead=True
         print('Using multihead: ', self.use_multihead)
 
+        self.args = args
+
         self.patch_embed = embed_layer(
             img_size=img_size, patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim)
         num_patches = self.patch_embed.num_patches
@@ -470,6 +472,67 @@ class VisionTransformer(nn.Module):
             for i in range(depth)])
         self.norm = norm_layer(embed_dim) if not use_fc_norm else nn.Identity()
 
+
+        # Pixel prompt initialization
+        def get_arg(name, default):
+            return getattr(args, name, default) if args is not None else default
+
+        self.Dropout_Prompt = get_arg('Dropout_Prompt', 0.1)
+        self.prompt_dropout = torch.nn.Dropout(self.Dropout_Prompt)
+        self.first_kernel_size = get_arg('first_kernel_size', 3)
+        self.second_kernel_size = get_arg('second_kernel_size', 5)
+        
+        def build_prompt_module():
+            prompt_hid_dim = get_arg('prompt_hid_dim', 3)
+            return nn.Sequential(
+                nn.Conv2d(3, prompt_hid_dim, self.first_kernel_size, stride=1, padding=int((self.first_kernel_size - 1) / 2)),
+                nn.ReLU(),
+                nn.Conv2d(prompt_hid_dim, 3, self.second_kernel_size, stride=1, padding=int((self.second_kernel_size - 1) / 2))
+            )
+
+        # Pixel prompt initialization - incremental approach (1 prompt per task)
+        self.prompt_generators = nn.ModuleList()  # Will grow incrementally: 1 at task 1, 2 at task 2, etc.
+        self.build_prompt_module = build_prompt_module  # Store function for dynamic creation
+        self.stored_unified_prompts = None  # Will be initialized on first use when shape is known
+        self.matched_task_id = None  # Will be set during forward at test time
+        
+        lgsp = get_arg('lgsp', 'NO')
+        lgsp_type = get_arg('lgsp_type', 'LGSP')
+
+        print(f"\n\nlgsp = {lgsp}, lgsp_type = {lgsp_type}\n\n")
+        
+        pixel_prompt = lgsp == 'YES' and lgsp_type in ['LGSP', 'LSP']
+        
+        if pixel_prompt:
+            # Initialize empty - will be created dynamically at each task
+            self.num_prompt_generators = 0
+            print(f"Pixel prompts: Using incremental approach (1 prompt per task)")
+        else:
+            self.num_prompt_generators = 0
+
+        # Frequency mask initialization
+        Frequency_mask = lgsp == 'YES' and lgsp_type in ['LGSP', 'GSP']
+        if Frequency_mask:
+            # Handle img_size as either int or tuple
+            if isinstance(img_size, (tuple, list)):
+                img_size_val = img_size[0] if len(img_size) > 0 else 224
+            else:
+                img_size_val = img_size
+            max_radius = torch.sqrt(torch.tensor((img_size_val / 2) ** 2 + (img_size_val / 2) ** 2)).item()
+            num_r = get_arg('num_r', 100)
+            # Register as buffer so it moves to correct device automatically
+            self.register_buffer('radii', torch.linspace(0, max_radius, steps=num_r))
+            weights_init = torch.normal(mean=0, std=10, size=(num_r,))
+            self.weights = nn.Parameter(weights_init)
+            self.frequency_residual_scale = nn.Parameter(torch.tensor(0.1))
+
+            adaptive_weighting = lgsp == 'YES' and lgsp_type == 'LGSP'
+            if adaptive_weighting:
+                self.alpha = nn.Parameter(torch.tensor(0.5, requires_grad=True))
+                self.beta = nn.Parameter(torch.tensor(0.5, requires_grad=True))
+        
+
+
         # Classifier Head
         self.fc_norm = norm_layer(embed_dim) if use_fc_norm else nn.Identity()
         # self.head = nn.Linear(self.embed_dim, num_classes) if num_classes > 0 else nn.Identity()
@@ -529,9 +592,213 @@ class VisionTransformer(nn.Module):
             self.global_pool = global_pool
         self.head = nn.Linear(self.embed_dim, num_classes) if num_classes > 0 else nn.Identity()
 
+    # Define a function to calculate cosine similarity, focusing more on local similarity.
+    def cosine_similarity(self, a, b):
+        # Normalize the vectors
+        a_norm = F.normalize(a, dim=1)  # [batch_size, channels, h, w]
+        b_norm = F.normalize(b, dim=1)  # [batch_size, channels, h, w]
+        # Calculate the dot product
+        return torch.sum(a_norm * b_norm, dim=1, keepdim=True)  # [batch_size, 1, h, w]
+    
+    def ensure_prompt_generator(self, task_id):
+        """
+        Ensure prompt generator for given task_id exists.
+        Creates it if needed and freezes previous ones.
+        """
+        # Get the device of the model
+        device = next(self.parameters()).device
+        
+        while task_id >= len(self.prompt_generators):
+            new_generator = self.build_prompt_module()
+            # Move the new generator to the same device as the model
+            new_generator = new_generator.to(device)
+            self.prompt_generators.append(new_generator)
+            print(f"Created new pixel prompt generator (total: {len(self.prompt_generators)})")
+        
+        # Freeze all previous prompt generators (tasks 0 to task_id-1)
+        for i in range(task_id):
+            for param in self.prompt_generators[i].parameters():
+                param.requires_grad = False
+    
+    def match_task_rainbow_style(self, cls_features, cur_id):
+        """
+        Extract RainbowPrompt's task matching logic.
+        Matches task based on similarity between cls_features and task keys.
+        Returns the matched task_id.
+        """
+        if cls_features is None:
+            return 0  # Default to task 0 if no e_prompt or cls_features
+        
+        base_key = self.e_prompt.base_key
+        embed_norm = self.e_prompt.l2_normalize(cls_features, dim=-1)
+        matching_result = []
+        
+        for certain_task in range(cur_id + 1):
+            certain_task_key = base_key[certain_task]
+            certain_task_key = self.e_prompt.l2_normalize(certain_task_key, dim=-1)
+            sim_score = torch.matmul(certain_task_key, embed_norm.t())
+            sim_score = torch.sum(sim_score) / embed_norm.shape[0]
+            matching_result.append(sim_score)
+        
+        matching_result_tensor = torch.stack(matching_result)
+        max_index = torch.argmax(matching_result_tensor)
+        return int(max_index)
+    
+    def get_prompts(self, x, task_id=-1, train=False):
+        """
+        Get pixel prompts using cumulative similarity-based combination.
+        Training: Creates unified prompt by combining all prompts from tasks 1 to task_id.
+        Test: Uses stored unified prompt for matched task_id.
+        """
+        res = {}  # Initialize res as an empty dictionary
+        
+        if train:
+            # Training mode: cumulative similarity approach
+            if task_id < 0:
+                res['prompts'] = torch.zeros_like(x)
+                return res
+            
+            # Ensure prompt generator exists for this task (creates if needed, freezes previous)
+            self.ensure_prompt_generator(task_id)
+            
+            # Get all prompts from tasks 0 to task_id
+            prompts_list = []
+            for t in range(task_id + 1):
+                if t < task_id:
+                    # Frozen prompts: detach to avoid unnecessary gradient computation
+                    prompt = self.prompt_dropout(self.prompt_generators[t](x)).detach()
+                else:
+                    # Learnable current task prompt
+                    prompt = self.prompt_dropout(self.prompt_generators[t](x))
+                prompts_list.append(prompt)
+            
+            # Early return if no prompts available
+            if len(prompts_list) == 0:
+                res['prompts'] = torch.zeros_like(x)
+                return res
+            
+            # Cumulative similarity-based combination
+            # Compute cosine similarity for each prompt
+            similarities_list = [self.cosine_similarity(x, prompt) for prompt in prompts_list]
+            
+            # Concatenate all similarities and perform softmax normalization
+            similarities = torch.cat(similarities_list, dim=1)  # [batch_size, num_prompts, h, w]
+            weights = F.softmax(similarities, dim=1)  # [batch_size, num_prompts, h, w]
+            
+            # Stack prompts and perform weighted sum
+            prompts = torch.stack(prompts_list, dim=1)  # [batch_size, num_prompts, channels, h, w]
+            unified_prompt = torch.sum(weights.unsqueeze(2) * prompts, dim=1)  # [batch_size, channels, h, w]
+            
+            # Initialize storage buffer if needed (on first use when shape is known)
+            if 'stored_unified_prompts' not in self._buffers:
+                _, c, h, w = unified_prompt.shape
+                num_tasks = getattr(self.args, 'num_tasks', 10) if hasattr(self, 'args') and self.args else 10
+                # Delete the regular attribute if it exists (set to None in __init__) before registering as buffer
+                if hasattr(self, 'stored_unified_prompts') and 'stored_unified_prompts' not in self._buffers:
+                    delattr(self, 'stored_unified_prompts')
+                self.register_buffer('stored_unified_prompts',
+                                   torch.zeros(num_tasks, c, h, w, device=x.device))
+                print(f"Initialized pixel prompt storage: [{num_tasks}, {c}, {h}, {w}]")
+            
+            # Store unified prompt for this task (use first batch item as template)
+            with torch.no_grad():
+                self.stored_unified_prompts[task_id].copy_(unified_prompt[0])
+            
+            res['prompts'] = unified_prompt
+            return res
+        
+        else:
+            # Test mode: Use stored unified prompt for matched task
+            matched_task_id = getattr(self, 'matched_task_id', 0)
+            
+            if self.stored_unified_prompts is None or matched_task_id < 0:
+                res['prompts'] = torch.zeros_like(x)
+                return res
+            
+            # Retrieve stored unified prompt for matched task
+            unified_prompt = self.stored_unified_prompts[matched_task_id]  # [c, h, w]
+            unified_prompt = unified_prompt.unsqueeze(0).expand(x.shape[0], -1, -1, -1)  # [batch, c, h, w]
+            
+            res['prompts'] = unified_prompt
+            return res
+    
+    def get_Frequency_mask(self, input):
+        # Perform Fourier transform on the h and w dimensions
+        fft_im = torch.fft.fftn(input, dim=(-2, -1))  # 2D Fourier transform
+        fft_im_center = torch.fft.fftshift(fft_im, dim=(-2, -1))  # Shift the zero frequency to the center
+
+        # Build a grid to calculate the distance from each point to the center of the spectrum
+        Batch_size, channels, h, w = input.shape
+        y, x = torch.meshgrid(torch.arange(h), torch.arange(w), indexing='ij')
+        center_y, center_x = h // 2, w // 2  # Center of the spectrum
+        distances = torch.sqrt((y - center_y) ** 2 + (x - center_x) ** 2)  # Distance matrix
+        distances = distances.to(input.device)  # Ensure the device is consistent
+
+        # Create a ring mask, allow a certain tolerance range
+        beta = 4.0
+        ring_masks = []  # Store the mask of each ring
+        # Ensure radii tensor is on the same device as distances
+        radii = self.radii.to(input.device)
+        for i, radius in enumerate(radii):
+            if i == 0:
+                inner_radius = torch.tensor(0.0, device=input.device)  # The first ring starts from the center
+            else:
+                inner_radius = radii[i - 1] + 1e-6  # Ensure no overlap
+
+            # Outer radius mask
+            outer_mask = torch.sigmoid(-beta * (distances - radius))
+            # Inner radius mask
+            inner_mask = torch.sigmoid(-beta * (distances - inner_radius))
+            # Ring mask
+            ring_mask = outer_mask - inner_mask
+            ring_masks.append(ring_mask.float())  # Convert to float, for subsequent operations
+
+        # Stack the masks into a tensor of shape [10, h, w]
+        ring_masks = torch.stack(ring_masks, dim=0).to(input.device)  # [10, h, w]
+
+        # Weight each ring
+        temperature = getattr(self.args, 'temperature', 1.0)
+        weights_normalized = torch.softmax(self.weights * temperature, dim=0)  # Normalize the weights
+        weighted_ring_masks = weights_normalized[:, None, None] * ring_masks  # Weighted mask
+        # Sum the weighted masks, get the overall frequency mask
+        final_mask = weighted_ring_masks.sum(dim=0)  # [h, w]
+
+        # Apply the frequency mask
+        fft_selected = fft_im_center * final_mask[None, None, :, :]  # Broadcast to [Batch_size, 3, h, w]
+        
+        # Add the residual
+        fft_residual = fft_im_center + fft_selected
+
+        # Inverse Fourier transform to get back to the image domain
+        ifft_residual = torch.fft.ifftshift(fft_residual, dim=(-2, -1))
+        ifft_residual = torch.fft.ifftn(ifft_residual, dim=(-2, -1))
+        return input + (torch.abs(ifft_residual) - input) * self.frequency_residual_scale
 
 
-    def forward_features(self, x, task_id=-1, cls_features=None, train=False):
+    def forward_features(self, x, task_id=-1, learned_id=-1, cls_features=None, train=False):
+                
+        if self.args:
+            lgsp = getattr(self.args, 'lgsp', 'NO')
+            lgsp_type = getattr(self.args, 'lgsp_type', 'LGSP')
+        else:
+            lgsp = 'NO'
+            lgsp_type = 'LGSP'
+
+        if lgsp == 'YES':
+            if lgsp_type == 'LGSP':
+                res = self.get_prompts(x, task_id=learned_id, train=train)  
+                prompts = res['prompts']
+                input1 = x + prompts * 1
+                input2 = self.get_Frequency_mask(x)
+                x = self.alpha * input1 + self.beta * input2
+            elif lgsp_type == 'LSP':
+                res = self.get_prompts(x, task_id=learned_id, train=train)  
+                prompts = res['prompts']
+                x = x + prompts * 1
+            elif lgsp_type == 'GSP':
+                x = self.get_Frequency_mask(x)  
+
+        
         x = self.patch_embed(x)
 
         if self.cls_token is not None:
@@ -572,7 +839,7 @@ class VisionTransformer(nn.Module):
                     
                     elif i in self.e_prompt_layer_idx:
                         e_prompt_counter += 1
-                        res = self.e_prompt(x, task_id=task_id, prompt_mask=prompt_mask, layer_num=e_prompt_counter, cls_features=x[:, 0])
+                        res = self.e_prompt(x, task_id=task_id, prompt_mask=prompt_mask, layer_num=e_prompt_counter, cls_features=x[:, 0], train=train)
                         e_prompt = res['batched_prompt']
                         
                         if self.use_prefix_tune_for_e_prompt:
@@ -634,8 +901,17 @@ class VisionTransformer(nn.Module):
             res['task_logits'] = out[:,self.num_classes:]
         return res
 
-    def forward(self, x, task_id=-1, cls_features=None, train=False):
-        res = self.forward_features(x, task_id=task_id, cls_features=cls_features, train=train)
+    def forward(self, x, task_id=-1, learned_id=-1, cls_features=None, train=False):
+        # At test time, match task first using RainbowPrompt's logic
+        # This ensures both RainbowPrompt and pixel prompts use the same task_id
+        if not train and cls_features is not None:
+            matched_task_id = self.match_task_rainbow_style(cls_features, learned_id)
+            self.matched_task_id = matched_task_id
+        else:
+            # During training, use provided task_id
+            self.matched_task_id = task_id
+                
+        res = self.forward_features(x, task_id=task_id, learned_id=learned_id, cls_features=cls_features, train=train)
         res = self.forward_head(res, device=x.device)
         return res
 
