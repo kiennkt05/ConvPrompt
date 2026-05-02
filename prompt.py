@@ -27,6 +27,7 @@ class EPrompt(nn.Module):
         self.n_tasks = num_tasks
         self.batchwise_prompt = batchwise_prompt
         self.num_layers = num_layers
+        self.embed_dim = embed_dim
         self.use_prefix_tune_for_e_prompt = use_prefix_tune_for_e_prompt
         self.num_heads = num_heads
         self.same_key_value = same_key_value

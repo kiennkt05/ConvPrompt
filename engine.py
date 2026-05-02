@@ -297,8 +297,10 @@ def train_and_evaluate(model: torch.nn.Module,
 
         # Ensure pixel prompt generator exists for this task (before optimizer creation)
         if args.lgsp == 'YES' and args.lgsp_type in ['LGSP', 'LSP']:
-            if hasattr(model_without_ddp, 'ensure_prompt_generator'):
-                model_without_ddp.ensure_prompt_generator(task_id)
+            model_to_use = model.module if hasattr(model, 'module') else model
+            if hasattr(model_to_use, 'ensure_prompt_generator'):
+                print(f"Running 'ensure_prompt_generator' for task {task_id}")
+                model_to_use.ensure_prompt_generator(task_id)
         
         lgsp_params_set = set() # Store ids to exclude from general params
         lgsp_groups = []
